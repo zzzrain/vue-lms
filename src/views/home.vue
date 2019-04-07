@@ -1,16 +1,12 @@
 <template>
   <div class="home-con">
-    <Row>
-      <Col span="4">
-        <SideMenu></SideMenu>
-      </Col>
-      <Col span="20">
-        <div class="login-icon">
-          <LoginIcon></LoginIcon>
-        </div>
-        <router-view></router-view>
-      </Col>
-    </Row>
+    <div class="left-cont" style="float:left;width: 20%;">
+      <SideMenu></SideMenu>
+    </div>
+    <div class="right-cont" style="float:left;width: 80%;">
+      <LoginIcon></LoginIcon>
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -33,8 +29,5 @@ export default {
 </script>
 
 <style scoped>
-  .login-icon {
-    float: right;
-    padding: 10px 20px;
-  }
+
 </style>
