@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import LoginForm from '@/components/loginForm'
+import LoginForm from '@/components/LoginForm'
 export default {
   name: 'login',
   components: {

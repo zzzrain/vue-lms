@@ -66,6 +66,7 @@ export default {
             })
             .then(response => console.log(response))
             .catch(error => console.log(error))
+          this.$router.push({ path: '/home' })
           this.$Message.success('提交成功!')
         } else {
           this.$Message.error('表单验证失败!')
