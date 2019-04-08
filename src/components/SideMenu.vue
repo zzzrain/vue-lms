@@ -1,5 +1,5 @@
 <template>
-  <Menu :theme="theme2" active-name="1-2" :open-names="['1']">
+  <Menu :theme="theme2" active-name="1-2" :open-names="['1']" style="min-height: 900px;">
     <h2 class="big-title">LMS</h2>
     <Submenu name="1">
       <template slot="title">
