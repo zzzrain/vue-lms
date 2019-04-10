@@ -22,7 +22,6 @@
 
 <script>
 export default {
-  name: 'loginForm',
   data () {
     const validateUsername = (rule, value, callback) => {
       if (!value) {

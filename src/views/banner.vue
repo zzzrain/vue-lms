@@ -24,10 +24,10 @@
         </Col>
       </Row>
     </form>
-    <Table stripe :columns="columns1" :data="data1"></Table>
+    <Table border :context="self" :columns="columns7" :data="data6"></Table>
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="100" :current="1" @on-change="changePage"></Page>
+        <Page :total="100" show-elevator @on-change="changePage"></Page>
       </div>
     </div>
   </div>
@@ -36,7 +36,8 @@
 export default {
   data () {
     return {
-      columns1: [
+      self: this,
+      columns7: [
         {
           title: '姓名',
           key: 'name'
@@ -48,9 +49,31 @@ export default {
         {
           title: '地址',
           key: 'address'
+        },
+        {
+          title: '操作',
+          key: 'action',
+          align: 'center',
+          render: function (h, params) {
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '8px'
+                },
+                on: {
+                  click: function () {
+                  }
+                }
+              }, '查看')
+            ])
+          }
         }
       ],
-      data1: [
+      data6: [
         {
           name: '王小明',
           age: 18,
@@ -73,10 +96,36 @@ export default {
         }
       ]
     }
+  },
+  mounted () {
+    this.bannerList()
+  },
+  methods: {
+    changePage (page) {
+      this.bannerList(page)
+    },
+    bannerList (pageNum) {
+      this.$axios
+        .post('/api/lms/admin/banner/bannerList', {
+          pageNum: pageNum || '1',
+          pageSize: '10'
+        })
+        .then(response => console.log(response))
+        .catch(error => console.log(error))
+    },
+    show (index) {
+      this.$Modal.info({
+        title: '用户信息',
+        content: `姓名：${this.data6[index].name}<br>年龄：${this.data6[index].age}<br>地址：${this.data6[index].address}`
+      })
+    },
+    remove (index) {
+      this.data6.splice(index, 1)
+    }
   }
 }
 </script>
-<style scoped>
+<style lang="scss">
   .table-list-cont {
     padding-right: 50px;
   }

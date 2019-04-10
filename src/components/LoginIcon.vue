@@ -16,16 +16,15 @@
 
 <script>
 export default {
-  name: "LoginIcon"
 }
 </script>
 
-<style>
+<style lang="scss">
   .avatar-cont {
     padding: 10px 20px;
     height: 52px;
-  }
-  .user-avatar-dropdown {
-    float: right;
+    .user-avatar-dropdown {
+      float: right;
+    }
   }
 </style>
