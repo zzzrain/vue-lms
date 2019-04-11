@@ -4,26 +4,43 @@
       <Row :gutter="16">
         <Col span="6">
           <div style="padding: 10px 0;">
-            输入框：<Input v-model="value" placeholder="请输入..." style="width: 200px"></Input>
+            输入框：<Input placeholder="请输入..." style="width: 200px"></Input>
           </div>
         </Col>
         <Col span="6">
           <div style="padding: 10px 0;">
-            输入框：<Input v-model="value" placeholder="请输入..." style="width: 200px"></Input>
+            输入框：<Input placeholder="请输入..." style="width: 200px"></Input>
           </div>
         </Col>
         <Col span="6">
           <div style="padding: 10px 0;">
-            输入框：<Input v-model="value" placeholder="请输入..." style="width: 200px"></Input>
+            输入框：<Input placeholder="请输入..." style="width: 200px"></Input>
           </div>
         </Col>
         <Col span="6">
           <div style="padding: 10px 0;">
-            输入框：<Input v-model="value" placeholder="请输入..." style="width: 200px"></Input>
+            输入框：<Input placeholder="请输入..." style="width: 200px"></Input>
           </div>
         </Col>
       </Row>
     </form>
+    <div class="addBanner" style="text-align: left;margin-bottom: 20px;">
+      <Button type="primary" @click="addPop = true">增加</Button>
+      <Modal
+        v-model="addPop"
+        title="广告图片上传"
+        @on-ok="ok"
+        @on-cancel="cancel">
+        <FileUpload></FileUpload>
+      </Modal>
+      <Modal
+        v-model="picPop"
+        title="图片详情"
+        @on-ok="ok"
+        @on-cancel="cancel">
+        <img :src="imgSrc" alt="图片详情">
+      </Modal>
+    </div>
     <Table border :context="self" :columns="columns7" :data="data6"></Table>
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
@@ -33,9 +50,18 @@
   </div>
 </template>
 <script>
+
+import FileUpload from '@/components/FileUpload'
+
 export default {
+  components: {
+    FileUpload
+  },
   data () {
     return {
+      addPop: false,
+      picPop: false,
+      imgSrc: '',
       self: this,
       columns7: [
         {
@@ -54,7 +80,7 @@ export default {
           title: '操作',
           key: 'action',
           align: 'center',
-          render: function (h, params) {
+          render: function (h) {
             return h('div', [
               h('Button', {
                 props: {
@@ -66,9 +92,24 @@ export default {
                 },
                 on: {
                   click: function () {
+                    this.picPop = true
                   }
                 }
-              }, '查看')
+              }, '查看'),
+              h('Button', {
+                props: {
+                  type: 'success',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '8px'
+                },
+                on: {
+                  click: function () {
+                    this.addPop = true
+                  }
+                }
+              }, '修改')
             ])
           }
         }
@@ -113,15 +154,10 @@ export default {
         .then(response => console.log(response))
         .catch(error => console.log(error))
     },
-    show (index) {
-      this.$Modal.info({
-        title: '用户信息',
-        content: `姓名：${this.data6[index].name}<br>年龄：${this.data6[index].age}<br>地址：${this.data6[index].address}`
-      })
+    ok () {
+      console.log(this.imgSrc)
     },
-    remove (index) {
-      this.data6.splice(index, 1)
-    }
+    cancel () {}
   }
 }
 </script>

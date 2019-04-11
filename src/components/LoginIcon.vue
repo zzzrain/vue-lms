@@ -1,7 +1,7 @@
 <template>
   <div class="avatar-cont">
     <div class="user-avatar-dropdown">
-      <Dropdown @on-click="handleClick">
+      <Dropdown>
         <Badge>
           <Avatar/>
         </Badge>
