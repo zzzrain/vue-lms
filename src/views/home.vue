@@ -1,9 +1,9 @@
 <template>
-  <div class="home-con">
-    <div class="left-cont" style="float:left;width: 20%;">
+  <div class="home-con" style="height: 100%;">
+    <div class="left-cont fl" style="width: 15%;height: 100%;background: #515a6e">
       <SideMenu></SideMenu>
     </div>
-    <div class="right-cont" style="float:left;width: 80%;">
+    <div class="right-cont fl" style="width: 85%;padding: 0 50px">
       <LoginIcon></LoginIcon>
       <router-view></router-view>
     </div>
