@@ -89,14 +89,14 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
-    }
+    };
   },
   mounted () {
     this.$axios
       .get('/api/movie/top250')
-      .then(response => console.log(response))
+      .then(response => console.log(response));
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

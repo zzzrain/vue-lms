@@ -1,16 +1,16 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
-import Login from '@/views/login'
-import Home from '@/views/home'
-import category from '@/views/category'
-import release from '@/views/release'
-import stock from '@/views/stock'
-import order from '@/views/order'
-import bill from '@/views/bill'
-import banner from '@/views/banner'
+import Login from '@/views/login';
+import Home from '@/views/home';
+import category from '@/views/category';
+import release from '@/views/release';
+import stock from '@/views/stock';
+import order from '@/views/order';
+import bill from '@/views/bill';
+import banner from '@/views/banner';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
@@ -63,4 +63,4 @@ export default new Router({
       ]
     }
   ]
-})
+});

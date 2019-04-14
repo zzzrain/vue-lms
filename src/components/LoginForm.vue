@@ -25,18 +25,18 @@ export default {
   data () {
     const validateUsername = (rule, value, callback) => {
       if (!value) {
-        callback(new Error('请输入用户名'))
+        callback(new Error('请输入用户名'));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
     const validatePassword = (rule, value, callback) => {
       if (!value) {
-        callback(new Error('请输入密码'))
+        callback(new Error('请输入密码'));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
 
     return {
       loginForm: {
@@ -51,7 +51,7 @@ export default {
           {validator: validatePassword, trigger: 'blur'}
         ]
       }
-    }
+    };
   },
   methods: {
     handleSubmit () {
@@ -64,16 +64,16 @@ export default {
               staticCode: 1234
             })
             .then(response => console.log(response))
-            .catch(error => console.log(error))
-          this.$router.push({ path: '/home' })
-          this.$Message.success('提交成功!')
+            .catch(error => console.log(error));
+          this.$router.push({ path: '/home' });
+          this.$Message.success('提交成功!');
         } else {
-          this.$Message.error('表单验证失败!')
+          this.$Message.error('表单验证失败!');
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style>

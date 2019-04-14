@@ -12,8 +12,8 @@
 
 <script>
 
-import LoginIcon from '@/components/LoginIcon'
-import SideMenu from '@/components/SideMenu'
+import LoginIcon from '@/components/LoginIcon';
+import SideMenu from '@/components/SideMenu';
 
 export default {
   components: {
@@ -23,9 +23,9 @@ export default {
   data () {
     return {
       theme2: 'dark'
-    }
+    };
   }
-}
+};
 </script>
 
 <style scoped>

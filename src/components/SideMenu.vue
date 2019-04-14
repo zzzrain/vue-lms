@@ -26,9 +26,9 @@ export default {
   data () {
     return {
       theme2: 'dark'
-    }
+    };
   }
-}
+};
 </script>
 <style lang="scss">
   a {

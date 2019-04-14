@@ -1,5 +1,5 @@
 <template>
-  <div class="table-list-cont pr50">
+  <div class="table-list-cont pr25">
     <Form label-position="left" :label-width="80" inline class="clear-fix">
       <Form-item label="输入框" class="form-item">
         <Input placeholder="请输入"></Input>
@@ -39,9 +39,9 @@
     </div>
   </div>
 </template>
-<script>
 
-import FileUpload from '@/components/FileUpload'
+<script>
+import FileUpload from '@/components/FileUpload';
 
 export default {
   components: {
@@ -55,11 +55,11 @@ export default {
       self: this,
       cols: [],
       rows: []
-    }
+    };
   },
   mounted () {
-    let vm = this
-    this.bannerList()
+    let vm = this;
+    this.bannerList();
     this.cols = [
       {
         title: '姓名',
@@ -89,7 +89,7 @@ export default {
               },
               on: {
                 click: function () {
-                  vm.picPop = true
+                  vm.picPop = true;
                 }
               }
             }, '查看'),
@@ -103,14 +103,14 @@ export default {
               },
               on: {
                 click: function () {
-                  vm.addPop = true
+                  vm.addPop = true;
                 }
               }
             }, '修改')
-          ])
+          ]);
         }
       }
-    ]
+    ];
     this.rows = [
       {
         name: '王小明',
@@ -132,11 +132,11 @@ export default {
         age: 26,
         address: '深圳市南山区深南大道'
       }
-    ]
+    ];
   },
   methods: {
     changePage (page) {
-      this.bannerList(page)
+      this.bannerList(page);
     },
     bannerList (pageNum) {
       this.$axios
@@ -145,13 +145,14 @@ export default {
           pageSize: '10'
         })
         .then(response => console.log(response))
-        .catch(error => console.log(error))
+        .catch(error => console.log(error));
     },
     ok () {},
     cancel () {}
   }
-}
+};
 </script>
+
 <style lang="scss">
   .form-item {
     float: left;

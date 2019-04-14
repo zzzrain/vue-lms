@@ -21,6 +21,7 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
+    "semi": ["error", "always"],
     // Warnings while compiling
     "vue/no-parsing-error": [2, {
         "x-invalid-end-tag": false
