@@ -2,10 +2,10 @@ module.exports = {
   state (ele) {
     let state = '';
     switch (ele) {
-      case 1 :
-        state = '启用';
+      case 0 :
+        state = '停用';
         break;
-      case 2 :
+      case 1 :
         state = '启用';
         break;
       default:

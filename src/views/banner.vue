@@ -31,10 +31,10 @@
         <img :src="imgSrc" alt="图片详情">
       </Modal>
     </div>
-    <Table border :context="self" :columns="cols" :data="rows"></Table>
-    <div class="mt20 oh">
+    <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
+    <div class="oh">
       <div class="fr">
-        <Page :total="100" show-elevator @on-change="changePage"></Page>
+        <Page :total="total" show-elevator @on-change="changePage"></Page>
       </div>
     </div>
   </div>
@@ -49,6 +49,7 @@ export default {
   },
   data () {
     return {
+      total: 1,
       addPop: false,
       picPop: false,
       imgSrc: '',
@@ -144,7 +145,9 @@ export default {
           pageNum: pageNum || '1',
           pageSize: '10'
         })
-        .then(response => console.log(response))
+        .then(res => {
+          console.log(res);
+        })
         .catch(error => console.log(error));
     },
     ok () {},

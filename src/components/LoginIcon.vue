@@ -1,5 +1,5 @@
 <template>
-  <div class="avatar-cont">
+  <div class="avatar-cont mb20">
     <div class="user-avatar-dropdown">
       <Dropdown>
         <Badge>

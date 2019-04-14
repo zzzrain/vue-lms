@@ -1,5 +1,5 @@
 <template>
-  <i-form ref="loginForm" :model="loginForm" :rules="rules">
+  <Form ref="loginForm" :model="loginForm" :rules="rules">
     <Form-item prop="username">
       <Input v-model="loginForm.username" placeholder="请输入用户名" >
         <span slot="prepend">
@@ -17,7 +17,7 @@
     <Form-item>
       <Button type="primary" @click="handleSubmit" long>登录</Button>
     </Form-item>
-  </i-form>
+  </Form>
 </template>
 
 <script>
@@ -63,7 +63,7 @@ export default {
               userPwd: this.loginForm.password,
               staticCode: 1234
             })
-            .then(response => console.log(response))
+            .then(res => console.log(res))
             .catch(error => console.log(error));
           this.$router.push({ path: '/home' });
           this.$Message.success('提交成功!');
