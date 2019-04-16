@@ -4,7 +4,8 @@ import Router from 'vue-router';
 import Login from '@/views/login';
 import Home from '@/views/home';
 import category from '@/views/category';
-import release from '@/views/release';
+import goodsList from '@/views/goodsList';
+import goodsDetail from '@/views/goodsDetail';
 import stock from '@/views/stock';
 import order from '@/views/order';
 import bill from '@/views/bill';
@@ -27,7 +28,7 @@ export default new Router({
     {
       path: '/home',
       name: 'home',
-      redirect: 'home/release',
+      redirect: 'home/category',
       component: Home,
       children: [
         {
@@ -36,9 +37,14 @@ export default new Router({
           component: category
         },
         {
-          path: 'release',
-          name: 'release',
-          component: release
+          path: 'goodsList',
+          name: 'goodsList',
+          component: goodsList
+        },
+        {
+          path: 'goodsDetail',
+          name: 'goodsDetail',
+          component: goodsDetail
         },
         {
           path: 'stock',
