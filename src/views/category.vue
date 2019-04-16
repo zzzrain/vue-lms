@@ -77,6 +77,7 @@ export default {
       altCategory: {
         id: '',
         name: '',
+        level: '',
         status: ''
       },
       rules: {
@@ -86,12 +87,13 @@ export default {
         level: [
           {required: true, message: '请选择等级', trigger: 'change'}
         ]
-      }
+      },
+      btn: ''
     };
   },
   mounted () {
     let vm = this;
-    this.bannerList();
+    this.categoryList();
     this.cols = [
       {
         title: 'id',
@@ -118,6 +120,10 @@ export default {
         key: 'action',
         align: 'center',
         render: (h, params) => {
+          console.log(params);
+          // let status = params.row.status;
+          // let type = status === '启用' ? 'error' : 'success';
+          // this.btn = status === '启用' ? '停用' : '启用';
           return h('div', [
             h('Button', {
               props: {
@@ -137,7 +143,7 @@ export default {
             }, '修改'),
             h('Button', {
               props: {
-                type: 'success',
+                type: 'warning',
                 size: 'small'
               },
               style: {
@@ -147,10 +153,10 @@ export default {
                 click: function () {
                   vm.altCategory.id = params.row.id;
                   vm.altCategory.status = params.row.status;
-                  this.updateSubmitAlt();
+                  vm.updateSubmitStatus();
                 }
               }
-            }, '启用')
+            }, '开关')
           ]);
         }
       }
@@ -159,9 +165,9 @@ export default {
   },
   methods: {
     changePage (page) {
-      this.bannerList(page);
+      this.categoryList(page);
     },
-    bannerList (pageNum) {
+    categoryList (pageNum) {
       this.$axios
         .post('/api/lms/admin/category/categoryList', {
           pageNum: pageNum || '1',
@@ -224,6 +230,22 @@ export default {
             .catch(error => console.log(error));
         }
       });
+    },
+    updateSubmitStatus () {
+      let status = this.altCategory.status === '启用' ? 0 : 1;
+      this.$axios
+        .post('/api/lms/admin/category/updateCategory', {
+          id: this.altCategory.id,
+          categoryName: this.altCategory.name,
+          categoryLevel: this.altCategory.level,
+          createTime: '2019-04-14T05:13:49.982Z',
+          status
+        })
+        .then(res => {
+          if (res.data.code !== '20000') {
+          }
+        })
+        .catch(error => console.log(error));
     },
     cancel () {}
   }
