@@ -170,8 +170,8 @@ export default {
     categoryList (pageNum) {
       this.$axios
         .post('/api/lms/admin/category/categoryList', {
-          pageNum: pageNum || '1',
-          pageSize: '10'
+          pageNum: pageNum || 1,
+          pageSize: 10
         })
         .then(res => {
           const data = res.data && res.data.data;

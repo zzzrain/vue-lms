@@ -142,8 +142,8 @@ export default {
     bannerList (pageNum) {
       this.$axios
         .post('/api/lms/admin/banner/bannerList', {
-          pageNum: pageNum || '1',
-          pageSize: '10'
+          pageNum: pageNum || 1,
+          pageSize: 10
         })
         .then(res => {
           console.log(res);

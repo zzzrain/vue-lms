@@ -14,9 +14,9 @@ module.exports = {
     }
     return state;
   },
-  format (s, format) {
-    let d = new Date(s);
-    if (!d) return s;
+  format (t, format) {
+    let d = new Date(t);
+    if (!d) return t;
     let year = d.getFullYear();
     let month = d.getMonth() + 1;
     let day = d.getDate();
@@ -35,5 +35,12 @@ module.exports = {
       str = year + '-' + month + '-' + day;
     }
     return str;
+  },
+  getParams (n) {
+    let href = window.location.href.slice(window.location.href.indexOf('?'));
+    let reg = new RegExp('(^|&)' + n + '=([^&]*)(&|$)');
+    let res = href.slice(1).match(reg);
+    if (res) return decodeURI(res[2]);
+    return '';
   }
 };
