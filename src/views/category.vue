@@ -87,8 +87,7 @@ export default {
         level: [
           {required: true, message: '请选择等级', trigger: 'change'}
         ]
-      },
-      btn: ''
+      }
     };
   },
   mounted () {
@@ -120,10 +119,9 @@ export default {
         key: 'action',
         align: 'center',
         render: (h, params) => {
-          console.log(params);
-          // let status = params.row.status;
-          // let type = status === '启用' ? 'error' : 'success';
-          // this.btn = status === '启用' ? '停用' : '启用';
+          let status = params.row.status;
+          let type = status === '启用' ? 'error' : 'success';
+          let btn = status === '启用' ? '停用' : '启用';
           return h('div', [
             h('Button', {
               props: {
@@ -143,7 +141,7 @@ export default {
             }, '修改'),
             h('Button', {
               props: {
-                type: 'warning',
+                type,
                 size: 'small'
               },
               style: {
@@ -153,10 +151,12 @@ export default {
                 click: function () {
                   vm.altCategory.id = params.row.id;
                   vm.altCategory.status = params.row.status;
-                  vm.updateSubmitStatus();
+                  vm.updateSubmitStatus(function () {
+                    params.row.status = btn;
+                  });
                 }
               }
-            }, '开关')
+            }, btn)
           ]);
         }
       }
@@ -199,7 +199,7 @@ export default {
             .post('/api/lms/admin/category/updateCategory', {
               categoryName: this.addCategory.name,
               categoryLevel: this.addCategory.level,
-              createTime: '2019-04-14T05:13:49.982Z',
+              createTime: new Date().getTime(),
               status: 0
             })
             .then(res => {
@@ -231,7 +231,7 @@ export default {
         }
       });
     },
-    updateSubmitStatus () {
+    updateSubmitStatus (cb) {
       let status = this.altCategory.status === '启用' ? 0 : 1;
       this.$axios
         .post('/api/lms/admin/category/updateCategory', {
@@ -242,7 +242,8 @@ export default {
           status
         })
         .then(res => {
-          if (res.data.code !== '20000') {
+          if (res.data.code === '20000') {
+            cb();
           }
         })
         .catch(error => console.log(error));

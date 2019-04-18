@@ -95,6 +95,9 @@ export default {
         key: 'action',
         align: 'center',
         render: (h, params) => {
+          let status = params.row.status;
+          let type = status === '启用' ? 'error' : 'success';
+          let btn = status === '启用' ? '停用' : '启用';
           return h('div', [
             h('Button', {
               props: {
@@ -112,7 +115,7 @@ export default {
             }, '修改'),
             h('Button', {
               props: {
-                type: 'success',
+                type,
                 size: 'small'
               },
               style: {
@@ -120,9 +123,10 @@ export default {
               },
               on: {
                 click: function () {
+                  params.row.status = btn;
                 }
               }
-            }, '开关')
+            }, btn)
           ]);
         }
       }

@@ -1,82 +1,85 @@
 <template>
-  <Form :model="formItem" :label-width="80" style="width: 600px;">
-    <Form-item label="商品名称">
-      <Input v-model="formItem.goodsName" placeholder="请输入"></Input>
-    </Form-item>
-    <Form-item label="商品类目">
-      <Select v-model="formItem.categoryId" placeholder="请选择">
-        <Option  v-for="item in categoryItem" :key="item.id" :value="item.id">{{ item.categoryName }}</Option>
-      </Select>
-    </Form-item>
-    <Form-item label="商品原价">
-      <Input v-model="formItem.skuPrice" placeholder="请输入"></Input>
-    </Form-item>
-    <Form-item label="商品规格" style="width: 170px;">
-      <Radio-group v-model="formItem.skuUnit">
-        <Radio label="male">箱</Radio>
-        <Radio label="female">瓶</Radio>
-      </Radio-group>
-    </Form-item>
-    <Form-item label="代理商价格">
-      <Input v-model="formItem.agentPrice" placeholder="请输入"></Input>
-    </Form-item>
-    <Form-item label="限定代理商出售价格">
-      <Input v-model="formItem.limitAgentPrice" placeholder="请输入"></Input>
-    </Form-item>
-    <Form-item label="采购商价格">
-      <Input v-model="formItem.purchaserPrice" placeholder="请输入"></Input>
-    </Form-item>
-    <Form-item label="库存数量">
-      <!--<Input v-model="formItem.repertoryNum" placeholder="请输入"></Input>-->
-    </Form-item>
-    <Form-item label="库存规格" style="width: 170px;">
-      <Radio-group v-model="formItem.repertoryUnit">
-        <Radio label="male">箱</Radio>
-        <Radio label="female">瓶</Radio>
-      </Radio-group>
-    </Form-item>
-    <Form-item label="商品图片">
-      <div class="fl">
-        <div v-for="item in imgItem.uploadList" :key="item.id">
-          <template v-if="item.status === 'finished'">
-            <img :src="item.url">
-            <div class="demo-upload-list-cover">
-              <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
-              <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-            </div>
-          </template>
-          <template v-else>
-            <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-          </template>
-        </div>
-        <Upload
-          ref="upload"
-          :format="['jpg','jpeg','png']"
-          :max-size="2048"
-          :on-success="handleSuccess"
-          :on-format-error="handleFormatError"
-          :on-exceeded-size="handleMaxSize"
-          :before-upload="handleBeforeUpload"
-          multiple
-          type="drag"
-          action=""
-          style="display: inline-block;width:58px;">
-          <div style="width: 58px;height:58px;line-height: 58px;">
-            <Icon type="camera" size="20"></Icon>
+  <div class="detail-cont">
+    <div class="pr30"><Button type="info" class="fr" onclick="window.history.back()">返回</Button></div>
+    <Form :model="formItem" :label-width="80" style="width: 600px;">
+      <Form-item label="商品名称">
+        <Input v-model="formItem.goodsName" placeholder="请输入"></Input>
+      </Form-item>
+      <Form-item label="商品类目">
+        <Select v-model="formItem.categoryId" placeholder="请选择">
+          <Option  v-for="item in categoryItem" :key="item.id" :value="item.id">{{ item.categoryName }}</Option>
+        </Select>
+      </Form-item>
+      <Form-item label="商品原价">
+        <Input v-model="formItem.skuPrice" placeholder="请输入"></Input>
+      </Form-item>
+      <Form-item label="商品规格" style="width: 170px;">
+        <Radio-group v-model="formItem.skuUnit">
+          <Radio label="male">箱</Radio>
+          <Radio label="female">瓶</Radio>
+        </Radio-group>
+      </Form-item>
+      <Form-item label="代理商价格">
+        <Input v-model="formItem.agentPrice" placeholder="请输入"></Input>
+      </Form-item>
+      <Form-item label="限定代理商出售价格">
+        <Input v-model="formItem.limitAgentPrice" placeholder="请输入"></Input>
+      </Form-item>
+      <Form-item label="采购商价格">
+        <Input v-model="formItem.purchaserPrice" placeholder="请输入"></Input>
+      </Form-item>
+      <Form-item label="库存数量">
+        <!--<Input v-model="formItem.repertoryNum" placeholder="请输入"></Input>-->
+      </Form-item>
+      <Form-item label="库存规格" style="width: 170px;">
+        <Radio-group v-model="formItem.repertoryUnit">
+          <Radio label="male">箱</Radio>
+          <Radio label="female">瓶</Radio>
+        </Radio-group>
+      </Form-item>
+      <Form-item label="商品图片">
+        <div class="fl">
+          <div v-for="item in imgItem.uploadList" :key="item.id">
+            <template v-if="item.status === 'finished'">
+              <img :src="item.url">
+              <div class="demo-upload-list-cover">
+                <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
+                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+              </div>
+            </template>
+            <template v-else>
+              <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+            </template>
           </div>
-        </Upload>
-        <Modal title="查看图片" v-model="imgItem.visible">
-          <img :src="'https://o5wwk8baw.qnssl.com/' + imgItem.imgName + '/large'" v-if="imgItem.visible" style="width: 100%">
-        </Modal>
-      </div>
-    </Form-item>
-    <Form-item label="商品描述">
-      <Input v-model="formItem.goodsDesc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
-    </Form-item>
-    <Form-item>
-      <Button type="primary">提交</Button>
-    </Form-item>
-  </Form>
+          <Upload
+            ref="upload"
+            :format="['jpg','jpeg','png']"
+            :max-size="2048"
+            :on-success="handleSuccess"
+            :on-format-error="handleFormatError"
+            :on-exceeded-size="handleMaxSize"
+            :before-upload="handleBeforeUpload"
+            multiple
+            type="drag"
+            action=""
+            style="display: inline-block;width:58px;">
+            <div style="width: 58px;height:58px;line-height: 58px;">
+              <Icon type="camera" size="20"></Icon>
+            </div>
+          </Upload>
+          <Modal title="查看图片" v-model="imgItem.visible">
+            <img :src="'https://o5wwk8baw.qnssl.com/' + imgItem.imgName + '/large'" v-if="imgItem.visible" style="width: 100%">
+          </Modal>
+        </div>
+      </Form-item>
+      <Form-item label="商品描述">
+        <Input v-model="formItem.goodsDesc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
+      </Form-item>
+      <Form-item>
+        <Button type="primary">提交</Button>
+      </Form-item>
+    </Form>
+  </div>
 </template>
 
 <script>
