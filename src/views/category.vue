@@ -21,7 +21,7 @@
         title="新增类目"
         @on-ok="updateSubmitAdd"
         @on-cancel="cancel">
-        <Form  abel-position="left" :label-width="50" ref="addCategory" :model="addCategory" :rules="rules">
+        <Form abel-position="left" :label-width="50" ref="addCategory" :model="addCategory" :rules="rules">
           <Form-item label="名称" prop="name">
             <Input placeholder="请输入" v-model="addCategory.name"></Input>
           </Form-item>
@@ -82,10 +82,10 @@ export default {
       },
       rules: {
         name: [
-          {required: true, message: '请输入名称', trigger: 'blur'}
+          { required: true, message: '请输入名称', trigger: 'blur' }
         ],
         level: [
-          {required: true, message: '请选择等级', trigger: 'change'}
+          { required: true, message: '请选择等级', trigger: 'change' }
         ]
       }
     };

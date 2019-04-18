@@ -59,7 +59,6 @@ export default {
         title: '图片',
         key: 'goodsImg',
         render: (h, params) => {
-          console.log(params);
           let src = params && params.row && params.row.goodsImg;
           return h('div', [
             h('img', {
@@ -146,7 +145,7 @@ export default {
         .then(res => {
           const data = res.data && res.data.data;
           const dataList = data.list || [];
-          console.log(res.data.data.list);
+          // console.log(res.data.data.list);
           if (res.data.code === '20000') {
             this.total = data.total;
             dataList.forEach(ele => {
