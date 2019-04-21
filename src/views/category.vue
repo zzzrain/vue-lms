@@ -219,7 +219,7 @@ export default {
               id: this.altCategory.id,
               categoryName: this.altCategory.name,
               categoryLevel: this.altCategory.level,
-              createTime: '2019-04-14T05:13:49.982Z',
+              createTime: new Date().getTime(),
               status: this.altCategory.status
             })
             .then(res => {
@@ -238,7 +238,7 @@ export default {
           id: this.altCategory.id,
           categoryName: this.altCategory.name,
           categoryLevel: this.altCategory.level,
-          createTime: '2019-04-14T05:13:49.982Z',
+          createTime: new Date().getTime(),
           status
         })
         .then(res => {

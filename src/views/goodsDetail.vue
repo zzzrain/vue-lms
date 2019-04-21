@@ -6,8 +6,8 @@
         <Input v-model="formItem.goodsName" placeholder="请输入"></Input>
       </Form-item>
       <Form-item label="商品类目" prop="categoryId">
-        <Select v-model="formItem.categoryId" placeholder="请选择">
-          <Option v-for="item in categoryItem" :key="item.id" value="item.id">{{ item.categoryName }}</Option>
+        <Select v-model="formItem.categoryId">
+          <Option v-for="item in categoryItem" :key="item.id" :value="item.id">{{ item.categoryName }}</Option>
         </Select>
       </Form-item>
       <Form-item label="商品原价" prop="skuPrice">
@@ -39,9 +39,9 @@
       </Form-item>
       <Form-item label="商品图片">
         <div class="fl">
-          <div v-for="item in formItem.imgItem.uploadList" :key="item.id">
+          <div class="img-item fl" v-for="item in imgItem.uploadList" :key="item.id">
             <template v-if="item.status === 'finished'">
-              <img :src="item.url">
+              <div class="oh mr10" style="height: 100px;"><img :src="item.url" style="width: 100px;"></div>
               <div class="demo-upload-list-cover">
                 <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
                 <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
@@ -53,6 +53,7 @@
           </div>
           <Upload
             ref="upload"
+            :show-upload-list="false"
             :format="['jpg','jpeg','png']"
             :max-size="2048"
             :on-success="handleSuccess"
@@ -61,14 +62,14 @@
             :before-upload="handleBeforeUpload"
             multiple
             type="drag"
-            action=""
+            action="/api/lms/admin/fileUpload/uploadFile?isThumb=1&isImage=true"
             style="display: inline-block;width:58px;">
             <div style="width: 58px;height:58px;line-height: 58px;">
               <Icon type="camera" size="20"></Icon>
             </div>
           </Upload>
-          <Modal title="查看图片" v-model="formItem.imgItem.visible">
-            <img :src="formItem.imgItem.imgName " v-if="formItem.imgItem.visible" style="width: 100%">
+          <Modal title="查看图片" v-model="imgItem.visible">
+            <img :src="imgItem.name " v-if="imgItem.visible" style="width: 100%">
           </Modal>
         </div>
       </Form-item>
@@ -98,34 +99,34 @@ export default {
         goodsId,
         goodsName: '',
         categoryId: '',
-        skuPrice: '',
-        skuUnit: 'male',
+        goodsDesc: '',
+        status: 1,
         agentPrice: '',
         limitAgentPrice: '',
         purchaserPrice: '',
-        repertoryNum: '',
         repertoryUnit: 'male',
-        goodsImg: '',
-        goodsDesc: '',
-        imgItem: {
-          imgName: '',
-          visible: false,
-          uploadList: []
-        }
+        skuPrice: '',
+        skuUnit: 'male'
+      },
+      imgItem: {
+        name: '',
+        visible: false,
+        uploadList: []
       },
       categoryItem: [],
       // 表单规则校验不能通用，全部都要一一对应，坑的一B
       rules: {
+        // 校验默认string,数字需要设置type
         categoryId: [
-          { required: true, message: '请选择类目', trigger: 'change' }
+          { required: true, message: '请选择类目', trigger: 'change', type: 'number' }
         ],
         goodsName: [
           { required: true, message: '名称不能为空', trigger: 'blur' }
         ],
-        agentPrice: [
+        skuPrice: [
           { required: true, message: '价格不能为空', trigger: 'blur' }
         ],
-        skuPrice: [
+        agentPrice: [
           { required: true, message: '价格不能为空', trigger: 'blur' }
         ],
         limitAgentPrice: [
@@ -145,7 +146,7 @@ export default {
     let goodsId = this.formItem.goodsId;
     if (goodsId) this.goodsDetail(goodsId);
     this.categoryList();
-    this.formItem.imgItem.uploadList = this.$refs.upload.fileList;
+    this.imgItem.uploadList = this.$refs.upload.fileList;
   },
   methods: {
     categoryList () {
@@ -164,6 +165,7 @@ export default {
                 categoryName: ele.categoryName
               });
             });
+            console.log(this.categoryItem);
           }
         })
         .catch(error => console.log(error));
@@ -187,9 +189,39 @@ export default {
     handleSubmit (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
-          this.$Message.success('提交成功!');
-        } else {
-          this.$Message.error('表单验证失败!');
+          console.log(this.imgItem.uploadList.url);
+          let formItem = this.formItem;
+          let data = {
+            goodsId: 0,
+            goodsName: formItem.goodsName,
+            categoryId: formItem.categoryId,
+            goodsDesc: formItem.goodsDesc,
+            status: 1,
+            createTime: new Date().getTime(),
+            goodsImg: this.imgItem.uploadList[0].url,
+            skuInfos: [{
+              buyNum: 1,
+              agentPrice: formItem.agentPrice,
+              limitAgentPrice: formItem.limitAgentPrice,
+              purchaserPrice: formItem.purchaserPrice,
+              repertoryNum: 999,
+              repertoryUnit: formItem.repertoryUnit,
+              skuId: 1,
+              skuPrice: formItem.skuPrice,
+              skuName: 'skuName',
+              skuUnit: formItem.skuUnit
+            }]
+          };
+          this.$axios
+            .post('/api/lms/admin/goods/publishGoods', data)
+            .then(res => {
+              // const data = res.data && res.data.data;
+              // const dataList = data.list || [];
+              // console.log(res.data.data.list);
+              if (res.data.code === '20000') {
+              }
+            })
+            .catch(error => console.log(error));
         }
       });
     },
@@ -198,8 +230,8 @@ export default {
     },
     handleView (name) {
       // 浏览大图
-      this.formItem.imgItem.imgName = name;
-      this.formItem.imgItem.visible = true;
+      this.imgItem.name = name;
+      this.imgItem.visible = true;
     },
     handleRemove (file) {
       // 从 upload 实例删除数据
@@ -207,9 +239,8 @@ export default {
       this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
     },
     handleSuccess (res, file) {
-      // 因为上传过程为实例，这里模拟添加 url
-      file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
-      file.name = '7eb99afb9d5f317c912f08b5212fd69a';
+      file.url = res.data.url;
+      file.name = res.data.url;
     },
     handleFormatError (file) {
       this.$Notice.warning({
@@ -224,7 +255,7 @@ export default {
       });
     },
     handleBeforeUpload () {
-      const check = this.formItem.imgItem.uploadList.length < 5;
+      const check = this.imgItem.uploadList.length < 5;
       if (!check) {
         this.$Notice.warning({
           title: '最多只能上传 5 张图片。'
