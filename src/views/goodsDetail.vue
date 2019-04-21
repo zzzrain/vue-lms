@@ -15,8 +15,8 @@
       </Form-item>
       <Form-item label="商品规格" style="width: 200px;">
         <Radio-group v-model="formItem.skuUnit">
-          <Radio label="male">箱</Radio>
-          <Radio label="female">瓶</Radio>
+          <Radio label="1">箱</Radio>
+          <Radio label="2">瓶</Radio>
         </Radio-group>
       </Form-item>
       <Form-item label="代理商价格" prop="agentPrice">
@@ -33,8 +33,8 @@
       </Form-item>
       <Form-item label="库存规格" style="width: 200px;">
         <Radio-group v-model="formItem.repertoryUnit">
-          <Radio label="male">箱</Radio>
-          <Radio label="female">瓶</Radio>
+          <Radio label="1">箱</Radio>
+          <Radio label="2">瓶</Radio>
         </Radio-group>
       </Form-item>
       <Form-item label="商品图片">
@@ -93,7 +93,7 @@ export default {
     FileUpload
   },
   data () {
-    let goodsId = common.getParams('id');
+    let goodsId = parseInt(common.getParams('id'));
     return {
       formItem: {
         goodsId,
@@ -104,9 +104,9 @@ export default {
         agentPrice: '',
         limitAgentPrice: '',
         purchaserPrice: '',
-        repertoryUnit: 'male',
+        repertoryUnit: '1',
         skuPrice: '',
-        skuUnit: 'male'
+        skuUnit: '1'
       },
       imgItem: {
         name: '',
@@ -172,10 +172,8 @@ export default {
     },
     goodsDetail (goodsId) {
       this.$axios
-        .post('/api/lms/admin/goods/goodsList', {
-          goodsId,
-          pageNum: 1,
-          pageSize: 10
+        .post('/api/lms/admin/goods/goodsDetail', {
+          goodsId
         })
         .then(res => {
           // const data = res.data && res.data.data;
@@ -192,24 +190,24 @@ export default {
           console.log(this.imgItem.uploadList.url);
           let formItem = this.formItem;
           let data = {
-            goodsId: 0,
+            // goodsId: 0,
             goodsName: formItem.goodsName,
             categoryId: formItem.categoryId,
             goodsDesc: formItem.goodsDesc,
             status: 1,
-            createTime: new Date().getTime(),
+            // createTime: new Date().getTime(),
             goodsImg: this.imgItem.uploadList[0].url,
             skuInfos: [{
               buyNum: 1,
-              agentPrice: formItem.agentPrice,
-              limitAgentPrice: formItem.limitAgentPrice,
-              purchaserPrice: formItem.purchaserPrice,
+              agentPrice: parseInt(formItem.agentPrice),
+              limitAgentPrice: parseInt(formItem.limitAgentPrice),
+              purchaserPrice: parseInt(formItem.purchaserPrice),
               repertoryNum: 999,
-              repertoryUnit: formItem.repertoryUnit,
+              repertoryUnit: parseInt(formItem.repertoryUnit),
               skuId: 1,
-              skuPrice: formItem.skuPrice,
+              skuPrice: parseInt(formItem.skuPrice),
               skuName: 'skuName',
-              skuUnit: formItem.skuUnit
+              skuUnit: parseInt(formItem.skuUnit)
             }]
           };
           this.$axios

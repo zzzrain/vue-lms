@@ -1,5 +1,5 @@
 <template>
-  <Form ref="loginForm" :model="loginForm" :rules="rules">
+  <Form ref="loginForm" :model="loginForm" :rules="rules" style="position: relative;">
     <Form-item prop="username">
       <Input v-model="loginForm.username" placeholder="请输入用户名" >
         <span slot="prepend">
@@ -14,6 +14,12 @@
         </span>
       </Input>
     </Form-item>
+    <Form-item label="验证码" :label-width="60" style="width: 132px;" prop="staticCode">
+      <Input v-model="loginForm.staticCode"></Input>
+    </Form-item>
+    <Form-item class="img-code" style="width: 110px;position: absolute;bottom: 10px;right: 10px;">
+      <img :src="codeImg" @click="getCodeImage" alt="验证码">
+    </Form-item>
     <Form-item>
       <Button type="primary" @click="handleSubmit" long>登录</Button>
     </Form-item>
@@ -23,35 +29,22 @@
 <script>
 export default {
   data () {
-    const validateUsername = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请输入用户名'));
-      } else {
-        callback();
-      }
-    };
-    const validatePassword = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请输入密码'));
-      } else {
-        callback();
-      }
-    };
-
     return {
       loginForm: {
         username: 'super_admin',
-        password: ''
+        password: '',
+        staticCode: ''
       },
       rules: {
-        username: [
-          {validator: validateUsername, trigger: 'blur'}
-        ],
-        password: [
-          {validator: validatePassword, trigger: 'blur'}
-        ]
-      }
+        username: { required: true, message: '请输入用户名', trigger: 'blur' },
+        password: { required: true, message: '请输入密码', trigger: 'blur' },
+        staticCode: { required: true, message: '请输入验证码', trigger: 'blur' }
+      },
+      codeImg: ''
     };
+  },
+  mounted () {
+    this.getCodeImage();
   },
   methods: {
     handleSubmit () {
@@ -59,9 +52,9 @@ export default {
         if (valid) {
           this.$axios
             .post('/api/lms/admin/user/login', {
-              account: this.loginForm.username,
-              userPwd: this.loginForm.password,
-              staticCode: 1234
+              userAccount: this.loginForm.username,
+              userPass: this.loginForm.password,
+              staticCode: this.loginForm.staticCode
             })
             .then(res => console.log(res))
             .catch(error => console.log(error));
@@ -71,6 +64,9 @@ export default {
           this.$Message.error('表单验证失败!');
         }
       });
+    },
+    getCodeImage () {
+      this.codeImg = '/api/admin/static_code/getCodeImage';
     }
   }
 };

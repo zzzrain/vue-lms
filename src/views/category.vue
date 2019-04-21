@@ -217,10 +217,10 @@ export default {
           this.$axios
             .post('/api/lms/admin/category/updateCategory', {
               id: this.altCategory.id,
-              categoryName: this.altCategory.name,
-              categoryLevel: this.altCategory.level,
-              createTime: new Date().getTime(),
-              status: this.altCategory.status
+              categoryName: this.altCategory.name
+              // categoryLevel: this.altCategory.level,
+              // createTime: new Date().getTime(),
+              // status: this.altCategory.status
             })
             .then(res => {
               if (res.data.code === '20000') {
@@ -236,9 +236,9 @@ export default {
       this.$axios
         .post('/api/lms/admin/category/updateCategory', {
           id: this.altCategory.id,
-          categoryName: this.altCategory.name,
-          categoryLevel: this.altCategory.level,
-          createTime: new Date().getTime(),
+          // categoryName: this.altCategory.name,
+          // categoryLevel: this.altCategory.level,
+          // createTime: new Date().getTime(),
           status
         })
         .then(res => {
