@@ -1,7 +1,7 @@
 <template>
   <div class="avatar-cont mb20">
     <div class="user-avatar-dropdown">
-      <Dropdown>
+      <Dropdown @on-click="logout">
         <Badge>
           <Avatar/>
         </Badge>
@@ -16,6 +16,18 @@
 
 <script>
 export default {
+  methods: {
+    logout () {
+      this.$axios
+        .post('/api/lms/admin/user/loginout')
+        .then(res => {
+          if (res.data.code === '20000') {
+            this.$router.push({ path: '/' });
+          }
+        })
+        .catch(error => console.log(error));
+    }
+  }
 };
 </script>
 

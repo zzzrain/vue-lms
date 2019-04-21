@@ -56,10 +56,12 @@ export default {
               userPass: this.loginForm.password,
               staticCode: this.loginForm.staticCode
             })
-            .then(res => console.log(res))
+            .then(res => {
+              if (res.data.code === '20000') {
+                this.$router.push({ path: '/home' });
+              }
+            })
             .catch(error => console.log(error));
-          this.$router.push({ path: '/home' });
-          this.$Message.success('提交成功!');
         } else {
           this.$Message.error('表单验证失败!');
         }
