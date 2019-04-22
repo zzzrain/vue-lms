@@ -11,7 +11,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable:{
       '/api': {
-        target : 'http://47.105.154.121:9128',
+        target : 'http://www.lmsxo.com:9128',
         changeOrigin : true,   //允许跨域
         pathRewrite : {
           '^/api': '/'

@@ -143,9 +143,9 @@ export default {
           pageSize: 10
         })
         .then(res => {
+          // console.log(res.data.data.list);
           const data = res.data && res.data.data;
           const dataList = data.list || [];
-          // console.log(res.data.data.list);
           if (res.data.code === '20000') {
             this.total = data.total;
             dataList.forEach(ele => {
