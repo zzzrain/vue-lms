@@ -13,35 +13,59 @@
       <Form-item label="输入框" class="form-item">
         <Input placeholder="请输入"></Input>
       </Form-item>
-    </Form >
-    <div class="addBanner mb20" style="text-align: left;">
-      <Button type="primary" @click="addPop = true">增加</Button>
+    </Form>
+    <div class="addGoods mb20" style="text-align: left;">
+      <Button type="primary" @click="userPop">新增</Button>
       <Modal
         v-model="addPop"
-        title="新增类目"
-        @on-ok="updateSubmitAdd"
-        @on-cancel="cancel">
-        <Form abel-position="left" :label-width="50" ref="addCategory" :model="addCategory" :rules="rules">
-          <Form-item label="名称" prop="name">
-            <Input placeholder="请输入" v-model="addCategory.name"></Input>
+        title="新增用户"
+        width="400"
+        @on-ok="addUser">
+        <Form abel-position="left" :label-width="60" ref="userForm" :model="userForm" :rules="rules">
+          <Form-item label="用户名" prop="userName">
+            <Input placeholder="请输入" v-model="userForm.userName"></Input>
           </Form-item>
-          <Form-item label="等级" prop="level">
-            <Select placeholder="请选择" v-model="addCategory.level">
-              <Option value="1">一级</Option>
+          <Form-item label="密码" prop="userPassword">
+            <Input placeholder="请输入" v-model="userForm.userPassword"></Input>
+          </Form-item>
+          <Form-item label="手机号" prop="mobile">
+            <Input placeholder="请输入" v-model="userForm.mobile"></Input>
+          </Form-item>
+          <Form-item label="角色" prop="roleId">
+            <Select placeholder="请选择" v-model="userForm.roleId">
+              <Option value="1">采购员</Option>
+              <Option value="2">代理商</Option>
+              <Option value="3">业务员</Option>
+              <Option value="4">财务员</Option>
+              <Option value="5">仓管员</Option>
+              <Option value="6">发货员</Option>
             </Select>
           </Form-item>
         </Form >
       </Modal>
       <Modal
         v-model="altPop"
-        title="修改类目"
-        @on-ok="updateSubmitAlt"
-        @on-cancel="cancel">
-        <Form label-position="left" :label-width="50" ref="altCategory" :model="altCategory" :rules="rules">
-          <Form-item label="名称" prop="name">
-            <Input placeholder="请输入" v-model="altCategory.name"></Input>
+        title="修改信息"
+        width="400"
+        @on-ok="altUser">
+        <Form abel-position="left" :label-width="60" ref="userForm" :model="userForm" :rules="rules">
+          <Form-item label="用户名" prop="userName">
+            <Input placeholder="请输入" v-model="userForm.userName"></Input>
           </Form-item>
-        </Form>
+          <Form-item label="手机号" prop="mobile">
+            <Input placeholder="请输入" v-model="userForm.mobile"></Input>
+          </Form-item>
+          <Form-item label="角色" prop="roleId">
+            <Select placeholder="请选择" v-model="userForm.roleId">
+              <Option value="1">采购员</Option>
+              <Option value="2">代理商</Option>
+              <Option value="3">业务员</Option>
+              <Option value="4">财务员</Option>
+              <Option value="5">仓管员</Option>
+              <Option value="6">发货员</Option>
+            </Select>
+          </Form-item>
+        </Form >
       </Modal>
     </div>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
@@ -55,63 +79,59 @@
 
 <script>
 import common from '@/common/common.js';
-import FileUpload from '@/components/FileUpload';
 
 export default {
-  components: {
-    FileUpload
-  },
   data () {
     return {
       total: 1,
       addPop: false,
       altPop: false,
-      imgSrc: '',
       self: this,
       cols: [],
       rows: [],
-      addCategory: {
-        name: '',
-        level: ''
-      },
-      altCategory: {
+      userForm: {
         id: '',
-        name: '',
-        level: '',
-        status: ''
+        roleId: '1',
+        userName: '',
+        userPassword: '',
+        mobile: ''
       },
       rules: {
-        name: [
+        userName: [
           { required: true, message: '请输入名称', trigger: 'blur' }
         ],
-        level: [
-          { required: true, message: '请选择等级', trigger: 'change' }
+        userPassword: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
         ]
       }
     };
   },
   mounted () {
     let vm = this;
-    this.categoryList();
+    this.userList();
     this.cols = [
       {
         title: 'id',
         key: 'id'
       },
       {
-        title: '名称',
-        key: 'categoryName'
+        title: '用户角色',
+        key: 'roleId'
       },
       {
-        title: '等级',
-        key: 'categoryLevel'
+        title: '用户名',
+        key: 'userName'
+      },
+      {
+        title: '联系电话',
+        key: 'mobile'
       },
       {
         title: '状态',
         key: 'status'
       },
       {
-        title: '修改时间',
+        title: '创建时间',
         key: 'createTime'
       },
       {
@@ -133,8 +153,9 @@ export default {
               },
               on: {
                 click: function () {
-                  vm.altCategory.id = params.row.id;
-                  vm.altCategory.name = params.row.categoryName;
+                  vm.userForm.id = params.row.id;
+                  vm.userForm.userName = params.row.userName;
+                  vm.userForm.mobile = params.row.mobile;
                   vm.altPop = true;
                 }
               }
@@ -149,8 +170,8 @@ export default {
               },
               on: {
                 click: function () {
-                  vm.altCategory.id = params.row.id;
-                  vm.altCategory.status = params.row.status;
+                  vm.userForm.id = params.row.id;
+                  vm.userForm.status = params.row.status;
                   vm.updateSubmitStatus(function () {
                     params.row.status = btn;
                   });
@@ -165,26 +186,26 @@ export default {
   },
   methods: {
     changePage (page) {
-      this.categoryList(page);
+      this.userList(page);
     },
-    categoryList (pageNum) {
+    userList (pageNum) {
       this.$axios
-        .post('/api/lms/admin/category/categoryList', {
+        .post('/api/lms/admin/user/userList', {
           pageNum: pageNum || 1,
           pageSize: 10
         })
         .then(res => {
+          // console.log(res.data.data.list);
           const data = res.data && res.data.data;
           const dataList = data.list || [];
-          // console.log(res.data.data.list);
           if (res.data.code === '20000') {
             this.total = data.total;
             dataList.forEach(ele => {
               this.rows.push({
                 id: ele.id,
-                categoryName: ele.categoryName,
-                categoryLevel: ele.categoryLevel,
-                status: common.state(ele.status),
+                roleId: common.role(ele.roleId),
+                userName: ele.userName,
+                mobile: ele.mobile,
                 createTime: common.format(ele.createTime)
               });
             });
@@ -192,15 +213,19 @@ export default {
         })
         .catch(error => console.log(error));
     },
-    updateSubmitAdd () {
-      this.$refs.addCategory.validate((valid) => {
+    userPop () {
+      this.addPop = true;
+      this.$refs.userForm.resetFields();
+    },
+    addUser () {
+      this.$refs.userForm.validate((valid) => {
         if (valid) {
           this.$axios
-            .post('/api/lms/admin/category/updateCategory', {
-              categoryName: this.addCategory.name,
-              categoryLevel: this.addCategory.level,
-              createTime: new Date().getTime(),
-              status: 0
+            .post('/api/lms/admin/user/addUser', {
+              userName: this.userForm.userName,
+              userPassword: this.userForm.userPassword,
+              mobile: this.userForm.mobile,
+              roleId: parseInt(this.userForm.roleId)
             })
             .then(res => {
               if (res.data.code === '20000') {
@@ -211,16 +236,14 @@ export default {
         }
       });
     },
-    updateSubmitAlt () {
-      this.$refs.altCategory.validate((valid) => {
+    altUser () {
+      this.$refs.userForm.validate((valid) => {
         if (valid) {
           this.$axios
-            .post('/api/lms/admin/category/updateCategory', {
-              id: this.altCategory.id,
-              categoryName: this.altCategory.name
-              // categoryLevel: this.altCategory.level,
-              // createTime: new Date().getTime(),
-              // status: this.altCategory.status
+            .post('/api/lms/admin/user/updateUser', {
+              userName: this.userForm.userName,
+              mobile: this.userForm.mobile,
+              roleId: parseInt(this.userForm.roleId)
             })
             .then(res => {
               if (res.data.code === '20000') {
@@ -230,25 +253,7 @@ export default {
             .catch(error => console.log(error));
         }
       });
-    },
-    updateSubmitStatus (cb) {
-      let status = this.altCategory.status === '启用' ? 0 : 1;
-      this.$axios
-        .post('/api/lms/admin/category/updateCategory', {
-          id: this.altCategory.id,
-          // categoryName: this.altCategory.name,
-          // categoryLevel: this.altCategory.level,
-          // createTime: new Date().getTime(),
-          status
-        })
-        .then(res => {
-          if (res.data.code === '20000') {
-            cb();
-          }
-        })
-        .catch(error => console.log(error));
-    },
-    cancel () {}
+    }
   }
 };
 </script>

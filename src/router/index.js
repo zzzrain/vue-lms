@@ -10,6 +10,7 @@ import stock from '@/views/stock';
 import order from '@/views/order';
 import bill from '@/views/bill';
 import banner from '@/views/banner';
+import userList from '@/views/userList';
 
 Vue.use(Router);
 
@@ -31,6 +32,11 @@ export default new Router({
       redirect: 'home/category',
       component: Home,
       children: [
+        {
+          path: 'userList',
+          name: 'userList',
+          component: userList
+        },
         {
           path: 'category',
           name: 'category',

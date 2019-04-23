@@ -28,6 +28,33 @@ module.exports = {
     }
     return str;
   },
+  role (ele) {
+    let role = '';
+    switch (ele) {
+      case 1 :
+        role = '采购员';
+        break;
+      case 2 :
+        role = '代理商';
+        break;
+      case 3 :
+        role = '业务员';
+        break;
+      case 4 :
+        role = '财务员';
+        break;
+      case 5 :
+        role = '仓管员';
+        break;
+      case 6 :
+        role = '发货员';
+        break;
+      default:
+        role = '未知';
+        break;
+    }
+    return role;
+  },
   state (ele) {
     let state = '';
     switch (ele) {

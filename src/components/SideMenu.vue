@@ -16,7 +16,7 @@
       <template slot="title">
         <Icon type="ios-people"></Icon> 用户管理
       </template>
-      <Menu-item name="2-1">用户管理</Menu-item>
+      <router-link to="/home/userList"><Menu-item name="2-1">用户管理</Menu-item></router-link>
       <Menu-item name="2-2">角色管理</Menu-item>
     </Submenu>
   </Menu>
