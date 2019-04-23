@@ -215,6 +215,13 @@ export default {
     },
     userPop () {
       this.addPop = true;
+      this.userForm = {
+        id: '',
+        roleId: '1',
+        userName: '',
+        userPassword: '',
+        mobile: ''
+      };
       this.$refs.userForm.resetFields();
     },
     addUser () {

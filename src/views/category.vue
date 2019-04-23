@@ -14,34 +14,23 @@
         <Input placeholder="请输入"></Input>
       </Form-item>
     </Form >
-    <div class="addBanner mb20" style="text-align: left;">
-      <Button type="primary" @click="addPop = true">增加</Button>
+    <div class="addCategory mb20" style="text-align: left;">
+      <Button type="primary" @click="categoryPop">增加</Button>
       <Modal
         v-model="addPop"
-        title="新增类目"
-        @on-ok="updateSubmitAdd"
+        @on-ok="updateSubmit"
         @on-cancel="cancel">
-        <Form abel-position="left" :label-width="50" ref="addCategory" :model="addCategory" :rules="rules">
+        <p slot="header">{{ handle }}</p>
+        <Form abel-position="left" :label-width="50" ref="categoryForm" :model="categoryForm" :rules="rules">
           <Form-item label="名称" prop="name">
-            <Input placeholder="请输入" v-model="addCategory.name"></Input>
+            <Input placeholder="请输入" v-model="categoryForm.name"></Input>
           </Form-item>
           <Form-item label="等级" prop="level">
-            <Select placeholder="请选择" v-model="addCategory.level">
+            <Select placeholder="请选择" v-model="categoryForm.level">
               <Option value="1">一级</Option>
             </Select>
           </Form-item>
         </Form >
-      </Modal>
-      <Modal
-        v-model="altPop"
-        title="修改类目"
-        @on-ok="updateSubmitAlt"
-        @on-cancel="cancel">
-        <Form label-position="left" :label-width="50" ref="altCategory" :model="altCategory" :rules="rules">
-          <Form-item label="名称" prop="name">
-            <Input placeholder="请输入" v-model="altCategory.name"></Input>
-          </Form-item>
-        </Form>
       </Modal>
     </div>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
@@ -64,17 +53,13 @@ export default {
   data () {
     return {
       total: 1,
+      handle: '新增类目',
       addPop: false,
-      altPop: false,
       imgSrc: '',
       self: this,
       cols: [],
       rows: [],
-      addCategory: {
-        name: '',
-        level: ''
-      },
-      altCategory: {
+      categoryForm: {
         id: '',
         name: '',
         level: '',
@@ -133,9 +118,11 @@ export default {
               },
               on: {
                 click: function () {
-                  vm.altCategory.id = params.row.id;
-                  vm.altCategory.name = params.row.categoryName;
-                  vm.altPop = true;
+                  vm.categoryForm.id = params.row.id;
+                  vm.categoryForm.status = params.row.status;
+                  vm.categoryForm.name = params.row.categoryName;
+                  vm.addPop = true;
+                  vm.handle = '修改类目';
                 }
               }
             }, '修改'),
@@ -149,9 +136,10 @@ export default {
               },
               on: {
                 click: function () {
-                  vm.altCategory.id = params.row.id;
-                  vm.altCategory.status = params.row.status;
-                  vm.updateSubmitStatus(function () {
+                  vm.categoryForm.id = params.row.id;
+                  vm.categoryForm.status = params.row.status;
+                  vm.categoryForm.name = params.row.categoryName;
+                  vm.updateSubmit(function () {
                     params.row.status = btn;
                   });
                 }
@@ -192,58 +180,44 @@ export default {
         })
         .catch(error => console.log(error));
     },
-    updateSubmitAdd () {
-      this.$refs.addCategory.validate((valid) => {
-        if (valid) {
-          this.$axios
-            .post('/api/lms/admin/category/updateCategory', {
-              categoryName: this.addCategory.name,
-              categoryLevel: this.addCategory.level,
-              createTime: new Date().getTime(),
-              status: 0
-            })
-            .then(res => {
-              if (res.data.code === '20000') {
-                this.$Message.info('新增成功');
-              }
-            })
-            .catch(error => console.log(error));
-        }
-      });
+    categoryPop () {
+      this.addPop = true;
+      this.categoryForm = {
+        id: '',
+        name: '',
+        level: '',
+        status: ''
+      };
+      this.$refs.categoryForm.resetFields();
     },
-    updateSubmitAlt () {
-      this.$refs.altCategory.validate((valid) => {
-        if (valid) {
-          this.$axios
-            .post('/api/lms/admin/category/updateCategory', {
-              id: this.altCategory.id,
-              categoryName: this.altCategory.name
-              // categoryLevel: this.altCategory.level,
-              // createTime: new Date().getTime(),
-              // status: this.altCategory.status
-            })
-            .then(res => {
-              if (res.data.code === '20000') {
-                this.$Message.info('修改成功');
-              }
-            })
-            .catch(error => console.log(error));
-        }
-      });
+    updateSubmit (cb) {
+      if (this.addPop) {
+        this.$refs.categoryForm.validate((valid) => {
+          if (valid) {
+            this.updateAjax();
+          }
+        });
+      } else {
+        this.updateAjax(cb);
+      }
     },
-    updateSubmitStatus (cb) {
-      let status = this.altCategory.status === '启用' ? 0 : 1;
+    updateAjax (cb) {
+      let data = {
+        categoryName: this.categoryForm.name
+      };
+      if (this.categoryForm.id) {
+        data.status = this.categoryForm.status === '启用' ? 0 : 1;
+        data.id = this.categoryForm.id;
+      } else {
+        data.status = 1;
+        data.categoryLevel = this.categoryForm.level;
+      }
       this.$axios
-        .post('/api/lms/admin/category/updateCategory', {
-          id: this.altCategory.id,
-          // categoryName: this.altCategory.name,
-          // categoryLevel: this.altCategory.level,
-          // createTime: new Date().getTime(),
-          status
-        })
+        .post('/api/lms/admin/category/updateCategory', data)
         .then(res => {
           if (res.data.code === '20000') {
-            cb();
+            this.$Message.info('新增成功');
+            cb && cb();
           }
         })
         .catch(error => console.log(error));
