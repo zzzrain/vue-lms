@@ -184,43 +184,43 @@ export default {
         .catch(error => console.log(error));
     },
     handleSubmit (name) {
-      console.log(this.$refs.upload.fileList);
-      // this.$refs[name].validate((valid) => {
-      //   if (valid) {
-      //     let formItem = this.formItem;
-      //     let data = {
-      //       // goodsId: 0,
-      //       goodsName: formItem.goodsName,
-      //       categoryId: formItem.categoryId,
-      //       goodsDesc: formItem.goodsDesc,
-      //       status: 1,
-      //       // createTime: new Date().getTime(),
-      //       goodsImg: this.imgItem.uploadList[0].url,
-      //       skuInfos: [{
-      //         buyNum: 1,
-      //         agentPrice: parseInt(formItem.agentPrice),
-      //         limitAgentPrice: parseInt(formItem.limitAgentPrice),
-      //         purchaserPrice: parseInt(formItem.purchaserPrice),
-      //         repertoryNum: 999,
-      //         repertoryUnit: parseInt(formItem.repertoryUnit),
-      //         skuId: 1,
-      //         skuPrice: parseInt(formItem.skuPrice),
-      //         skuName: 'skuName',
-      //         skuUnit: parseInt(formItem.skuUnit)
-      //       }]
-      //     };
-      //     this.$axios
-      //       .post('/api/lms/admin/goods/publishGoods', data)
-      //       .then(res => {
-      //         // const data = res.data && res.data.data;
-      //         // const dataList = data.list || [];
-      //         // console.log(res.data.data.list);
-      //         if (res.data.code === '20000') {
-      //         }
-      //       })
-      //       .catch(error => console.log(error));
-      //   }
-      // });
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          let formItem = this.formItem;
+          let data = {
+            // goodsId: 0,
+            goodsName: formItem.goodsName,
+            categoryId: formItem.categoryId,
+            goodsDesc: formItem.goodsDesc,
+            status: 1,
+            // createTime: new Date().getTime(),
+            goodsImg: this.imgItem.uploadList[0].url,
+            skuInfos: [{
+              buyNum: 1,
+              agentPrice: parseInt(formItem.agentPrice),
+              limitAgentPrice: parseInt(formItem.limitAgentPrice),
+              purchaserPrice: parseInt(formItem.purchaserPrice),
+              repertoryNum: 999,
+              repertoryUnit: parseInt(formItem.repertoryUnit),
+              skuId: 1,
+              skuPrice: parseInt(formItem.skuPrice),
+              skuName: 'skuName',
+              skuUnit: parseInt(formItem.skuUnit)
+            }]
+          };
+          console.log(data);
+          this.$axios
+            .post('/api/lms/admin/goods/publishGoods', data)
+            .then(res => {
+              // const data = res.data && res.data.data;
+              // const dataList = data.list || [];
+              // console.log(res.data.data.list);
+              if (res.data.code === '20000') {
+              }
+            })
+            .catch(error => console.log(error));
+        }
+      });
     },
     handleReset (name) {
       this.$refs[name].resetFields();

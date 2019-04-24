@@ -21,10 +21,10 @@ module.exports = {
     minute = minute < 10 ? '0' + minute : minute;
     second = second < 10 ? '0' + second : second;
     let str = '';
-    if (format === 'HMS') {
-      str = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
-    } else {
+    if (format === 'YMD') {
       str = year + '-' + month + '-' + day;
+    } else {
+      str = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
     }
     return str;
   },

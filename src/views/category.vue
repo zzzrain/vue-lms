@@ -15,7 +15,7 @@
       </Form-item>
     </Form >
     <div class="addCategory mb20" style="text-align: left;">
-      <Button type="primary" @click="categoryPop">增加</Button>
+      <Button type="primary" @click="categoryPop">新增</Button>
       <Modal
         v-model="addPop"
         @on-ok="updateSubmit"

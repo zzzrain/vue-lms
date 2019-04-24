@@ -65,6 +65,24 @@
               <Option value="6">发货员</Option>
             </Select>
           </Form-item>
+          <Form-item label="证件号码" prop="certificateNo">
+            <Input placeholder="请输入" v-model="userForm.certificateNo"></Input>
+          </Form-item>
+          <Form-item prop="">
+            <Upload
+              :show-upload-list="false"
+              :format="['jpg','jpeg','png']"
+              :max-size="2048"
+              :on-success="handleSuccess"
+              action="/api/lms/admin/fileUpload/uploadFile?isThumb=1&isImage=true">
+              <Button icon="ios-cloud-upload-outline" style="width: 100px;">上传文件</Button>
+            </Upload>
+            <div class="mt20 oh" v-for="item in imgItem" :key="item.id">
+              <template v-if="item.status === 'finished'">
+                <img :src="item.url" alt="图片详情" style="width: 400px;">
+              </template>
+            </div>
+          </Form-item>
         </Form >
       </Modal>
     </div>
@@ -94,7 +112,8 @@ export default {
         roleId: '1',
         userName: '',
         userPassword: '',
-        mobile: ''
+        mobile: '',
+        certificateNo: ''
       },
       rules: {
         userName: [
@@ -103,7 +122,8 @@ export default {
         userPassword: [
           { required: true, message: '请输入密码', trigger: 'blur' }
         ]
-      }
+      },
+      imgItem: []
     };
   },
   mounted () {
@@ -139,9 +159,6 @@ export default {
         key: 'action',
         align: 'center',
         render: (h, params) => {
-          let status = params.row.status;
-          let type = status === '启用' ? 'error' : 'success';
-          let btn = status === '启用' ? '停用' : '启用';
           return h('div', [
             h('Button', {
               props: {
@@ -162,7 +179,7 @@ export default {
             }, '修改'),
             h('Button', {
               props: {
-                type,
+                type: 'warning',
                 size: 'small'
               },
               style: {
@@ -170,19 +187,15 @@ export default {
               },
               on: {
                 click: function () {
-                  vm.userForm.id = params.row.id;
-                  vm.userForm.status = params.row.status;
-                  vm.updateSubmitStatus(function () {
-                    params.row.status = btn;
-                  });
                 }
               }
-            }, btn)
+            }, '详情')
           ]);
         }
       }
     ];
     this.rows = [];
+    this.imgItem = this.$refs.upload.fileList;
   },
   methods: {
     changePage (page) {
@@ -250,16 +263,23 @@ export default {
             .post('/api/lms/admin/user/updateUser', {
               userName: this.userForm.userName,
               mobile: this.userForm.mobile,
-              roleId: parseInt(this.userForm.roleId)
+              roleId: parseInt(this.userForm.roleId),
+              certificateNo: this.userForm.certificateNo,
+              certificateUrl: this.$refs.upload.fileList[0].url
             })
             .then(res => {
               if (res.data.code === '20000') {
                 this.$Message.info('修改成功');
+                this.userList();
               }
             })
             .catch(error => console.log(error));
         }
       });
+    },
+    handleSuccess (res, file) {
+      file.url = res.data.url;
+      file.name = res.data.url;
     }
   }
 };
