@@ -31,16 +31,16 @@
           <Form-item label="手机号" prop="mobile">
             <Input placeholder="请输入" v-model="userForm.mobile"></Input>
           </Form-item>
-          <Form-item label="角色" prop="roleId">
-            <Select placeholder="请选择" v-model="userForm.roleId">
-              <Option value="1">采购员</Option>
-              <Option value="2">代理商</Option>
-              <Option value="3">业务员</Option>
-              <Option value="4">财务员</Option>
-              <Option value="5">仓管员</Option>
-              <Option value="6">发货员</Option>
-            </Select>
-          </Form-item>
+          <!--<Form-item label="角色" prop="roleId">-->
+            <!--<Select placeholder="请选择" v-model="userForm.roleId">-->
+              <!--<Option value="1">采购员</Option>-->
+              <!--<Option value="2">代理商</Option>-->
+              <!--<Option value="3">业务员</Option>-->
+              <!--<Option value="4">财务员</Option>-->
+              <!--<Option value="5">仓管员</Option>-->
+              <!--<Option value="6">发货员</Option>-->
+            <!--</Select>-->
+          <!--</Form-item>-->
         </Form >
       </Modal>
       <Modal
@@ -65,32 +65,30 @@
               <Option value="6">发货员</Option>
             </Select>
           </Form-item>
-          <Form-item label="证件号码" prop="certificateNo">
-            <Input placeholder="请输入" v-model="userForm.certificateNo"></Input>
+          <Form-item label="证件" prop="certificateNo">
+            <Input placeholder="请输入证件号码" v-model="userForm.certificateNo"></Input>
           </Form-item>
-          <Form-item prop="">
+          <Form-item>
             <Upload
+              ref="upload"
               :show-upload-list="false"
               :format="['jpg','jpeg','png']"
               :max-size="2048"
               :on-success="handleSuccess"
               action="/api/lms/admin/fileUpload/uploadFile?isThumb=1&isImage=true">
-              <Button icon="ios-cloud-upload-outline" style="width: 100px;">上传文件</Button>
+              <div v-if="userForm.certificateUrl" class="img-wrap oh">
+                <img :src="userForm.certificateUrl" alt="图片详情" style="height: 150px;">
+              </div>
+              <div v-else class="img-wrap mt20 oh">
+              </div>
             </Upload>
-            <div class="mt20 oh" v-for="item in imgItem" :key="item.id">
-              <template v-if="item.status === 'finished'">
-                <img :src="item.url" alt="图片详情" style="width: 400px;">
-              </template>
-            </div>
           </Form-item>
         </Form >
       </Modal>
     </div>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
-    <div class="oh">
-      <div class="fr">
-        <Page :total="total" show-elevator @on-change="changePage"></Page>
-      </div>
+    <div class="fr">
+      <Page :total="total" show-elevator @on-change="changePage"></Page>
     </div>
   </div>
 </template>
@@ -107,13 +105,15 @@ export default {
       self: this,
       cols: [],
       rows: [],
+      // 若带上默认值，ajax请求后不能双向改变数据
       userForm: {
         id: '',
-        roleId: '1',
+        roleId: '',
         userName: '',
         userPassword: '',
         mobile: '',
-        certificateNo: ''
+        certificateNo: '',
+        certificateUrl: ''
       },
       rules: {
         userName: [
@@ -121,9 +121,11 @@ export default {
         ],
         userPassword: [
           { required: true, message: '请输入密码', trigger: 'blur' }
+        ],
+        certificateNo: [
+          { required: true, message: '请输证件号', trigger: 'blur' }
         ]
-      },
-      imgItem: []
+      }
     };
   },
   mounted () {
@@ -159,6 +161,7 @@ export default {
         key: 'action',
         align: 'center',
         render: (h, params) => {
+          let id = params.row.id;
           return h('div', [
             h('Button', {
               props: {
@@ -170,10 +173,7 @@ export default {
               },
               on: {
                 click: function () {
-                  vm.userForm.id = params.row.id;
-                  vm.userForm.userName = params.row.userName;
-                  vm.userForm.mobile = params.row.mobile;
-                  vm.altPop = true;
+                  vm.userDetail(id);
                 }
               }
             }, '修改'),
@@ -195,7 +195,6 @@ export default {
       }
     ];
     this.rows = [];
-    this.imgItem = this.$refs.upload.fileList;
   },
   methods: {
     changePage (page) {
@@ -219,9 +218,32 @@ export default {
                 roleId: common.role(ele.roleId),
                 userName: ele.userName,
                 mobile: ele.mobile,
+                status: common.state(ele.status),
                 createTime: common.format(ele.createTime)
               });
             });
+          }
+        })
+        .catch(error => console.log(error));
+    },
+    userDetail (id) {
+      this.$axios
+        .post(`/api/lms/admin/user/userDetail`, {
+          userId: id
+        })
+        .then(res => {
+          const data = res.data && res.data.data;
+          if (res.data.code === '20000') {
+            this.userForm = {
+              id: data.id,
+              roleId: data.roleId.toString(),
+              userName: data.userName,
+              mobile: data.mobile,
+              certificateNo: data.certificateNo,
+              certificateUrl: data.certificateUrl
+            };
+            console.log(this.userForm);
+            this.altPop = true;
           }
         })
         .catch(error => console.log(error));
@@ -230,10 +252,12 @@ export default {
       this.addPop = true;
       this.userForm = {
         id: '',
-        roleId: '1',
+        roleId: '',
         userName: '',
         userPassword: '',
-        mobile: ''
+        mobile: '',
+        certificateNo: '',
+        certificateUrl: ''
       };
       this.$refs.userForm.resetFields();
     },
@@ -244,8 +268,8 @@ export default {
             .post('/api/lms/admin/user/addUser', {
               userName: this.userForm.userName,
               userPassword: this.userForm.userPassword,
-              mobile: this.userForm.mobile,
-              roleId: parseInt(this.userForm.roleId)
+              mobile: this.userForm.mobile
+              // roleId: parseInt(this.userForm.roleId)
             })
             .then(res => {
               if (res.data.code === '20000') {
@@ -261,11 +285,12 @@ export default {
         if (valid) {
           this.$axios
             .post('/api/lms/admin/user/updateUser', {
+              id: this.userForm.id,
               userName: this.userForm.userName,
               mobile: this.userForm.mobile,
               roleId: parseInt(this.userForm.roleId),
               certificateNo: this.userForm.certificateNo,
-              certificateUrl: this.$refs.upload.fileList[0].url
+              certificateUrl: this.userForm.certificateUrl
             })
             .then(res => {
               if (res.data.code === '20000') {
@@ -277,9 +302,20 @@ export default {
         }
       });
     },
-    handleSuccess (res, file) {
-      file.url = res.data.url;
-      file.name = res.data.url;
+    handleSuccess (res) {
+      this.userForm.certificateUrl = res.data.url;
+    },
+    handleFormatError (file) {
+      this.$Notice.warning({
+        title: '文件格式不正确',
+        desc: '文件 ' + file.name + ' 格式不正确，请上传 jpg 或 png 格式的图片。'
+      });
+    },
+    handleMaxSize (file) {
+      this.$Notice.warning({
+        title: '超出文件大小限制',
+        desc: '文件 ' + file.name + ' 太大，不能超过 2M。'
+      });
     }
   }
 };
@@ -290,5 +326,11 @@ export default {
     float: left;
     width: 24%;
     padding-right: 30px;
+  }
+  .img-wrap {
+    width: 270px;
+    height: 150px;
+    text-align: center;
+    border: #dcdcdc 1px solid;
   }
 </style>

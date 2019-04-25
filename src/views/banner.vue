@@ -15,7 +15,7 @@
       </Form-item>
     </Form>
     <div class="addBanner mb20" style="text-align: left;">
-      <Button type="primary" @click="addPop = true">增加</Button>
+      <Button type="primary" @click="bannerPop">新增</Button>
       <Modal
         style="position: relative;"
         v-model="addPop"
@@ -23,12 +23,12 @@
         @on-ok="bannerAdd">
         <div class="upload-select" style="position: absolute;top: 66px;left: 140px;">
           <span>选择位置：</span>
-          <Select v-model="bannerPosition" style="width: 100px;margin-right: 10px">
+          <Select v-model="bannerForm.bannerPosition" style="width: 100px;margin-right: 10px">
             <Option value="1">登录页面</Option>
             <Option value="2">采购主页</Option>
           </Select>
           <span>优先级：</span>
-          <Select v-model="sort" style="width: 100px;">
+          <Select v-model="bannerForm.sort" style="width: 100px;">
             <Option value="1">A</Option>
             <Option value="2">B</Option>
             <Option value="3">C</Option>
@@ -43,55 +43,20 @@
           action="/api/lms/admin/fileUpload/uploadFile">
           <Button icon="ios-cloud-upload-outline" style="width: 100px;">上传文件</Button>
         </Upload>
-        <div class="mt20 oh" v-for="item in imgItem" :key="item.id">
-          <template v-if="item.status === 'finished'">
-            <img :src="item.url" alt="图片详情" style="width: 400px;">
-          </template>
+        <div v-if="bannerForm.filePath" class="img-wrap">
+          <img :src="bannerForm.filePath" alt="图片详情" style="height: 150px;">
         </div>
-      </Modal>
-      <Modal
-        style="position: relative;"
-        v-model="altPop"
-        title="广告图片上传"
-        @on-ok="bannerAlt">
-        <div class="upload-select" style="position: absolute;top: 66px;left: 140px;">
-          <span>选择位置：</span>
-          <Select v-model="bannerPosition" style="width: 100px;margin-right: 10px">
-            <Option value="1">登录页面</Option>
-            <Option value="2">采购主页</Option>
-          </Select>
-          <span>优先级：</span>
-          <Select v-model="sort" style="width: 100px;">
-            <Option value="1">A</Option>
-            <Option value="2">B</Option>
-            <Option value="3">C</Option>
-          </Select>
-        </div>
-        <Upload
-          :show-upload-list="false"
-          :format="['jpg','jpeg','png']"
-          :max-size="2048"
-          :on-success="handleSuccess"
-          action="/api/lms/admin/fileUpload/uploadFile?isThumb=1&isImage=true">
-          <Button icon="ios-cloud-upload-outline" style="width: 100px;">上传文件</Button>
-        </Upload>
-        <div class="mt20 oh" v-for="item in imgItem" :key="item.id">
-          <template v-if="item.status === 'finished'">
-            <img :src="item.url" alt="图片详情" style="width: 400px;">
-          </template>
-        </div>
+        <div v-else class="img-wrap mt20 oh"></div>
       </Modal>
       <Modal
         v-model="picPop"
         title="图片详情">
-        <img :src="imgItem" alt="图片详情">
+        <img :src="bannerForm.filePath" alt="图片详情">
       </Modal>
     </div>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
-    <div class="oh">
-      <div class="fr">
-        <Page :total="total" show-elevator @on-change="changePage"></Page>
-      </div>
+    <div class="fr">
+      <Page :total="total" show-elevator @on-change="changePage"></Page>
     </div>
   </div>
 </template>
@@ -113,11 +78,13 @@ export default {
       self: this,
       cols: [],
       rows: [],
-      id: '',
-      status: 1,
-      sort: '1',
-      bannerPosition: '2',
-      imgItem: []
+      bannerForm: {
+        id: '',
+        status: '',
+        sort: '',
+        bannerPosition: '',
+        filePath: ''
+      }
     };
   },
   mounted () {
@@ -171,6 +138,7 @@ export default {
         align: 'center',
         render: (h, params) => {
           let vm = this;
+          let id = params.row.id;
           let status = params.row.status;
           let type = status === '启用' ? 'error' : 'success';
           let btn = status === '启用' ? '停用' : '启用';
@@ -185,11 +153,13 @@ export default {
               },
               on: {
                 click: function () {
+                  console.log(params.row);
                   let row = params.row;
-                  vm.id = row.id;
-                  vm.sort = common.sort(row.sort);
-                  vm.bannerPosition = common.bp(row.bannerPosition);
-                  vm.altPop = true;
+                  vm.bannerForm.id = row.id;
+                  vm.bannerForm.sort = common.sort(row.sort);
+                  vm.bannerForm.bannerPosition = common.bp(row.bannerPosition);
+                  vm.bannerForm.filePath = row.filePath;
+                  vm.addPop = true;
                 }
               }
             }, '修改'),
@@ -203,12 +173,12 @@ export default {
               },
               on: {
                 click: function () {
-                  console.log(params.row);
-                  vm.id = params.row.id;
-                  vm.status = params.row.status;
-                  vm.bannerStatus(function () {
+                  // console.log(params.row);
+                  vm.bannerForm.id = id;
+                  vm.bannerForm.status = status;
+                  vm.bannerAdd(function () {
                     params.row.status = btn;
-                  });
+                  }, true);
                 }
               }
             }, btn)
@@ -218,7 +188,6 @@ export default {
     ];
     this.rows = [];
     this.bannerList();
-    this.imgItem = this.$refs.upload.fileList;
   },
   methods: {
     changePage (page) {
@@ -249,53 +218,54 @@ export default {
         })
         .catch(error => console.log(error));
     },
-    bannerAdd () {
-      let data = {
-        filePath: this.$refs.upload.fileList[0].url,
-        operatorUserId: 3,
-        sizeDesc: '',
-        bannerPosition: parseInt(this.bannerPosition),
-        sort: parseInt(this.sort),
-        status: 1
+    bannerPop () {
+      this.addPop = true;
+      this.bannerForm = {
+        id: '',
+        roleId: '',
+        userName: '',
+        userPassword: '',
+        mobile: '',
+        certificateNo: '',
+        certificateUrl: ''
       };
+      this.$refs.userForm.resetFields();
+    },
+    bannerAdd (cb, alt) {
+      let bannerForm = this.bannerForm;
+      let status = bannerForm.status === '启用' ? 0 : 1;
+      let data = {};
+      if (alt) {
+        data = {
+          status
+        };
+      } else {
+        data = {
+          filePath: bannerForm.filePath,
+          operatorUserId: 3,
+          sizeDesc: '',
+          bannerPosition: parseInt(bannerForm.bannerPosition) || '2',
+          sort: parseInt(bannerForm.sort) || '1'
+        };
+      }
+      if (bannerForm.id) {
+        data.id = bannerForm.id;
+      }
       this.$axios
         .post('/api/lms/admin/banner/bannerUpdate', data)
         .then(res => {
-        })
-        .catch(error => console.log(error));
-    },
-    bannerAlt () {
-      console.log(this.$refs.upload.fileList);
-      // let data = {
-      //   id: this.id,
-      //   filePath: this.$refs.upload.fileList[0].url,
-      //   bannerPosition: parseInt(this.bannerPosition),
-      //   sort: parseInt(this.sort)
-      // };
-      // this.$axios
-      //   .post('/api/lms/admin/banner/bannerUpdate', data)
-      //   .then(res => {
-      //   })
-      //   .catch(error => console.log(error));
-    },
-    bannerStatus (cb) {
-      let status = this.status === '启用' ? 0 : 1;
-      console.log(this.id);
-      this.$axios
-        .post('/api/lms/admin/banner/bannerUpdate', {
-          id: this.id,
-          status
-        })
-        .then(res => {
           if (res.data.code === '20000') {
-            cb();
+            if (alt) {
+              cb && cb();
+            } else {
+              this.bannerList();
+            }
           }
         })
         .catch(error => console.log(error));
     },
-    handleSuccess (res, file) {
-      file.url = res.data.url;
-      file.name = res.data.url;
+    handleSuccess (res) {
+      this.bannerForm.filePath = res.data.url;
     }
   }
 };
@@ -306,5 +276,12 @@ export default {
     float: left;
     width: 24%;
     padding-right: 30px;
+  }
+  .img-wrap {
+    margin: 30px auto;
+    width: 300px;
+    height: 150px;
+    text-align: center;
+    border: #dcdcdc 1px solid;
   }
 </style>
