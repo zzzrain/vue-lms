@@ -274,12 +274,12 @@ export default {
     padding-right: 30px;
   }
   .img-wrap {
-    box-sizing: content-box;
     margin: 30px auto;
     padding: 5px 0;
     width: 300px;
     height: 150px;
     text-align: center;
     border: #dcdcdc 1px solid;
+    box-sizing: content-box;
   }
 </style>
