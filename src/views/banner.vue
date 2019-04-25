@@ -43,7 +43,7 @@
           action="/api/lms/admin/fileUpload/uploadFile">
           <Button icon="ios-cloud-upload-outline" style="width: 100px;">上传文件</Button>
         </Upload>
-        <div v-if="bannerForm.filePath" class="img-wrap">
+        <div v-if="bannerForm.filePath" class="img-wrap oh">
           <img :src="bannerForm.filePath" alt="图片详情" style="height: 150px;">
         </div>
         <div v-else class="img-wrap mt20 oh"></div>
@@ -105,7 +105,7 @@ export default {
                 alt: '广告图片'
               },
               style: {
-                width: '100px',
+                height: '100px',
                 margin: '5px'
               },
               on: {
@@ -233,19 +233,17 @@ export default {
     },
     bannerAdd (cb, alt) {
       let bannerForm = this.bannerForm;
-      let status = bannerForm.status === '启用' ? 0 : 1;
       let data = {};
       if (alt) {
-        data = {
-          status
-        };
+        data.status = bannerForm.status === '启用' ? 0 : 1;
       } else {
         data = {
           filePath: bannerForm.filePath,
           operatorUserId: 3,
           sizeDesc: '',
           bannerPosition: parseInt(bannerForm.bannerPosition) || '2',
-          sort: parseInt(bannerForm.sort) || '1'
+          sort: parseInt(bannerForm.sort) || '1',
+          status: 1
         };
       }
       if (bannerForm.id) {
@@ -255,10 +253,8 @@ export default {
         .post('/api/lms/admin/banner/bannerUpdate', data)
         .then(res => {
           if (res.data.code === '20000') {
-            if (alt) {
-              cb && cb();
-            } else {
-              this.bannerList();
+            cb && cb();
+            if (!alt) {
             }
           }
         })
@@ -278,7 +274,9 @@ export default {
     padding-right: 30px;
   }
   .img-wrap {
+    box-sizing: content-box;
     margin: 30px auto;
+    padding: 5px 0;
     width: 300px;
     height: 150px;
     text-align: center;

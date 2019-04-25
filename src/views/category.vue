@@ -59,6 +59,7 @@ export default {
       self: this,
       cols: [],
       rows: [],
+      itemIdx: '',
       categoryForm: {
         id: '',
         name: '',
@@ -118,10 +119,12 @@ export default {
               },
               on: {
                 click: function () {
+                  console.log(params.index);
                   vm.categoryForm.id = params.row.id;
                   vm.categoryForm.status = params.row.status;
                   vm.categoryForm.name = params.row.categoryName;
                   vm.addPop = true;
+                  vm.itemIdx = params.index;
                   vm.handle = '修改类目';
                 }
               }
@@ -141,7 +144,7 @@ export default {
                   vm.categoryForm.name = params.row.categoryName;
                   vm.updateSubmit(function () {
                     params.row.status = btn;
-                  });
+                  }, true);
                 }
               }
             }, btn)
@@ -153,6 +156,7 @@ export default {
   },
   methods: {
     changePage (page) {
+      this.rows = [];
       this.categoryList(page);
     },
     categoryList (pageNum) {
@@ -164,7 +168,6 @@ export default {
         .then(res => {
           const data = res.data && res.data.data;
           const dataList = data.list || [];
-          // console.log(res.data.data.list);
           if (res.data.code === '20000') {
             this.total = data.total;
             dataList.forEach(ele => {
@@ -185,12 +188,12 @@ export default {
       this.categoryForm = {
         id: '',
         name: '',
-        level: '',
+        level: '1',
         status: ''
       };
       this.$refs.categoryForm.resetFields();
     },
-    updateSubmit (cb) {
+    updateSubmit (cb, alt) {
       if (this.addPop) {
         this.$refs.categoryForm.validate((valid) => {
           if (valid) {
@@ -198,19 +201,18 @@ export default {
           }
         });
       } else {
-        this.updateAjax(cb);
+        this.updateAjax(cb, alt);
       }
     },
-    updateAjax (cb) {
+    updateAjax (cb, alt) {
       let data = {
-        categoryName: this.categoryForm.name
+        categoryName: this.categoryForm.name,
+        categoryLevel: this.categoryForm.level,
+        status: 1
       };
       if (this.categoryForm.id) {
-        data.status = this.categoryForm.status === '启用' ? 0 : 1;
         data.id = this.categoryForm.id;
-      } else {
-        data.status = 1;
-        data.categoryLevel = this.categoryForm.level;
+        data.status = this.categoryForm.status === '启用' ? 0 : 1;
       }
       this.$axios
         .post('/api/lms/admin/category/updateCategory', data)
@@ -218,6 +220,11 @@ export default {
           if (res.data.code === '20000') {
             this.$Message.info('新增成功');
             cb && cb();
+            if (!alt) {
+              let idx = this.itemIdx;
+              this.rows[idx].categoryName = this.categoryForm.name;
+              this.rows[idx].categoryLevel = this.categoryForm.level;
+            }
           }
         })
         .catch(error => console.log(error));

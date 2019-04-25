@@ -31,16 +31,16 @@
           <Form-item label="手机号" prop="mobile">
             <Input placeholder="请输入" v-model="userForm.mobile"></Input>
           </Form-item>
-          <!--<Form-item label="角色" prop="roleId">-->
-            <!--<Select placeholder="请选择" v-model="userForm.roleId">-->
-              <!--<Option value="1">采购员</Option>-->
-              <!--<Option value="2">代理商</Option>-->
-              <!--<Option value="3">业务员</Option>-->
-              <!--<Option value="4">财务员</Option>-->
-              <!--<Option value="5">仓管员</Option>-->
-              <!--<Option value="6">发货员</Option>-->
-            <!--</Select>-->
-          <!--</Form-item>-->
+          <Form-item label="角色" prop="roleId">
+            <Select placeholder="请选择" v-model="userForm.roleId">
+              <Option value="1">采购员</Option>
+              <Option value="2">代理商</Option>
+              <Option value="3">业务员</Option>
+              <Option value="4">财务员</Option>
+              <Option value="5">仓管员</Option>
+              <Option value="6">发货员</Option>
+            </Select>
+          </Form-item>
         </Form >
       </Modal>
       <Modal
@@ -123,7 +123,7 @@ export default {
           { required: true, message: '请输入密码', trigger: 'blur' }
         ],
         certificateNo: [
-          { required: true, message: '请输证件号', trigger: 'blur' }
+          { required: false, message: '请输证件号', trigger: 'blur' }
         ]
       }
     };
@@ -236,13 +236,12 @@ export default {
           if (res.data.code === '20000') {
             this.userForm = {
               id: data.id,
-              roleId: data.roleId.toString(),
+              roleId: data.roleId && data.roleId.toString(),
               userName: data.userName,
               mobile: data.mobile,
               certificateNo: data.certificateNo,
               certificateUrl: data.certificateUrl
             };
-            console.log(this.userForm);
             this.altPop = true;
           }
         })
@@ -268,8 +267,8 @@ export default {
             .post('/api/lms/admin/user/addUser', {
               userName: this.userForm.userName,
               userPassword: this.userForm.userPassword,
-              mobile: this.userForm.mobile
-              // roleId: parseInt(this.userForm.roleId)
+              mobile: this.userForm.mobile,
+              roleId: parseInt(this.userForm.roleId)
             })
             .then(res => {
               if (res.data.code === '20000') {
