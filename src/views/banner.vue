@@ -253,8 +253,8 @@ export default {
           sort: parseInt(bannerForm.sort) || '1',
           status: 1
         };
-        console.log(data);
       }
+      console.log(JSON.stringify(data));
       this.$axios
         .post('/api/lms/admin/banner/bannerUpdate', data)
         .then(res => {

@@ -145,7 +145,6 @@ export default {
           pageSize: 10
         })
         .then(res => {
-          // console.log(res.data.data.list);
           const data = res.data && res.data.data;
           const dataList = data.list || [];
           if (res.data.code === '20000') {

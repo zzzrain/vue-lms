@@ -110,6 +110,7 @@ export default {
       userForm: {
         id: '',
         roleId: '',
+        userType: '',
         userName: '',
         userAccount: '',
         userPassword: '',
@@ -295,15 +296,18 @@ export default {
     addUser () {
       this.$refs.userForm.validate((valid) => {
         if (valid) {
+          let data = {
+            userName: this.userForm.userName,
+            userAccount: this.userForm.userName,
+            userPassword: this.userForm.userPassword,
+            mobile: this.userForm.mobile,
+            roleId: parseInt(this.userForm.roleId),
+            userType: parseInt(this.userForm.roleId),
+            wxPerm: 1
+          };
+          console.log(JSON.stringify(data));
           this.$axios
-            .post('/api/lms/admin/user/addUser', {
-              userName: this.userForm.userName,
-              userAccount: this.userForm.userName,
-              userPassword: this.userForm.userPassword,
-              mobile: this.userForm.mobile,
-              roleId: parseInt(this.userForm.roleId),
-              wxPerm: 1
-            })
+            .post('/api/lms/admin/user/addUser', data)
             .then(res => {
               if (res.data.code === '20000') {
                 this.$Message.info('新增成功');
@@ -329,6 +333,7 @@ export default {
               userAccount: this.userForm.userName,
               mobile: this.userForm.mobile,
               roleId: parseInt(this.userForm.roleId),
+              userType: parseInt(this.userForm.roleId),
               certificateNo: this.userForm.certificateNo,
               certificateUrl: this.userForm.certificateUrl,
               status: 1,

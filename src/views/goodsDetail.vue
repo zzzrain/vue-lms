@@ -344,9 +344,6 @@ export default {
             this.$axios
               .post('/api/lms/admin/goods/updateGoods', data)
               .then(res => {
-                // const data = res.data && res.data.data;
-                // const dataList = data.list || [];
-                // console.log(res.data.data.list);
                 if (res.data.code === '20000') {
                   this.$Message.info('修改成功');
                 } else {
@@ -359,9 +356,6 @@ export default {
             this.$axios
               .post('/api/lms/admin/goods/publishGoods', data)
               .then(res => {
-                // const data = res.data && res.data.data;
-                // const dataList = data.list || [];
-                // console.log(res.data.data.list);
                 if (res.data.code === '20000') {
                   this.$Message.info('新增成功');
                 } else {

@@ -212,6 +212,7 @@ export default {
         data.id = this.categoryForm.id;
         data.status = this.categoryForm.status === '启用' ? 0 : 1;
       }
+      console.log(JSON.stringify(data));
       this.$axios
         .post('/api/lms/admin/category/updateCategory', data)
         .then(res => {
