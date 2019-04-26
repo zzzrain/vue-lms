@@ -194,8 +194,8 @@ export default {
               on: {
                 click: function () {
                   let skuForm = vm.skuForm;
-                  console.log(vm.skuForm);
-                  console.log(params);
+                  // console.log(vm.skuForm);
+                  // console.log(params);
                   vm.addSku = true;
                   vm.skuCtrl = 'alt';
                   vm.skuIdx = params.index;
@@ -220,7 +220,7 @@ export default {
                 click: function () {
                   vm.skuCtrl = 'del';
                   vm.skuIdx = params.index;
-                  vm.skuTag = params.row.id;
+                  vm.skuTag = params.row.skuId;
                   vm.skuPop();
                 }
               }
@@ -282,6 +282,7 @@ export default {
     },
     addPop () {
       this.addSku = true;
+      this.skuCtrl = 'add';
       this.skuForm.skuUnit = '1';
       this.$refs.skuForm.resetFields();
     },
@@ -298,16 +299,18 @@ export default {
         skuPrice: parseInt(skuForm.skuPrice),
         skuUnit: parseInt(skuForm.skuUnit)
       };
+      console.log(this.skuCtrl);
       if (this.skuCtrl === 'alt') {
-        this.rows[this.skuIdx] = skuData;
+        this.rows.splice(this.skuIdx, 1, skuData);
       } else if (this.skuCtrl === 'del') {
-        let isDel = this.rows.map(ele => {
-          console.log(ele);
-          if (this.skuTag === ele.skuId) {
-            return false;
+        let isDel = true;
+        let skuTag = this.skuTag;
+        this.rows.forEach(ele => {
+          if (skuTag && skuTag === ele.skuId) {
+            isDel = false;
           }
         });
-        if (!isDel) {
+        if (isDel) {
           this.rows.splice(this.skuIdx, 1);
         } else {
           this.$Message.info('已发布规格不可删除');
@@ -319,8 +322,8 @@ export default {
       if (!this.formItem.goodsId) {
         this.formItem.skuDtos.push(skuData);
       }
-      console.log(skuData);
-      console.log(this.formItem);
+      // console.log(skuData);
+      // console.log(this.formItem);
     },
     handleSubmit (name) {
       this.$refs[name].validate((valid) => {
