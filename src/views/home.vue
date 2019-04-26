@@ -1,9 +1,9 @@
 <template>
-  <div class="home-con" style="height: 100%;">
-    <div class="left-cont fl" style="width: 15%;height: 100%;background: #515a6e">
+  <div class="home-con">
+    <div class="left-cont fl">
       <SideMenu></SideMenu>
     </div>
-    <div class="right-cont fl" style="width: 85%;padding: 0 50px">
+    <div class="right-cont fl">
       <LoginIcon></LoginIcon>
       <router-view></router-view>
     </div>
@@ -24,10 +24,17 @@ export default {
     return {
       theme2: 'dark'
     };
+  },
+  mounted () {
   }
 };
 </script>
 
-<style scoped>
-
+<style lang="scss">
+  .left-cont {
+    width: 15%;background: #515a6e
+  }
+  .right-cont {
+    width: 85%;padding: 0 50px
+  }
 </style>

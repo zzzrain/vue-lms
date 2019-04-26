@@ -198,6 +198,7 @@ export default {
   },
   methods: {
     changePage (page) {
+      this.rows = [];
       this.userList(page);
     },
     userList (pageNum) {
@@ -268,7 +269,8 @@ export default {
               userName: this.userForm.userName,
               userPassword: this.userForm.userPassword,
               mobile: this.userForm.mobile,
-              roleId: parseInt(this.userForm.roleId)
+              roleId: parseInt(this.userForm.roleId),
+              wxPerm: 1
             })
             .then(res => {
               if (res.data.code === '20000') {
@@ -289,12 +291,12 @@ export default {
               mobile: this.userForm.mobile,
               roleId: parseInt(this.userForm.roleId),
               certificateNo: this.userForm.certificateNo,
-              certificateUrl: this.userForm.certificateUrl
+              certificateUrl: this.userForm.certificateUrl,
+              wxPerm: 1
             })
             .then(res => {
               if (res.data.code === '20000') {
                 this.$Message.info('修改成功');
-                this.userList();
               }
             })
             .catch(error => console.log(error));

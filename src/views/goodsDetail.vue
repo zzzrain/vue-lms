@@ -43,7 +43,7 @@
         width="400"
         @on-ok="addSku">
         <Form abel-position="left" :label-width="110" ref="skuForm" :model="skuForm" :rules="rules">
-          <Form-item label="规格名称" prop="" class="form-item">
+          <Form-item label="规格名称" prop="skuName" class="form-item">
             <Input v-model="skuForm.skuName" placeholder="请输入"></Input>
           </Form-item>
           <Form-item label="商品原价" prop="skuPrice" class="form-item">
@@ -84,7 +84,6 @@ export default {
     FileUpload
   },
   data () {
-    let goodsId = parseInt(common.getParams('id'));
     return {
       total: 1,
       skuPop: false,
@@ -92,13 +91,13 @@ export default {
       cols: [],
       rows: [],
       formItem: {
-        goodsId,
+        goodsId: '',
         goodsName: '',
         categoryId: '',
         goodsImg: '',
         goodsDesc: '',
         status: '',
-        skuInfos: []
+        skuDtos: []
       },
       skuForm: {
         agentPrice: '',
@@ -106,7 +105,8 @@ export default {
         purchaserPrice: '',
         repertoryUnit: '',
         skuPrice: '',
-        skuUnit: ''
+        skuUnit: '',
+        skuName: ''
       },
       categoryItem: [],
       // 表单规则校验不能通用，全部都要一一对应，坑的一B
@@ -144,7 +144,8 @@ export default {
     };
   },
   mounted () {
-    let goodsId = this.formItem.goodsId;
+    let goodsId = parseInt(common.getParams('id'));
+    this.formItem.goodsId = goodsId;
     if (goodsId) this.goodsDetail(goodsId);
     this.categoryList();
     this.cols = [
@@ -246,10 +247,12 @@ export default {
             let formItem = res.data && res.data.data;
             if (formItem) {
               this.formItem = {
+                goodsId: formItem.goodsId,
                 goodsName: formItem.goodsName,
                 categoryId: formItem.categoryId,
                 goodsDesc: formItem.goodsDesc,
                 goodsImg: formItem.goodsImg,
+                skuDtos: formItem.skuDtos,
                 status: 1
               };
               this.rows = formItem.skuDtos;
@@ -277,35 +280,51 @@ export default {
         skuUnit: parseInt(skuForm.skuUnit)
       };
       console.log(skuData);
-      console.log(this.rows);
-      console.log(this.formItem.skuInfos);
+      console.log(this.formItem);
       this.rows.push(skuData);
-      this.formItem.skuInfos.push(skuData);
+      if (!this.formItem.goodsId) {
+        this.formItem.skuDtos.push(skuData);
+      }
     },
     handleSubmit (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
           let formItem = this.formItem;
+          let goodsId = this.formItem.goodsId;
           let data = {
-            // goodsId: 0,
             goodsName: formItem.goodsName,
             categoryId: formItem.categoryId,
             goodsDesc: formItem.goodsDesc,
             goodsImg: formItem.goodsImg,
-            skuInfos: formItem.skuInfos,
+            skuDtos: formItem.skuDtos,
             status: 1
           };
-          console.log(data);
-          this.$axios
-            .post('/api/lms/admin/goods/publishGoods', data)
-            .then(res => {
-              // const data = res.data && res.data.data;
-              // const dataList = data.list || [];
-              // console.log(res.data.data.list);
-              if (res.data.code === '20000') {
-              }
-            })
-            .catch(error => console.log(error));
+          if (goodsId) {
+            data.goodsId = goodsId;
+            console.log(JSON.stringify(data));
+            this.$axios
+              .post('/api/lms/admin/goods/updateGoods', data)
+              .then(res => {
+                // const data = res.data && res.data.data;
+                // const dataList = data.list || [];
+                // console.log(res.data.data.list);
+                if (res.data.code === '20000') {
+                }
+              })
+              .catch(error => console.log(error));
+          } else {
+            console.log(JSON.stringify(data));
+            this.$axios
+              .post('/api/lms/admin/goods/publishGoods', data)
+              .then(res => {
+                // const data = res.data && res.data.data;
+                // const dataList = data.list || [];
+                // console.log(res.data.data.list);
+                if (res.data.code === '20000') {
+                }
+              })
+              .catch(error => console.log(error));
+          }
         }
       });
     },

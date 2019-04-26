@@ -17,33 +17,6 @@
     <div class="addGoods mb20" style="text-align: left;">
       <router-link to="/home/goodsDetail"><Button type="primary">新增</Button></router-link>
     </div>
-    <Modal
-      v-model="addPop"
-      title="新增用户"
-      width="400"
-      @on-ok="addUser">
-      <Form abel-position="left" :label-width="60" ref="userForm" :model="userForm" :rules="rules">
-        <Form-item label="用户名" prop="userName">
-          <Input placeholder="请输入" v-model="userForm.userName"></Input>
-        </Form-item>
-        <Form-item label="密码" prop="userPassword">
-          <Input placeholder="请输入" v-model="userForm.userPassword"></Input>
-        </Form-item>
-        <Form-item label="手机号" prop="mobile">
-          <Input placeholder="请输入" v-model="userForm.mobile"></Input>
-        </Form-item>
-        <Form-item label="角色" prop="roleId">
-          <Select placeholder="请选择" v-model="userForm.roleId">
-            <Option value="1">采购员</Option>
-            <Option value="2">代理商</Option>
-            <Option value="3">业务员</Option>
-            <Option value="4">财务员</Option>
-            <Option value="5">仓管员</Option>
-            <Option value="6">发货员</Option>
-          </Select>
-        </Form-item>
-      </Form >
-    </Modal>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
     <div class="oh">
       <div class="fr">
@@ -162,6 +135,7 @@ export default {
   },
   methods: {
     changePage (page) {
+      this.rows = [];
       this.goodsList(page);
     },
     goodsList (pageNum) {

@@ -191,6 +191,7 @@ export default {
   },
   methods: {
     changePage (page) {
+      this.rows = [];
       this.bannerList(page);
     },
     bannerList (pageNum) {
