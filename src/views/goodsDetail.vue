@@ -38,10 +38,10 @@
         <Button type="primary" @click="addPop">添加规格</Button>
       </div>
       <Modal
-        v-model="skuPop"
+        v-model="addSku"
         title="规格信息"
         width="400"
-        @on-ok="addSku">
+        @on-ok="skuPop">
         <Form abel-position="left" :label-width="110" ref="skuForm" :model="skuForm" :rules="rules">
           <Form-item label="规格名称" prop="skuName" class="form-item">
             <Input v-model="skuForm.skuName" placeholder="请输入"></Input>
@@ -86,7 +86,10 @@ export default {
   data () {
     return {
       total: 1,
-      skuPop: false,
+      addSku: false,
+      skuCtrl: '', // sku表格修改
+      skuIdx: 0, // sku修改目标
+      skuTag: 0, // sku修改目标
       self: this,
       cols: [],
       rows: [],
@@ -103,7 +106,6 @@ export default {
         agentPrice: '',
         limitAgentPrice: '',
         purchaserPrice: '',
-        repertoryUnit: '',
         skuPrice: '',
         skuUnit: '',
         skuName: ''
@@ -179,6 +181,7 @@ export default {
         align: 'center',
         width: 150,
         render: (h, params) => {
+          let vm = this;
           return h('div', [
             h('Button', {
               props: {
@@ -190,6 +193,18 @@ export default {
               },
               on: {
                 click: function () {
+                  let skuForm = vm.skuForm;
+                  console.log(vm.skuForm);
+                  console.log(params);
+                  vm.addSku = true;
+                  vm.skuCtrl = 'alt';
+                  vm.skuIdx = params.index;
+                  skuForm.agentPrice = params.row.agentPrice;
+                  skuForm.limitAgentPrice = params.row.limitAgentPrice;
+                  skuForm.purchaserPrice = params.row.purchaserPrice;
+                  skuForm.skuName = params.row.skuName;
+                  skuForm.skuPrice = params.row.skuPrice;
+                  skuForm.skuUnit = params.row.skuUnit;
                 }
               }
             }, '修改'),
@@ -203,6 +218,10 @@ export default {
               },
               on: {
                 click: function () {
+                  vm.skuCtrl = 'del';
+                  vm.skuIdx = params.index;
+                  vm.skuTag = params.row.id;
+                  vm.skuPop();
                 }
               }
             }, '删除')
@@ -262,11 +281,11 @@ export default {
         .catch(error => console.log(error));
     },
     addPop () {
-      this.skuPop = true;
+      this.addSku = true;
       this.skuForm.skuUnit = '1';
       this.$refs.skuForm.resetFields();
     },
-    addSku () {
+    skuPop () {
       let skuForm = this.skuForm;
       let skuData = {
         buyNum: 1,
@@ -279,12 +298,29 @@ export default {
         skuPrice: parseInt(skuForm.skuPrice),
         skuUnit: parseInt(skuForm.skuUnit)
       };
-      console.log(skuData);
-      console.log(this.formItem);
-      this.rows.push(skuData);
+      if (this.skuCtrl === 'alt') {
+        this.rows[this.skuIdx] = skuData;
+      } else if (this.skuCtrl === 'del') {
+        let isDel = this.rows.map(ele => {
+          console.log(ele);
+          if (this.skuTag === ele.skuId) {
+            return false;
+          }
+        });
+        if (!isDel) {
+          this.rows.splice(this.skuIdx, 1);
+        } else {
+          this.$Message.info('已发布规格不可删除');
+        }
+      } else {
+        this.rows.push(skuData);
+      }
+      // 如果添加sku，上面的push也会影响skuDtos的数据，需做判断
       if (!this.formItem.goodsId) {
         this.formItem.skuDtos.push(skuData);
       }
+      console.log(skuData);
+      console.log(this.formItem);
     },
     handleSubmit (name) {
       this.$refs[name].validate((valid) => {
@@ -309,6 +345,9 @@ export default {
                 // const dataList = data.list || [];
                 // console.log(res.data.data.list);
                 if (res.data.code === '20000') {
+                  this.$Message.info('修改成功');
+                } else {
+                  this.$Message.info(res.data.message || '操作失败');
                 }
               })
               .catch(error => console.log(error));
@@ -321,6 +360,9 @@ export default {
                 // const dataList = data.list || [];
                 // console.log(res.data.data.list);
                 if (res.data.code === '20000') {
+                  this.$Message.info('新增成功');
+                } else {
+                  this.$Message.info(res.data.message || '操作失败');
                 }
               })
               .catch(error => console.log(error));

@@ -110,6 +110,7 @@ export default {
         id: '',
         roleId: '',
         userName: '',
+        userAccount: '',
         userPassword: '',
         mobile: '',
         certificateNo: '',
@@ -117,6 +118,9 @@ export default {
       },
       rules: {
         userName: [
+          { required: true, message: '请输入名称', trigger: 'blur' }
+        ],
+        userAccount: [
           { required: true, message: '请输入名称', trigger: 'blur' }
         ],
         userPassword: [
@@ -254,6 +258,7 @@ export default {
         id: '',
         roleId: '',
         userName: '',
+        userAccount: '',
         userPassword: '',
         mobile: '',
         certificateNo: '',
@@ -267,6 +272,7 @@ export default {
           this.$axios
             .post('/api/lms/admin/user/addUser', {
               userName: this.userForm.userName,
+              userAccount: this.userForm.userName,
               userPassword: this.userForm.userPassword,
               mobile: this.userForm.mobile,
               roleId: parseInt(this.userForm.roleId),
@@ -284,16 +290,19 @@ export default {
     altUser () {
       this.$refs.userForm.validate((valid) => {
         if (valid) {
+          let data = {
+            id: this.userForm.id,
+            userName: this.userForm.userName,
+            userAccount: this.userForm.userName,
+            mobile: this.userForm.mobile,
+            roleId: parseInt(this.userForm.roleId),
+            certificateNo: this.userForm.certificateNo,
+            certificateUrl: this.userForm.certificateUrl,
+            wxPerm: 1
+          };
+          console.log(JSON.stringify(data));
           this.$axios
-            .post('/api/lms/admin/user/updateUser', {
-              id: this.userForm.id,
-              userName: this.userForm.userName,
-              mobile: this.userForm.mobile,
-              roleId: parseInt(this.userForm.roleId),
-              certificateNo: this.userForm.certificateNo,
-              certificateUrl: this.userForm.certificateUrl,
-              wxPerm: 1
-            })
+            .post('/api/lms/admin/user/updateUser', data)
             .then(res => {
               if (res.data.code === '20000') {
                 this.$Message.info('修改成功');
