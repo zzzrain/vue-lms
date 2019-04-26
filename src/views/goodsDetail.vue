@@ -100,7 +100,7 @@ export default {
         goodsImg: '',
         goodsDesc: '',
         status: '',
-        skuDtos: []
+        skuInfos: []
       },
       skuForm: {
         agentPrice: '',
@@ -275,10 +275,11 @@ export default {
                 categoryId: formItem.categoryId,
                 goodsDesc: formItem.goodsDesc,
                 goodsImg: formItem.goodsImg,
-                skuDtos: formItem.skuDtos,
+                skuInfos: formItem.skuInfos,
                 status: 1
               };
-              this.rows = formItem.skuDtos;
+              this.rows = formItem.skuInfos;
+              this.cols = this.cols.slice(0, -1);
             }
           }
         })
@@ -307,24 +308,25 @@ export default {
       if (this.skuCtrl === 'alt') {
         this.rows.splice(this.skuIdx, 1, skuData);
       } else if (this.skuCtrl === 'del') {
-        let isDel = true;
-        let skuTag = this.skuTag;
-        this.rows.forEach(ele => {
-          if (skuTag && skuTag === ele.skuId) {
-            isDel = false;
-          }
-        });
-        if (isDel) {
-          this.rows.splice(this.skuIdx, 1);
-        } else {
-          this.$Message.info('已发布规格不可删除');
-        }
+        // let isDel = true;
+        // let skuTag = this.skuTag;
+        // this.rows.forEach(ele => {
+        //   if (skuTag && skuTag === ele.skuId) {
+        //     isDel = false;
+        //   }
+        // });
+        // if (isDel) {
+        //   this.rows.splice(this.skuIdx, 1);
+        // } else {
+        //   this.$Message.info('已发布规格不可删除');
+        // }
+        this.rows.splice(this.skuIdx, 1);
       } else {
         this.rows.push(skuData);
       }
       // 如果添加sku，上面的push也会影响skuDtos的数据，需做判断
       if (!this.formItem.goodsId) {
-        this.formItem.skuDtos.push(skuData);
+        this.formItem.skuInfos.push(skuData);
       }
       // console.log(skuData);
       // console.log(this.formItem);
@@ -339,7 +341,7 @@ export default {
             categoryId: formItem.categoryId,
             goodsDesc: formItem.goodsDesc,
             goodsImg: formItem.goodsImg,
-            skuDtos: formItem.skuDtos,
+            skuInfos: formItem.skuInfos,
             status: 1
           };
           if (goodsId) {
