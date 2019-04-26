@@ -22,8 +22,11 @@
         @on-cancel="cancel">
         <p slot="header">{{ handle }}</p>
         <Form abel-position="left" :label-width="70" ref="stockForm" :model="stockForm" :rules="rules">
-          <Form-item label="规格ID" prop="skuId">
+          <Form-item v-if="handle === '添加库存'" label="规格ID" prop="skuId">
             <Input placeholder="请输入" v-model="stockForm.skuId"></Input>
+          </Form-item>
+          <Form-item v-else label="规格名称" prop="skuName">
+            <Input placeholder="请输入" v-model="stockForm.skuName"></Input>
           </Form-item>
           <Form-item label="数量" prop="skuNum">
             <Input placeholder="请输入" v-model="stockForm.skuNum"></Input>
@@ -75,7 +78,7 @@ export default {
     };
   },
   mounted () {
-    // let vm = this;
+    let vm = this;
     this.stockList();
     this.cols = [
       {
@@ -84,23 +87,23 @@ export default {
       },
       {
         title: '规格ID',
-        key: 'categoryName'
+        key: 'skuId'
       },
       {
         title: '规格名称',
-        key: 'categoryLevel'
+        key: 'skuName'
       },
       {
         title: '数量',
-        key: 'status'
+        key: 'skuNum'
       },
       {
         title: '单位',
-        key: 'createTime'
+        key: 'skuUnit'
       },
       {
         title: '更新时间',
-        key: 'createTime'
+        key: 'updateTime'
       },
       {
         title: '操作',
@@ -118,7 +121,14 @@ export default {
               },
               on: {
                 click: function () {
-                  console.log(params.index);
+                  console.log(params);
+                  let row = params.row;
+                  let stockForm = vm.stockForm;
+                  vm.addPop = true;
+                  vm.handle = '修改库存';
+                  stockForm.skuName = row.skuName;
+                  stockForm.skuNum = row.skuNum;
+                  stockForm.skuUnit = row.skuUnit;
                 }
               }
             }, '修改')
@@ -134,12 +144,14 @@ export default {
       this.stockList(page);
     },
     stockList (pageNum) {
+      let data = {
+        skuId: 21,
+        pageNum: pageNum || 1,
+        pageSize: 10
+      };
+      console.log(JSON.stringify(data));
       this.$axios
-        .post('/api/lms/admin/repertory/repertoryList', {
-          skuId: 21,
-          pageNum: pageNum || 1,
-          pageSize: 10
-        })
+        .post('/api/lms/admin/repertory/repertoryList', data)
         .then(res => {
           const data = res.data && res.data.data;
           const dataList = data.list || [];
@@ -186,7 +198,7 @@ export default {
           }
           console.log(JSON.stringify(data));
           this.$axios
-            .post('/api/lms/admin/category/updateCategory', data)
+            .post('/api/lms/admin/repertory/addRepertory', data)
             .then(res => {
               if (res.data.code === '20000') {
                 let idx = this.itemIdx;
