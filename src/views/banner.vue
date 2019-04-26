@@ -78,6 +78,7 @@ export default {
       self: this,
       cols: [],
       rows: [],
+      bannerIdx: '',
       bannerForm: {
         id: '',
         status: '',
@@ -155,9 +156,12 @@ export default {
                 click: function () {
                   console.log(params.row);
                   let row = params.row;
-                  vm.bannerForm.id = row.id;
+                  vm.bannerIdx = params.index;
+                  vm.bannerForm.id = id;
                   vm.bannerForm.sort = common.sort(row.sort);
                   vm.bannerForm.bannerPosition = common.bp(row.bannerPosition);
+                  vm.bannerForm.createTime = common.format(row.createTime);
+                  vm.bannerForm.updateTime = common.format(row.updateTime);
                   vm.bannerForm.filePath = row.filePath;
                   vm.addPop = true;
                 }
@@ -232,10 +236,13 @@ export default {
       };
       this.$refs.userForm.resetFields();
     },
-    bannerAdd (cb, alt) {
+    bannerAdd (cb, bool) {
       let bannerForm = this.bannerForm;
       let data = {};
-      if (alt) {
+      if (bannerForm.id) {
+        data.id = bannerForm.id;
+      }
+      if (bool) {
         data.status = bannerForm.status === '启用' ? 0 : 1;
       } else {
         data = {
@@ -246,17 +253,22 @@ export default {
           sort: parseInt(bannerForm.sort) || '1',
           status: 1
         };
-      }
-      if (bannerForm.id) {
-        data.id = bannerForm.id;
+        console.log(data);
       }
       this.$axios
         .post('/api/lms/admin/banner/bannerUpdate', data)
         .then(res => {
           if (res.data.code === '20000') {
-            cb && cb();
-            if (!alt) {
+            if (!bool) {
+              this.$Message.info('修改成功');
+              data.bannerPosition = common.bp(data.bannerPosition);
+              data.sort = common.sort(data.sort);
+              data.status = common.state(data.status);
+              data.createTime = bannerForm.createTime;
+              data.updateTime = bannerForm.updateTime;
+              this.rows.splice(this.bannerIdx, 1, data);
             }
+            cb && cb();
           }
         })
         .catch(error => console.log(error));

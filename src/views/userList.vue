@@ -105,6 +105,7 @@ export default {
       self: this,
       cols: [],
       rows: [],
+      userIdx: '',
       // 若带上默认值，ajax请求后不能双向改变数据
       userForm: {
         id: '',
@@ -164,8 +165,13 @@ export default {
         title: '操作',
         key: 'action',
         align: 'center',
+        width: 200,
         render: (h, params) => {
           let id = params.row.id;
+          let userIdx = params.index;
+          let status = params.row.status;
+          let type = status === '启用' ? 'error' : 'success';
+          let btn = status === '启用' ? '停用' : '启用';
           return h('div', [
             h('Button', {
               props: {
@@ -177,6 +183,7 @@ export default {
               },
               on: {
                 click: function () {
+                  vm.userIdx = userIdx;
                   vm.userDetail(id);
                 }
               }
@@ -193,7 +200,25 @@ export default {
                 click: function () {
                 }
               }
-            }, '详情')
+            }, '详情'),
+            h('Button', {
+              props: {
+                type,
+                size: 'small'
+              },
+              style: {
+                marginRight: '8px'
+              },
+              on: {
+                click: function () {
+                  vm.userForm.id = id;
+                  vm.userForm.status = status;
+                  vm.altUser(function () {
+                    params.row.status = btn;
+                  }, true);
+                }
+              }
+            }, btn)
           ]);
         }
       }
@@ -245,7 +270,8 @@ export default {
               userName: data.userName,
               mobile: data.mobile,
               certificateNo: data.certificateNo,
-              certificateUrl: data.certificateUrl
+              certificateUrl: data.certificateUrl,
+              createTime: data.createTime
             };
             this.altPop = true;
           }
@@ -287,30 +313,49 @@ export default {
         }
       });
     },
-    altUser () {
-      this.$refs.userForm.validate((valid) => {
-        if (valid) {
-          let data = {
-            id: this.userForm.id,
-            userName: this.userForm.userName,
-            userAccount: this.userForm.userName,
-            mobile: this.userForm.mobile,
-            roleId: parseInt(this.userForm.roleId),
-            certificateNo: this.userForm.certificateNo,
-            certificateUrl: this.userForm.certificateUrl,
-            wxPerm: 1
-          };
-          console.log(JSON.stringify(data));
-          this.$axios
-            .post('/api/lms/admin/user/updateUser', data)
-            .then(res => {
-              if (res.data.code === '20000') {
-                this.$Message.info('修改成功');
-              }
-            })
-            .catch(error => console.log(error));
-        }
-      });
+    altUser (cb, bool) {
+      if (bool) {
+        let data = {
+          id: this.userForm.id,
+          status: this.userForm.status === '启用' ? 0 : 1
+        };
+        this.altAjax(data, cb, bool);
+      } else {
+        this.$refs.userForm.validate((valid) => {
+          if (valid) {
+            let data = {
+              id: this.userForm.id,
+              userName: this.userForm.userName,
+              userAccount: this.userForm.userName,
+              mobile: this.userForm.mobile,
+              roleId: parseInt(this.userForm.roleId),
+              certificateNo: this.userForm.certificateNo,
+              certificateUrl: this.userForm.certificateUrl,
+              status: 1,
+              wxPerm: 1
+            };
+            console.log(JSON.stringify(data));
+            this.altAjax(data, cb, bool);
+          }
+        });
+      }
+    },
+    altAjax (data, cb, bool) {
+      this.$axios
+        .post('/api/lms/admin/user/updateUser', data)
+        .then(res => {
+          if (res.data.code === '20000') {
+            if (!bool) {
+              this.$Message.info('修改成功');
+              data.roleId = common.role(data.roleId);
+              data.status = common.state(data.status);
+              data.createTime = common.format(this.userForm.createTime);
+              this.rows.splice(this.userIdx, 1, data);
+            }
+            cb && cb();
+          }
+        })
+        .catch(error => console.log(error));
     },
     handleSuccess (res) {
       this.userForm.certificateUrl = res.data.url;
