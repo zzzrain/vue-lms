@@ -152,6 +152,10 @@ export default {
     this.categoryList();
     this.cols = [
       {
+        title: '规格ID',
+        key: 'skuId'
+      },
+      {
         title: '规格名称',
         key: 'skuName'
       },

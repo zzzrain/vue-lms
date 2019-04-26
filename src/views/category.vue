@@ -42,18 +42,13 @@
 
 <script>
 import common from '@/common/common.js';
-import FileUpload from '@/components/FileUpload';
 
 export default {
-  components: {
-    FileUpload
-  },
   data () {
     return {
       total: 1,
       handle: '新增类目',
       addPop: false,
-      imgSrc: '',
       self: this,
       cols: [],
       rows: [],
@@ -118,12 +113,12 @@ export default {
               on: {
                 click: function () {
                   console.log(params.index);
+                  vm.addPop = true;
+                  vm.handle = '修改类目';
+                  vm.itemIdx = params.index;
                   vm.categoryForm.id = params.row.id;
                   vm.categoryForm.status = params.row.status;
                   vm.categoryForm.name = params.row.categoryName;
-                  vm.addPop = true;
-                  vm.itemIdx = params.index;
-                  vm.handle = '修改类目';
                 }
               }
             }, '修改'),
@@ -191,7 +186,7 @@ export default {
       };
       this.$refs.categoryForm.resetFields();
     },
-    updateSubmit (cb, alt) {
+    updateSubmit (cb, bool) {
       if (this.addPop) {
         this.$refs.categoryForm.validate((valid) => {
           if (valid) {
@@ -199,10 +194,10 @@ export default {
           }
         });
       } else {
-        this.updateAjax(cb, alt);
+        this.updateAjax(cb, bool);
       }
     },
-    updateAjax (cb, alt) {
+    updateAjax (cb, bool) {
       let data = {
         categoryName: this.categoryForm.name,
         categoryLevel: this.categoryForm.level,
@@ -219,7 +214,7 @@ export default {
           if (res.data.code === '20000') {
             this.$Message.info('新增成功');
             cb && cb();
-            if (!alt) {
+            if (!bool) {
               let idx = this.itemIdx;
               this.rows[idx].categoryName = this.categoryForm.name;
               this.rows[idx].categoryLevel = this.categoryForm.level;
