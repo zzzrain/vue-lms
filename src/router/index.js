@@ -22,7 +22,7 @@ export default new Router({
     //   component: HelloWorld
     // },
     {
-      path: '/',
+      path: '/login',
       name: 'login',
       component: Login
     },
