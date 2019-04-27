@@ -34,7 +34,7 @@
       <Form-item label="商品描述" prop="goodsDesc">
         <Input v-model="formItem.goodsDesc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
       </Form-item>
-      <div class="addGoods mb10 m40" style="text-align: left;">
+      <div v-if="addBtn" class="addGoods mb10 m40" style="text-align: left;">
         <Button type="primary" @click="addPop">添加规格</Button>
       </div>
       <Modal
@@ -90,6 +90,7 @@ export default {
       skuCtrl: '', // sku表格修改
       skuIdx: 0, // sku修改目标
       skuTag: 0, // sku修改目标
+      addBtn: true,
       self: this,
       cols: [],
       rows: [],
@@ -151,10 +152,6 @@ export default {
     if (goodsId) this.goodsDetail(goodsId);
     this.categoryList();
     this.cols = [
-      {
-        title: '规格ID',
-        key: 'skuId'
-      },
       {
         title: '规格名称',
         key: 'skuName'
@@ -275,11 +272,13 @@ export default {
                 categoryId: formItem.categoryId,
                 goodsDesc: formItem.goodsDesc,
                 goodsImg: formItem.goodsImg,
-                skuInfos: formItem.skuInfos,
+                skuInfos: formItem.skuDtos,
                 status: 1
               };
-              this.rows = formItem.skuInfos;
-              this.cols = this.cols.slice(0, -1);
+              this.rows = formItem.skuDtos;
+              this.cols.unshift({ title: '规格ID', key: 'skuId' });
+              this.cols.pop();
+              this.addBtn = false;
             }
           }
         })
