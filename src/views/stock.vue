@@ -22,6 +22,9 @@
           <Form-item label="规格ID" prop="skuId">
             <Input placeholder="请输入" v-model="stockForm.skuId"></Input>
           </Form-item>
+          <Form-item label="规格名称" prop="skuId">
+            <Input placeholder="请输入" v-model="stockForm.skuName"></Input>
+          </Form-item>
           <Form-item label="数量" prop="skuNum">
             <Input placeholder="请输入" v-model="stockForm.skuNum"></Input>
           </Form-item>
@@ -39,6 +42,9 @@
         @on-ok="stockAlt"
         @on-cancel="cancel">
         <Form abel-position="left" :label-width="70" ref="stockForm" :model="stockForm" :rules="rules">
+          <Form-item label="规格名称" prop="skuName">
+            <Input placeholder="请输入" v-model="stockForm.skuName"></Input>
+          </Form-item>
           <Form-item label="数量" prop="skuNum">
             <Input placeholder="请输入" v-model="stockForm.skuNum"></Input>
           </Form-item>
@@ -74,6 +80,7 @@ export default {
       stockForm: {
         repertoryId: '',
         skuId: '',
+        skuName: '',
         skuNum: '',
         skuUnit: ''
       },
@@ -82,7 +89,10 @@ export default {
       },
       rules: {
         skuId: [
-          { required: true, message: '请输入数量', trigger: 'blur' }
+          { required: true, message: '请输入规格ID', trigger: 'blur' }
+        ],
+        skuName: [
+          { required: true, message: '请输入规格名称', trigger: 'blur' }
         ],
         skuNum: [
           { required: true, message: '请输入数量', trigger: 'blur' }
@@ -118,6 +128,8 @@ export default {
         key: 'action',
         align: 'center',
         render: (h, params) => {
+          let row = params.row;
+          let stockForm = vm.stockForm;
           return h('div', [
             h('Button', {
               props: {
@@ -131,12 +143,10 @@ export default {
                 click: function () {
                   console.log(params);
                   vm.altPop = true;
-                  let row = params.row;
-                  let stockForm = vm.stockForm;
-                  stockForm.skuId = row.skuId;
+                  vm.itemIdx = params.index;
+                  stockForm.skuName = row.skuName;
                   stockForm.skuNum = row.skuNum;
                   stockForm.skuUnit = row.skuUnitCode;
-                  stockForm.repertoryId = row.repertoryId;
                 }
               }
             }, '修改')
@@ -170,11 +180,10 @@ export default {
             dataList.forEach(ele => {
               this.rows.push({
                 id: ele.id,
-                skuId: ele.skuId,
+                skuId: parseInt(ele.skuId),
                 skuName: ele.skuName,
                 skuNum: ele.skuNum,
                 skuUnitCode: ele.skuUnit && ele.skuUnit.toString(),
-                repertoryId: ele.repertoryId,
                 skuUnit: common.skuUnit(ele.skuUnit),
                 updateTime: common.format(ele.updateTime)
               });
@@ -200,6 +209,7 @@ export default {
           let stockForm = this.stockForm;
           let data = {
             optType: 1,
+            skuName: stockForm.skuName,
             skuId: parseInt(stockForm.skuId),
             skuNum: parseInt(stockForm.skuNum),
             skuUnit: parseInt(stockForm.skuUnit)
@@ -220,25 +230,27 @@ export default {
       this.$refs.stockForm.validate((valid) => {
         if (valid) {
           let stockForm = this.stockForm;
+          let idx = this.itemIdx;
           let data = {
             optType: 2,
-            skuId: parseInt(stockForm.skuId),
+            repertoryId: this.rows[idx].id,
+            skuId: this.rows[idx].skuId,
+            skuName: stockForm.skuName,
             skuNum: parseInt(stockForm.skuNum),
-            skuUnit: parseInt(stockForm.skuUnit),
-            repertoryId: parseInt(stockForm.repertoryId)
+            skuUnit: parseInt(stockForm.skuUnit)
           };
           console.log(JSON.stringify(data));
-          // this.$axios
-          //   .post('/api/lms/admin/repertory/updateRepertory', data)
-          //   .then(res => {
-          //     if (res.data.code === '20000') {
-          //       let idx = this.itemIdx;
-          //       this.rows[idx].skuNum = stockForm.skuNum;
-          //       this.rows[idx].skuUnit = stockForm.skuUnit;
-          //       this.$Message.info('修改成功');
-          //     }
-          //   })
-          //   .catch(error => console.log(error));
+          this.$axios
+            .post('/api/lms/admin/repertory/updateRepertory', data)
+            .then(res => {
+              if (res.data.code === '20000') {
+                this.$Message.info('修改成功');
+                this.rows[idx].skuName = data.skuName;
+                this.rows[idx].skuNum = data.skuNum;
+                this.rows[idx].skuUnit = common.skuUnit(data.skuUnit);
+              }
+            })
+            .catch(error => console.log(error));
         }
       });
     },
