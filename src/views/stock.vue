@@ -191,7 +191,7 @@ export default {
         skuId: '',
         skuName: '',
         skuNum: '',
-        skuUnit: ''
+        skuUnit: '1'
       };
     },
     stockAdd () {

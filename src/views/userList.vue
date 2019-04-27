@@ -105,14 +105,14 @@ export default {
       cols: [],
       rows: [],
       userIdx: '',
-      // 若带上默认值，ajax请求后不能双向改变数据
+      // 若带上默认值，userDetail请求后不能双向改变数据
       userForm: {
         id: '',
-        roleId: '',
-        userType: '',
         userName: '',
         userAccount: '',
         userPassword: '',
+        roleId: '',
+        userType: '',
         mobile: '',
         certificateNo: '',
         certificateUrl: ''
@@ -138,7 +138,7 @@ export default {
     this.userList();
     this.cols = [
       {
-        title: 'id',
+        title: '用户ID',
         key: 'id'
       },
       {
@@ -167,9 +167,10 @@ export default {
         align: 'center',
         width: 200,
         render: (h, params) => {
-          let id = params.row.id;
+          let row = params.row;
+          let id = row.id;
+          let status = row.status;
           let userIdx = params.index;
-          let status = params.row.status;
           let type = status === '启用' ? 'error' : 'success';
           let btn = status === '启用' ? '停用' : '启用';
           return h('div', [
@@ -237,7 +238,6 @@ export default {
           pageSize: 10
         })
         .then(res => {
-          // console.log(res.data.data.list);
           const data = res.data && res.data.data;
           const dataList = data.list || [];
           if (res.data.code === '20000') {
@@ -246,6 +246,7 @@ export default {
               this.rows.push({
                 id: ele.id,
                 roleId: common.role(ele.roleId),
+                userType: common.role(ele.userType),
                 userName: ele.userName,
                 mobile: ele.mobile,
                 status: common.state(ele.status),
@@ -266,12 +267,13 @@ export default {
           if (res.data.code === '20000') {
             this.userForm = {
               id: data.id,
-              roleId: data.roleId && data.roleId.toString(),
               userName: data.userName,
+              userAccount: data.userAccount,
               mobile: data.mobile,
+              roleId: data.roleId && data.roleId.toString(),
+              userType: data.userType && data.userType.toString(),
               certificateNo: data.certificateNo,
-              certificateUrl: data.certificateUrl,
-              createTime: data.createTime
+              certificateUrl: data.certificateUrl
             };
             this.altPop = true;
           }
@@ -282,11 +284,12 @@ export default {
       this.addPop = true;
       this.userForm = {
         id: '',
-        roleId: '',
         userName: '',
         userAccount: '',
         userPassword: '',
         mobile: '',
+        roleId: '1',
+        userType: '1',
         certificateNo: '',
         certificateUrl: ''
       };
@@ -302,6 +305,7 @@ export default {
             mobile: this.userForm.mobile,
             roleId: parseInt(this.userForm.roleId),
             userType: parseInt(this.userForm.roleId),
+            status: 1,
             wxPerm: 1
           };
           console.log(JSON.stringify(data));
@@ -349,11 +353,13 @@ export default {
         .post('/api/lms/admin/user/updateUser', data)
         .then(res => {
           if (res.data.code === '20000') {
+            this.$Message.info('修改成功');
             if (!bool) {
-              this.$Message.info('修改成功');
+              // 修改成功后把数据重新写入表格
+              data.userType = common.role(data.userType);
               data.roleId = common.role(data.roleId);
               data.status = common.state(data.status);
-              data.createTime = common.format(this.userForm.createTime);
+              data.createTime = this.rows[this.userIdx].createTime;
               this.rows.splice(this.userIdx, 1, data);
             }
             cb && cb();
