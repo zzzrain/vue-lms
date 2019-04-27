@@ -1,17 +1,31 @@
 <template>
   <div class="table-list-cont pr25">
-    <Form label-position="left" :label-width="80" inline class="clear-fix">
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
+    <Form label-position="left" :label-width="60" ref="searchForm" :model="searchForm" :rules="rulesForm" inline class="clear-fix">
+      <Form-item label="用户名称" prop="userName" class="form-item" >
+        <Input v-model="searchForm.userName"></Input>
       </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
+      <Form-item label="联系电话" prop="mobile" class="form-item">
+        <Input v-model="searchForm.mobile"></Input>
       </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
+      <Form-item label="角色类型" prop="roleId" class="form-item">
+        <Select v-model="searchForm.roleId">
+          <Option value="1">采购员</Option>
+          <Option value="2">代理商</Option>
+          <Option value="3">业务员</Option>
+          <Option value="4">财务员</Option>
+          <Option value="5">仓管员</Option>
+          <Option value="6">发货员</Option>
+        </Select>
       </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
+      <Form-item label="创建时间" prop="startTime" class="fl">
+        <Date-picker type="datetime" v-model="searchForm.startTime" placeholder="起始时间" style="width: 160px"></Date-picker>
+      </Form-item>
+      <Form-item label="——" prop="endTime" class="fl" :label-width="35">
+        <Date-picker type="datetime" v-model="searchForm.endTime" placeholder="结束时间" style="width: 160px"></Date-picker>
+      </Form-item>
+      <Form-item :label-width="0">
+        <Button type="success" @click="userList(1)">查询</Button>
+        <Button @click="clear('searchForm')" style="margin-left: 8px">清空</Button>
       </Form-item>
     </Form>
     <div class="addGoods mb20" style="text-align: left;">
@@ -79,7 +93,7 @@
               <div v-if="userForm.certificateUrl" class="img-wrap oh">
                 <img :src="userForm.certificateUrl" alt="图片详情" style="height: 150px;">
               </div>
-              <div v-else class="img-wrap mt20 oh">
+              <div v-else class="img-wrap oh">
               </div>
             </Upload>
           </Form-item>
@@ -117,6 +131,13 @@ export default {
         certificateNo: '',
         certificateUrl: ''
       },
+      searchForm: {
+        userName: '',
+        roleId: '',
+        mobile: '',
+        startTime: '',
+        endTime: ''
+      },
       rules: {
         userName: [
           { required: true, message: '请输入名称', trigger: 'blur' }
@@ -130,6 +151,13 @@ export default {
         certificateNo: [
           { required: false, message: '请输证件号', trigger: 'blur' }
         ]
+      },
+      rulesForm: {
+        userName: [],
+        roleId: [],
+        mobile: [],
+        startTime: [{ type: 'date' }],
+        endTime: [{ type: 'date' }]
       }
     };
   },
@@ -146,7 +174,7 @@ export default {
         key: 'roleId'
       },
       {
-        title: '用户名',
+        title: '用户名称',
         key: 'userName'
       },
       {
@@ -232,11 +260,18 @@ export default {
       this.userList(page);
     },
     userList (pageNum) {
+      this.rows = [];
+      let page = { pageNum: pageNum || 1, pageSize: 10 };
+      // 时间组件会重新读取searchForm的时间，查询需要换算时间戳，由于格式问题会导致组件报错，
+      // 所以不用searchForm直接查询 —— 双向数据绑定遇到UI库的坑
+      let copy = Object.assign({}, this.searchForm);
+      copy.roleId = parseInt(this.searchForm.roleId);
+      copy.startTime = copy.startTime && Date.parse(copy.startTime);
+      copy.endTime = copy.endTime && Date.parse(copy.endTime);
+      let data = Object.assign(copy, page);
+      console.log(JSON.stringify(data));
       this.$axios
-        .post('/api/lms/admin/user/userList', {
-          pageNum: pageNum || 1,
-          pageSize: 10
-        })
+        .post('/api/lms/admin/user/userList', data)
         .then(res => {
           const data = res.data && res.data.data;
           const dataList = data.list || [];
@@ -381,6 +416,10 @@ export default {
         title: '超出文件大小限制',
         desc: '文件 ' + file.name + ' 太大，不能超过 2M。'
       });
+    },
+    clear (name) {
+      // 清空功能需要给每个加上prop属性
+      this.$refs[name].resetFields();
     }
   }
 };
@@ -389,8 +428,8 @@ export default {
 <style lang="scss">
   .form-item {
     float: left;
-    width: 24%;
-    padding-right: 30px;
+    width: 15%;
+    padding-right: 20px;
   }
   .img-wrap {
     width: 270px;
