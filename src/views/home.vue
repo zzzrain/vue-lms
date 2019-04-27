@@ -11,10 +11,8 @@
 </template>
 
 <script>
-
 import LoginIcon from '@/components/LoginIcon';
 import SideMenu from '@/components/SideMenu';
-
 export default {
   components: {
     LoginIcon,

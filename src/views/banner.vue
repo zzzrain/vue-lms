@@ -64,7 +64,6 @@
 <script>
 // import FileUpload from '@/components/FileUpload';
 import common from '@/common/common.js';
-
 export default {
   components: {
     // FileUpload

@@ -23,7 +23,6 @@
 
 <script>
 import common from '@/common/common.js';
-
 export default {
   data () {
     return {

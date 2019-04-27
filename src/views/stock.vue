@@ -1,33 +1,44 @@
 <template>
   <div class="table-list-cont pr25">
-    <Form label-position="left" :label-width="80" inline class="clear-fix">
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
+    <Form label-position="left" :label-width="80" ref="searchForm" :model="searchForm" :rules="rules" inline class="clear-fix">
+      <Form-item label="规格ID" class="form-item">
+        <Input placeholder="" v-model="searchForm.skuId"></Input>
       </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
-      </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
-      </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
+      <Form-item class="form-item"></Form-item>
+      <Form-item class="form-item"></Form-item>
+      <Form-item>
+        <Button type="success" @click="stockList(1)">查询</Button>
+        <!--<Button @click="clear('searchForm')" style="margin-left: 8px">清空</Button>-->
       </Form-item>
     </Form >
     <div class="addCategory mb20" style="text-align: left;">
       <Button type="primary" @click="stockPop">新增</Button>
       <Modal
         v-model="addPop"
-        @on-ok="updateSubmit"
+        title="增加库存"
+        @on-ok="stockAdd"
         @on-cancel="cancel">
-        <p slot="header">{{ handle }}</p>
         <Form abel-position="left" :label-width="70" ref="stockForm" :model="stockForm" :rules="rules">
-          <Form-item v-if="handle === '添加库存'" label="规格ID" prop="skuId">
+          <Form-item label="规格ID" prop="skuId">
             <Input placeholder="请输入" v-model="stockForm.skuId"></Input>
           </Form-item>
-          <Form-item v-else label="规格名称" prop="skuName">
-            <Input placeholder="请输入" v-model="stockForm.skuName"></Input>
+          <Form-item label="数量" prop="skuNum">
+            <Input placeholder="请输入" v-model="stockForm.skuNum"></Input>
           </Form-item>
+          <Form-item label="规格单位" prop="skuUnit" style="width: 200px;">
+            <Radio-group v-model="stockForm.skuUnit">
+              <Radio label="1">箱</Radio>
+              <Radio label="2">瓶</Radio>
+            </Radio-group>
+          </Form-item>
+        </Form >
+      </Modal>
+      <Modal
+        v-model="altPop"
+        title="修改库存"
+        @on-ok="stockAlt"
+        @on-cancel="cancel">
+        <Form abel-position="left" :label-width="70" ref="stockForm" :model="stockForm" :rules="rules">
           <Form-item label="数量" prop="skuNum">
             <Input placeholder="请输入" v-model="stockForm.skuNum"></Input>
           </Form-item>
@@ -54,8 +65,8 @@ export default {
   data () {
     return {
       total: 1,
-      handle: '添加库存',
       addPop: false,
+      altPop: false,
       self: this,
       cols: [],
       rows: [],
@@ -63,13 +74,15 @@ export default {
       stockForm: {
         repertoryId: '',
         skuId: '',
-        skuName: '',
         skuNum: '',
         skuUnit: ''
       },
+      searchForm: {
+        skuId: ''
+      },
       rules: {
         skuId: [
-          { required: true, message: '请输入名称', trigger: 'blur' }
+          { required: true, message: '请输入数量', trigger: 'blur' }
         ],
         skuNum: [
           { required: true, message: '请输入数量', trigger: 'blur' }
@@ -79,15 +92,10 @@ export default {
   },
   mounted () {
     let vm = this;
-    this.stockList();
     this.cols = [
       {
-        title: 'id',
+        title: '库存ID',
         key: 'id'
-      },
-      {
-        title: '规格ID',
-        key: 'skuId'
       },
       {
         title: '规格名称',
@@ -113,7 +121,7 @@ export default {
           return h('div', [
             h('Button', {
               props: {
-                type: 'primary',
+                type: 'warning',
                 size: 'small'
               },
               style: {
@@ -122,13 +130,13 @@ export default {
               on: {
                 click: function () {
                   console.log(params);
+                  vm.altPop = true;
                   let row = params.row;
                   let stockForm = vm.stockForm;
-                  vm.addPop = true;
-                  vm.handle = '修改库存';
-                  stockForm.skuName = row.skuName;
+                  stockForm.skuId = row.skuId;
                   stockForm.skuNum = row.skuNum;
-                  stockForm.skuUnit = row.skuUnit;
+                  stockForm.skuUnit = row.skuUnitCode;
+                  stockForm.repertoryId = row.repertoryId;
                 }
               }
             }, '修改')
@@ -144,9 +152,10 @@ export default {
       this.stockList(page);
     },
     stockList (pageNum) {
+      let searchForm = this.searchForm;
       let data = {
-        skuId: 21,
-        pageNum: pageNum || 1,
+        skuId: parseInt(searchForm.skuId),
+        pageNum,
         pageSize: 10
       };
       console.log(JSON.stringify(data));
@@ -157,13 +166,16 @@ export default {
           const dataList = data.list || [];
           if (res.data.code === '20000') {
             this.total = data.total;
+            this.rows = [];
             dataList.forEach(ele => {
               this.rows.push({
                 id: ele.id,
                 skuId: ele.skuId,
                 skuName: ele.skuName,
                 skuNum: ele.skuNum,
-                skuUnit: ele.skuUnit,
+                skuUnitCode: ele.skuUnit && ele.skuUnit.toString(),
+                repertoryId: ele.repertoryId,
+                skuUnit: common.skuUnit(ele.skuUnit),
                 updateTime: common.format(ele.updateTime)
               });
             });
@@ -179,10 +191,10 @@ export default {
         skuId: '',
         skuName: '',
         skuNum: '',
-        skuUnit: 1
+        skuUnit: ''
       };
     },
-    updateSubmit () {
+    stockAdd () {
       this.$refs.stockForm.validate((valid) => {
         if (valid) {
           let stockForm = this.stockForm;
@@ -192,27 +204,47 @@ export default {
             skuNum: parseInt(stockForm.skuNum),
             skuUnit: parseInt(stockForm.skuUnit)
           };
-          if (stockForm.repertoryId) {
-            data.optType = 2;
-            data.repertoryId = stockForm.repertoryId;
-          }
           console.log(JSON.stringify(data));
           this.$axios
             .post('/api/lms/admin/repertory/addRepertory', data)
             .then(res => {
               if (res.data.code === '20000') {
-                let idx = this.itemIdx;
-                if (data.optType) {
-                  this.rows[idx].skuId = stockForm.skuId;
-                  this.rows[idx].skuNum = stockForm.skuNum;
-                  this.rows[idx].skuUnit = stockForm.skuUnit;
-                }
                 this.$Message.info('新增成功');
               }
             })
             .catch(error => console.log(error));
         }
       });
+    },
+    stockAlt () {
+      this.$refs.stockForm.validate((valid) => {
+        if (valid) {
+          let stockForm = this.stockForm;
+          let data = {
+            optType: 2,
+            skuId: parseInt(stockForm.skuId),
+            skuNum: parseInt(stockForm.skuNum),
+            skuUnit: parseInt(stockForm.skuUnit),
+            repertoryId: parseInt(stockForm.repertoryId)
+          };
+          console.log(JSON.stringify(data));
+          // this.$axios
+          //   .post('/api/lms/admin/repertory/updateRepertory', data)
+          //   .then(res => {
+          //     if (res.data.code === '20000') {
+          //       let idx = this.itemIdx;
+          //       this.rows[idx].skuNum = stockForm.skuNum;
+          //       this.rows[idx].skuUnit = stockForm.skuUnit;
+          //       this.$Message.info('修改成功');
+          //     }
+          //   })
+          //   .catch(error => console.log(error));
+        }
+      });
+    },
+    clear (name) {
+      // 清空功能需要给每个加上prop属性
+      this.$refs[name].resetFields();
     },
     cancel () {}
   }

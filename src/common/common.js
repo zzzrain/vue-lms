@@ -29,87 +29,102 @@ module.exports = {
     return str;
   },
   role (ele) {
-    let role = '';
+    let res = '';
     switch (ele) {
       case 1 :
-        role = '采购员';
+        res = '采购员';
         break;
       case 2 :
-        role = '代理商';
+        res = '代理商';
         break;
       case 3 :
-        role = '业务员';
+        res = '业务员';
         break;
       case 4 :
-        role = '财务员';
+        res = '财务员';
         break;
       case 5 :
-        role = '仓管员';
+        res = '仓管员';
         break;
       case 6 :
-        role = '发货员';
+        res = '发货员';
         break;
       default:
-        role = '未知';
+        res = '未知';
         break;
     }
-    return role;
+    return res;
   },
   state (ele) {
-    let state = '';
+    let res = '';
     switch (ele) {
       case 0 :
-        state = '停用';
+        res = '停用';
         break;
       case 1 :
-        state = '启用';
+        res = '启用';
         break;
       default:
-        state = '未知状态';
+        res = '未知状态';
         break;
     }
-    return state;
+    return res;
+  },
+  skuUnit (ele) {
+    let res = '';
+    switch (ele) {
+      case 1 :
+        res = '箱';
+        break;
+      case 2 :
+        res = '瓶';
+        break;
+      default:
+        res = '未知状态';
+        break;
+    }
+    return res;
   },
   sort (ele) {
-    let sort = '';
+    let res = '';
     switch (ele) {
       case 1 :
-        sort = '最优';
+        res = '最优';
         break;
       case 2 :
-        sort = '其次';
+        res = '其次';
         break;
       case '最优' :
-        sort = '1';
+        res = '1';
         break;
       case '其次' :
-        sort = '2';
+        res = '2';
         break;
       default:
-        sort = '未知';
+        res = '未知';
         break;
     }
-    return sort;
+    return res;
   },
   bp (ele) {
-    let bp = '';
+    let res = '';
     switch (ele) {
       case 1 :
-        bp = '登录页面';
+        res = '登录页面';
         break;
       case 2 :
-        bp = '采购页面';
+        res = '采购页面';
         break;
       case '登录页面' :
-        bp = '1';
+        res = '1';
         break;
       case '采购页面' :
-        bp = '2';
+        res = '2';
         break;
       default:
-        bp = '未知状态';
+        res = '未知状态';
         break;
     }
-    return bp;
+    return res;
   }
 };
