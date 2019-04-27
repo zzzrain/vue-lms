@@ -34,7 +34,7 @@
       <Form-item label="商品描述" prop="goodsDesc">
         <Input v-model="formItem.goodsDesc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
       </Form-item>
-      <div v-if="addBtn" class="addGoods mb10 m40" style="text-align: left;">
+      <div class="addGoods mb10 m40" style="text-align: left;">
         <Button type="primary" @click="addPop">添加规格</Button>
       </div>
       <Modal
@@ -89,7 +89,6 @@ export default {
       skuCtrl: '', // sku表格修改
       skuIdx: 0, // sku修改目标
       skuTag: 0, // sku修改目标
-      addBtn: true,
       self: this,
       cols: [],
       rows: [],
@@ -193,18 +192,23 @@ export default {
               },
               on: {
                 click: function () {
+                  console.log(params);
                   let skuForm = vm.skuForm;
-                  // console.log(vm.skuForm);
-                  // console.log(params);
-                  vm.addSku = true;
                   vm.skuCtrl = 'alt';
                   vm.skuIdx = params.index;
-                  skuForm.agentPrice = params.row.agentPrice;
-                  skuForm.limitAgentPrice = params.row.limitAgentPrice;
-                  skuForm.purchaserPrice = params.row.purchaserPrice;
-                  skuForm.skuName = params.row.skuName;
-                  skuForm.skuPrice = params.row.skuPrice;
-                  skuForm.skuUnit = params.row.skuUnit;
+                  vm.skuTag = params.row.skuId;
+                  if (vm.handleCheck()) {
+                    let row = params.row;
+                    vm.addSku = true;
+                    skuForm.agentPrice = row.agentPrice;
+                    skuForm.limitAgentPrice = row.limitAgentPrice;
+                    skuForm.purchaserPrice = row.purchaserPrice;
+                    skuForm.skuName = row.skuName;
+                    skuForm.skuPrice = row.skuPrice;
+                    skuForm.skuUnit = row.skuUnit.toString();
+                  } else {
+                    vm.$Message.info('已发布规格不可操作');
+                  }
                 }
               }
             }, '修改'),
@@ -221,7 +225,11 @@ export default {
                   vm.skuCtrl = 'del';
                   vm.skuIdx = params.index;
                   vm.skuTag = params.row.skuId;
-                  vm.skuPop();
+                  if (vm.handleCheck()) {
+                    vm.skuPop();
+                  } else {
+                    vm.$Message.info('已发布规格不可操作');
+                  }
                 }
               }
             }, '删除')
@@ -274,10 +282,11 @@ export default {
                 skuInfos: formItem.skuDtos,
                 status: 1
               };
-              this.rows = formItem.skuDtos;
+              this.rows = formItem.skuDtos.map(ele => {
+                ele.skuUnitCode = ele.skuUnit && ele.skuUnit.toString();
+                return ele;
+              });
               this.cols.unshift({ title: '规格ID', key: 'skuId' });
-              this.cols.pop();
-              this.addBtn = false;
             }
           }
         })
@@ -286,8 +295,8 @@ export default {
     addPop () {
       this.addSku = true;
       this.skuCtrl = 'add';
-      this.skuForm.skuUnit = '1';
       this.$refs.skuForm.resetFields();
+      this.skuForm.skuUnit = '1';
     },
     skuPop () {
       let skuForm = this.skuForm;
@@ -303,24 +312,12 @@ export default {
         skuUnit: parseInt(skuForm.skuUnit)
       };
       console.log(this.skuCtrl);
-      if (this.skuCtrl === 'alt') {
-        this.rows.splice(this.skuIdx, 1, skuData);
-      } else if (this.skuCtrl === 'del') {
-        // let isDel = true;
-        // let skuTag = this.skuTag;
-        // this.rows.forEach(ele => {
-        //   if (skuTag && skuTag === ele.skuId) {
-        //     isDel = false;
-        //   }
-        // });
-        // if (isDel) {
-        //   this.rows.splice(this.skuIdx, 1);
-        // } else {
-        //   this.$Message.info('已发布规格不可删除');
-        // }
-        this.rows.splice(this.skuIdx, 1);
-      } else {
+      if (this.skuCtrl === 'add') {
         this.rows.push(skuData);
+      } else if (this.skuCtrl === 'alt') {
+        this.rows.splice(this.skuIdx, 1, skuData);
+      } else {
+        this.rows.splice(this.skuIdx, 1);
       }
       // 如果添加sku，上面的push也会影响skuDtos的数据，需做判断
       if (!this.formItem.goodsId) {
@@ -328,6 +325,17 @@ export default {
       }
       // console.log(skuData);
       // console.log(this.formItem);
+    },
+    handleCheck () {
+      let isDel = true;
+      let skuTag = this.skuTag;
+      console.log(this.rows);
+      this.rows.forEach(ele => {
+        if (skuTag && skuTag === ele.skuId) {
+          isDel = false;
+        }
+      });
+      return isDel;
     },
     handleSubmit (name) {
       this.$refs[name].validate((valid) => {
