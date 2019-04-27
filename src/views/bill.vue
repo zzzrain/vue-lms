@@ -126,7 +126,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
   .form-item {
     float: left;
     width: 24%;

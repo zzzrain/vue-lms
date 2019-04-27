@@ -18,7 +18,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .login-con {
     width: 300px;
     position: absolute;

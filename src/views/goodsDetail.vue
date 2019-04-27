@@ -410,7 +410,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
   .form-item {
     width: 300px;
   }

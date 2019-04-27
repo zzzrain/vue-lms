@@ -28,7 +28,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
   .left-cont {
     width: 15%;background: #515a6e
   }

@@ -1,19 +1,5 @@
 <template>
   <div class="table-list-cont pr25">
-    <Form label-position="left" :label-width="80" inline class="clear-fix">
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
-      </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
-      </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
-      </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
-      </Form-item>
-    </Form >
     <div class="addCategory mb20" style="text-align: left;">
       <Button type="primary" @click="categoryPop">新增</Button>
       <Modal
@@ -227,7 +213,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
   .form-item {
     float: left;
     width: 24%;

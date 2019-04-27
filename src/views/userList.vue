@@ -273,9 +273,9 @@ export default {
       this.$axios
         .post('/api/lms/admin/user/userList', data)
         .then(res => {
-          const data = res.data && res.data.data;
-          const dataList = data.list || [];
           if (res.data.code === '20000') {
+            const data = res.data && res.data.data;
+            const dataList = data.list || [];
             this.total = data.total;
             dataList.forEach(ele => {
               this.rows.push({
@@ -425,7 +425,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
   .form-item {
     float: left;
     width: 15%;

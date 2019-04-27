@@ -1,19 +1,18 @@
 <template>
   <div class="table-list-cont pr25">
-    <Form label-position="left" :label-width="80" inline class="clear-fix">
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
+    <Form label-position="left" :label-width="80" ref="searchForm" :rules="rules" inline class="clear-fix">
+      <Form-item label="商品ID" class="form-item">
+        <Input placeholder="" v-model="goodsId"></Input>
       </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
+      <Form-item label="商品名称" class="form-item">
+        <Input placeholder="" v-model="goodsName"></Input>
       </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
+      <Form-item class="form-item"></Form-item>
+      <Form-item>
+        <Button type="success" @click="goodsList(1)">查询</Button>
+        <!--<Button @click="clear('searchForm')" style="margin-left: 8px">清空</Button>-->
       </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
-      </Form-item>
-    </Form>
+    </Form >
     <div class="addGoods mb20" style="text-align: left;">
       <router-link to="/home/goodsDetail"><Button type="primary">新增</Button></router-link>
     </div>
@@ -28,18 +27,19 @@
 
 <script>
 import common from '@/common/common.js';
-import FileUpload from '@/components/FileUpload';
 export default {
-  components: {
-    FileUpload
-  },
   data () {
     return {
       total: 1,
       self: this,
       cols: [],
       rows: [],
-      goodsId: ''
+      goodsId: '',
+      goodsName: '',
+      rules: {
+        goodsId: [],
+        goodsName: []
+      }
     };
   },
   mounted () {
@@ -47,11 +47,11 @@ export default {
     this.goodsList();
     this.cols = [
       {
-        title: '编号',
+        title: '商品ID',
         key: 'goodsId'
       },
       {
-        title: '名称',
+        title: '商品名称',
         key: 'goodsName'
       },
       {
@@ -138,8 +138,11 @@ export default {
       this.goodsList(page);
     },
     goodsList (pageNum) {
+      this.rows = [];
       this.$axios
         .post('/api/lms/admin/goods/goodsList', {
+          goodsId: parseInt(this.goodsId),
+          goodsName: this.goodsName,
           pageNum: pageNum || 1,
           pageSize: 10
         })
@@ -164,12 +167,16 @@ export default {
     },
     goodsDetail (id) {
       this.$router.push(`/home/goodsDetail?id=${id}`);
+    },
+    clear (name) {
+      // 清空功能需要给每个加上prop属性
+      this.$refs[name].resetFields();
     }
   }
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
   .form-item {
     float: left;
     width: 24%;
