@@ -1,7 +1,7 @@
 <template>
   <div class="table-list-cont pr25">
     <Form label-position="left" :label-width="60" ref="searchForm" :model="searchForm" :rules="rulesForm" inline class="cancel-fix">
-      <Form-item label="用户名称" prop="userName" class="form-item" >
+      <Form-item label="昵称" prop="userName" class="form-item" >
         <Input v-model="searchForm.userName"></Input>
       </Form-item>
       <Form-item label="联系电话" prop="mobile" class="form-item">
@@ -36,8 +36,11 @@
         width="400"
         @on-ok="addUser">
         <Form abel-position="left" :label-width="60" ref="userForm" :model="userForm" :rules="rules">
-          <Form-item label="用户名" prop="userName">
+          <Form-item label="昵称" prop="userName">
             <Input placeholder="请输入" v-model="userForm.userName"></Input>
+          </Form-item>
+          <Form-item label="账号" prop="userAccount">
+            <Input placeholder="请输入" v-model="userForm.userAccount"></Input>
           </Form-item>
           <Form-item label="密码" prop="userPassword">
             <Input placeholder="请输入" v-model="userForm.userPassword"></Input>
@@ -63,7 +66,7 @@
         width="400"
         @on-ok="altUser">
         <Form abel-position="left" :label-width="60" ref="userForm" :model="userForm" :rules="rules">
-          <Form-item label="用户名" prop="userName">
+          <Form-item label="昵称" prop="userName">
             <Input placeholder="请输入" v-model="userForm.userName"></Input>
           </Form-item>
           <Form-item label="手机号" prop="mobile">
@@ -104,7 +107,8 @@
         title="详细信息"
         width="400">
         <Form abel-position="left" :label-width="60">
-          <Form-item label="用户名" prop="userName">{{ userForm.userName }}</Form-item>
+          <Form-item label="昵称" prop="userName">{{ userForm.userName }}</Form-item>
+          <Form-item label="账号" prop="userName">{{ userForm.userAccount }}</Form-item>
           <Form-item label="手机号" prop="mobile">{{ userForm.mobile }}</Form-item>
           <Form-item label="角色" prop="userType">{{ userForm.userType }}</Form-item>
           <Form-item label="证件" prop="certificateNo">{{ userForm.certificateNo }}</Form-item>
@@ -161,7 +165,7 @@ export default {
           { required: true, message: '请输入名称', trigger: 'blur' }
         ],
         userAccount: [
-          { required: true, message: '请输入名称', trigger: 'blur' }
+          { required: true, message: '请输入账号', trigger: 'blur' }
         ],
         userPassword: [
           { required: true, message: '请输入密码', trigger: 'blur' }
@@ -184,16 +188,20 @@ export default {
     this.userList();
     this.cols = [
       {
-        title: '用户ID',
+        title: 'id',
         key: 'id'
       },
       {
-        title: '用户角色',
+        title: '角色',
         key: 'userType'
       },
       {
-        title: '用户名称',
+        title: '昵称',
         key: 'userName'
+      },
+      {
+        title: '账号',
+        key: 'userAccount'
       },
       {
         title: '联系电话',
@@ -282,14 +290,23 @@ export default {
     },
     userList (pageNum) {
       this.rows = [];
-      let page = { pageNum: pageNum || 1, pageSize: 10 };
       // 时间组件会重新读取searchForm的时间，查询需要换算时间戳，由于格式问题会导致组件报错，
       // 所以不用searchForm直接查询 —— 双向数据绑定遇到UI库的坑
-      let copy = Object.assign({}, this.searchForm);
-      copy.userType = parseInt(this.searchForm.userType);
-      copy.startTime = copy.startTime && Date.parse(copy.startTime);
-      copy.endTime = copy.endTime && Date.parse(copy.endTime);
-      let data = Object.assign(copy, page);
+      // let page = { pageNum: pageNum || 1, pageSize: 10 };
+      // let copy = Object.assign({}, this.searchForm);
+      // copy.userType = parseInt(this.searchForm.userType);
+      // copy.startTime = copy.startTime && Date.parse(copy.startTime);
+      // copy.endTime = copy.endTime && Date.parse(copy.endTime);
+      // let data = Object.assign(copy, page);
+      let data = {
+        mobile: this.searchForm.mobile,
+        userName: this.searchForm.userName,
+        userType: parseInt(this.searchForm.userType),
+        startTime: this.searchForm.startTime && Date.parse(this.searchForm.startTime),
+        endTime: this.searchForm.endTime && Date.parse(this.searchForm.endTime),
+        pageNum: pageNum || 1,
+        pageSize: 10
+      };
       console.log(JSON.stringify(data));
       this.$axios
         .post('/api/lms/admin/user/userList', data)
@@ -304,6 +321,7 @@ export default {
                 roleId: common.role(ele.roleId),
                 userType: common.role(ele.userType),
                 userName: ele.userName,
+                userAccount: ele.userAccount,
                 mobile: ele.mobile,
                 status: common.state(ele.status),
                 createTime: common.format(ele.createTime)
@@ -347,7 +365,7 @@ export default {
             roleId: parseInt(this.userForm.roleId),
             userType: parseInt(this.userForm.roleId),
             userName: this.userForm.userName,
-            userAccount: this.userForm.userName,
+            userAccount: this.userForm.userAccount,
             userPassword: this.userForm.userPassword,
             mobile: this.userForm.mobile,
             status: 1,
@@ -380,7 +398,6 @@ export default {
               roleId: parseInt(this.userForm.userType),
               userType: parseInt(this.userForm.userType),
               userName: this.userForm.userName,
-              userAccount: this.userForm.userName,
               mobile: this.userForm.mobile,
               certificateNo: this.userForm.certificateNo,
               certificateUrl: this.userForm.certificateUrl,
