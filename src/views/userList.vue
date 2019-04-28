@@ -377,7 +377,7 @@ export default {
           if (valid) {
             let data = {
               id: this.userForm.id,
-              roleId: parseInt(this.userForm.roleId),
+              roleId: parseInt(this.userForm.userType),
               userType: parseInt(this.userForm.userType),
               userName: this.userForm.userName,
               userAccount: this.userForm.userName,
