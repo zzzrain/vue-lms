@@ -1,17 +1,20 @@
 <template>
   <div class="table-list-cont pr25">
     <Form label-position="left" :label-width="80" inline class="clear-fix">
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
+      <Form-item label="订单编号" class="form-item">
+        <Input placeholder="" v-model="orderId"></Input>
       </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
+      <Form-item label="创建时间" class="fl">
+        <Date-picker type="datetime" v-model="startTime" placeholder="起始时间" style="width: 160px"></Date-picker>
       </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
+      <Form-item label="——" class="fl" :label-width="35">
+        <Date-picker type="datetime" v-model="endTime" placeholder="结束时间" style="width: 160px"></Date-picker>
       </Form-item>
-      <Form-item label="输入框" class="form-item">
-        <Input placeholder="请输入"></Input>
+      <Form-item></Form-item>
+      <Form-item></Form-item>
+      <Form-item>
+        <Button type="success" @click="orderList(1)">查询</Button>
+        <!--<Button @click="clear('searchForm')" style="margin-left: 8px">清空</Button>-->
       </Form-item>
     </Form >
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
@@ -29,7 +32,10 @@ export default {
       total: 1,
       self: this,
       cols: [],
-      rows: []
+      rows: [],
+      orderId: '',
+      startTime: '',
+      endTime: ''
     };
   },
   mounted () {
@@ -61,7 +67,7 @@ export default {
         key: 'remark'
       },
       {
-        title: '创建日期',
+        title: '创建时间',
         key: 'createTime'
       },
       {
@@ -96,11 +102,20 @@ export default {
       this.orderList(page);
     },
     orderList (pageNum) {
+      this.rows = [];
+      let orderId = this.orderId;
+      let startTime = this.startTime && Date.parse(this.startTime);
+      let endTime = this.endTime && Date.parse(this.endTime);
+      let data = {
+        orderId,
+        startTime,
+        endTime,
+        pageNum: pageNum || 1,
+        pageSize: 10
+      };
+      console.log(JSON.stringify(data));
       this.$axios
-        .post('/api/lms/admin/order/orderList', {
-          pageNum: pageNum || 1,
-          pageSize: 10
-        })
+        .post('/api/lms/admin/order/orderList', data)
         .then(res => {
           const data = res.data && res.data.data;
           const dataList = data.list || [];
