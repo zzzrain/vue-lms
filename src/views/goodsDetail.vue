@@ -358,6 +358,9 @@ export default {
               .then(res => {
                 if (res.data.code === '20000') {
                   this.$Message.info('修改成功');
+                  setTimeout(() => {
+                    window.history.back();
+                  }, 2000);
                 } else {
                   this.$Message.info(res.data.message || '操作失败');
                 }
@@ -370,6 +373,9 @@ export default {
               .then(res => {
                 if (res.data.code === '20000') {
                   this.$Message.info('新增成功');
+                  setTimeout(() => {
+                    window.history.back();
+                  }, 2000);
                 } else {
                   this.$Message.info(res.data.message || '操作失败');
                 }

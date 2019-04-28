@@ -30,9 +30,11 @@ export default {
 
 <style scoped lang="scss">
   .left-cont {
-    width: 15%;background: #515a6e
+    width: 15%;
+    background: #515a6e
   }
   .right-cont {
-    width: 85%;padding: 0 50px
+    width: 85%;
+    padding: 0 50px 30px 50px;
   }
 </style>

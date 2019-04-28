@@ -41,20 +41,20 @@ export default {
         key: 'orderId'
       },
       {
-        title: '详细地址',
-        key: 'detailAddress'
-      },
-      {
-        title: '配送方式',
-        key: 'dispatchType'
-      },
-      {
         title: '订单总价',
         key: 'totalPrice'
       },
       {
         title: '订单状态 ',
         key: 'status'
+      },
+      {
+        title: '详细地址',
+        key: 'detailAddress'
+      },
+      {
+        title: '配送方式',
+        key: 'dispatchType'
       },
       {
         title: '备注',

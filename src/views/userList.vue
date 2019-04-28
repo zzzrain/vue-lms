@@ -1,14 +1,14 @@
 <template>
   <div class="table-list-cont pr25">
-    <Form label-position="left" :label-width="60" ref="searchForm" :model="searchForm" :rules="rulesForm" inline class="clear-fix">
+    <Form label-position="left" :label-width="60" ref="searchForm" :model="searchForm" :rules="rulesForm" inline class="cancel-fix">
       <Form-item label="用户名称" prop="userName" class="form-item" >
         <Input v-model="searchForm.userName"></Input>
       </Form-item>
       <Form-item label="联系电话" prop="mobile" class="form-item">
         <Input v-model="searchForm.mobile"></Input>
       </Form-item>
-      <Form-item label="角色类型" prop="roleId" class="form-item">
-        <Select v-model="searchForm.roleId">
+      <Form-item label="角色类型" prop="userType" class="form-item">
+        <Select v-model="searchForm.userType">
           <Option value="1">采购员</Option>
           <Option value="2">代理商</Option>
           <Option value="3">业务员</Option>
@@ -23,12 +23,12 @@
       <Form-item label="——" prop="endTime" class="fl" :label-width="35">
         <Date-picker type="datetime" v-model="searchForm.endTime" placeholder="结束时间" style="width: 160px"></Date-picker>
       </Form-item>
-      <Form-item :label-width="0">
-        <Button type="success" @click="userList(1)">查询</Button>
-        <Button @click="clear('searchForm')" style="margin-left: 8px">清空</Button>
+      <Form-item :label-width="0" class="fl">
+        <Button type="success" @click="userList(1)" style="margin-left: 8px">查询</Button>
+        <Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>
       </Form-item>
     </Form>
-    <div class="addGoods mb20" style="text-align: left;">
+    <div class="addGoods mb20" style="width: 56px;">
       <Button type="primary" @click="userPop">新增</Button>
       <Modal
         v-model="addPop"
@@ -45,8 +45,8 @@
           <Form-item label="手机号" prop="mobile">
             <Input placeholder="请输入" v-model="userForm.mobile"></Input>
           </Form-item>
-          <Form-item label="角色" prop="roleId">
-            <Select placeholder="请选择" v-model="userForm.roleId">
+          <Form-item label="角色" prop="userType">
+            <Select placeholder="请选择" v-model="userForm.userType">
               <Option value="1">采购员</Option>
               <Option value="2">代理商</Option>
               <Option value="3">业务员</Option>
@@ -69,8 +69,8 @@
           <Form-item label="手机号" prop="mobile">
             <Input placeholder="请输入" v-model="userForm.mobile"></Input>
           </Form-item>
-          <Form-item label="角色" prop="roleId">
-            <Select placeholder="请选择" v-model="userForm.roleId">
+          <Form-item label="角色" prop="userType">
+            <Select placeholder="请选择" v-model="userForm.userType">
               <Option value="1">采购员</Option>
               <Option value="2">代理商</Option>
               <Option value="3">业务员</Option>
@@ -99,6 +99,23 @@
           </Form-item>
         </Form >
       </Modal>
+      <Modal
+        v-model="detailPop"
+        title="详细信息"
+        width="400">
+        <Form abel-position="left" :label-width="60">
+          <Form-item label="用户名" prop="userName">{{ userForm.userName }}</Form-item>
+          <Form-item label="手机号" prop="mobile">{{ userForm.mobile }}</Form-item>
+          <Form-item label="角色" prop="userType">{{ userForm.userType }}</Form-item>
+          <Form-item label="证件" prop="certificateNo">{{ userForm.certificateNo }}</Form-item>
+          <Form-item>
+            <div v-if="userForm.certificateUrl" class="img-wrap oh">
+              <img :src="userForm.certificateUrl" alt="图片详情" style="height: 150px;">
+            </div>
+            <div v-else class="img-wrap oh"></div>
+          </Form-item>
+        </Form >
+      </Modal>
     </div>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
     <div class="fr">
@@ -115,6 +132,7 @@ export default {
       total: 1,
       addPop: false,
       altPop: false,
+      detailPop: false,
       self: this,
       cols: [],
       rows: [],
@@ -154,10 +172,10 @@ export default {
       },
       rulesForm: {
         userName: [],
-        roleId: [],
+        userType: [],
         mobile: [],
-        startTime: [{ type: 'date' }],
-        endTime: [{ type: 'date' }]
+        startTime: [{ required: false, type: 'date' }],
+        endTime: [{ required: false, type: 'date' }]
       }
     };
   },
@@ -171,7 +189,7 @@ export default {
       },
       {
         title: '用户角色',
-        key: 'roleId'
+        key: 'userType'
       },
       {
         title: '用户名称',
@@ -213,6 +231,7 @@ export default {
               on: {
                 click: function () {
                   vm.userIdx = userIdx;
+                  vm.altPop = true;
                   vm.userDetail(id);
                 }
               }
@@ -227,6 +246,8 @@ export default {
               },
               on: {
                 click: function () {
+                  vm.detailPop = true;
+                  vm.userDetail(id);
                 }
               }
             }, '详情'),
@@ -265,7 +286,7 @@ export default {
       // 时间组件会重新读取searchForm的时间，查询需要换算时间戳，由于格式问题会导致组件报错，
       // 所以不用searchForm直接查询 —— 双向数据绑定遇到UI库的坑
       let copy = Object.assign({}, this.searchForm);
-      copy.roleId = parseInt(this.searchForm.roleId);
+      copy.userType = parseInt(this.searchForm.userType);
       copy.startTime = copy.startTime && Date.parse(copy.startTime);
       copy.endTime = copy.endTime && Date.parse(copy.endTime);
       let data = Object.assign(copy, page);
@@ -302,44 +323,33 @@ export default {
           if (res.data.code === '20000') {
             this.userForm = {
               id: data.id,
+              roleId: data.roleId && data.roleId.toString(),
+              userType: data.userType && data.userType.toString(),
               userName: data.userName,
               userAccount: data.userAccount,
               mobile: data.mobile,
-              roleId: data.roleId && data.roleId.toString(),
-              userType: data.userType && data.userType.toString(),
               certificateNo: data.certificateNo,
               certificateUrl: data.certificateUrl
             };
-            this.altPop = true;
           }
         })
         .catch(error => console.log(error));
     },
     userPop () {
       this.addPop = true;
-      this.userForm = {
-        id: '',
-        userName: '',
-        userAccount: '',
-        userPassword: '',
-        mobile: '',
-        roleId: '1',
-        userType: '1',
-        certificateNo: '',
-        certificateUrl: ''
-      };
-      this.$refs.userForm.resetFields();
+      this.userForm.roleId = '1';
+      this.userForm.userType = '1';
     },
     addUser () {
       this.$refs.userForm.validate((valid) => {
         if (valid) {
           let data = {
+            roleId: parseInt(this.userForm.roleId),
+            userType: parseInt(this.userForm.roleId),
             userName: this.userForm.userName,
             userAccount: this.userForm.userName,
             userPassword: this.userForm.userPassword,
             mobile: this.userForm.mobile,
-            roleId: parseInt(this.userForm.roleId),
-            userType: parseInt(this.userForm.roleId),
             status: 1,
             wxPerm: 1
           };
@@ -367,11 +377,11 @@ export default {
           if (valid) {
             let data = {
               id: this.userForm.id,
+              roleId: parseInt(this.userForm.roleId),
+              userType: parseInt(this.userForm.userType),
               userName: this.userForm.userName,
               userAccount: this.userForm.userName,
               mobile: this.userForm.mobile,
-              roleId: parseInt(this.userForm.roleId),
-              userType: parseInt(this.userForm.roleId),
               certificateNo: this.userForm.certificateNo,
               certificateUrl: this.userForm.certificateUrl,
               status: 1,
@@ -391,8 +401,8 @@ export default {
             this.$Message.info('修改成功');
             if (!bool) {
               // 修改成功后把数据重新写入表格
-              data.userType = common.role(data.userType);
               data.roleId = common.role(data.roleId);
+              data.userType = common.role(data.userType);
               data.status = common.state(data.status);
               data.createTime = this.rows[this.userIdx].createTime;
               this.rows.splice(this.userIdx, 1, data);
@@ -417,7 +427,7 @@ export default {
         desc: '文件 ' + file.name + ' 太大，不能超过 2M。'
       });
     },
-    clear (name) {
+    cancel (name) {
       // 清空功能需要给每个加上prop属性
       this.$refs[name].resetFields();
     }

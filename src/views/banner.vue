@@ -190,9 +190,10 @@ export default {
           pageSize: 10
         })
         .then(res => {
-          const data = res.data && res.data.data;
-          const dataList = data.list || [];
           if (res.data.code === '20000') {
+            const data = res.data && res.data.data;
+            const dataList = data.list || [];
+            this.total = data.total;
             dataList.forEach(ele => {
               this.rows.push({
                 id: ele.id,

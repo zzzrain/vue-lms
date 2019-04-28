@@ -17,10 +17,8 @@
       <router-link to="/home/goodsDetail"><Button type="primary">新增</Button></router-link>
     </div>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
-    <div class="oh">
-      <div class="fr">
-        <Page :total="total" show-elevator @on-change="changePage"></Page>
-      </div>
+    <div class="fr">
+      <Page :total="total" show-elevator @on-change="changePage"></Page>
     </div>
   </div>
 </template>
