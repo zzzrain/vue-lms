@@ -74,10 +74,10 @@ module.exports = {
     let res = '';
     switch (ele) {
       case 1 :
-        res = '箱';
+        res = '瓶';
         break;
       case 2 :
-        res = '瓶';
+        res = '箱';
         break;
       default:
         res = '未知状态';
