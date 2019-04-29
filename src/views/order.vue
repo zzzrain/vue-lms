@@ -1,20 +1,20 @@
 <template>
   <div class="table-list-cont pr25">
     <Form label-position="left" :label-width="80" inline class="clear-fix">
-      <Form-item label="订单编号" class="form-item">
+      <Form-item label="订单编号" porp="orderId" class="form-item">
         <Input placeholder="" v-model="orderId"></Input>
       </Form-item>
-      <Form-item label="创建时间" class="fl">
+      <Form-item label="创建时间" prop="startTime" class="fl">
         <Date-picker type="datetime" v-model="startTime" placeholder="起始时间" style="width: 160px"></Date-picker>
       </Form-item>
-      <Form-item label="——" class="fl" :label-width="35">
+      <Form-item label="——" prop="endTime" :label-width="35" class="fl">
         <Date-picker type="datetime" v-model="endTime" placeholder="结束时间" style="width: 160px"></Date-picker>
       </Form-item>
       <Form-item></Form-item>
       <Form-item></Form-item>
       <Form-item>
         <Button type="success" @click="orderList(1)">查询</Button>
-        <!--<Button @click="clear('searchForm')" style="margin-left: 8px">清空</Button>-->
+        <!--<Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>-->
       </Form-item>
     </Form >
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
@@ -136,7 +136,10 @@ export default {
         })
         .catch(error => console.log(error));
     },
-    cancel () {}
+    cancel (name) {
+      // 清空功能需要给每个加上prop属性
+      this.$refs[name].resetFields();
+    }
   }
 };
 </script>

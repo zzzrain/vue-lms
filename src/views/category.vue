@@ -122,7 +122,7 @@ export default {
                   vm.categoryForm.name = params.row.categoryName;
                   vm.updateSubmit(function () {
                     params.row.status = btn;
-                  }, true);
+                  });
                 }
               }
             }, btn)
@@ -163,15 +163,11 @@ export default {
     },
     categoryPop () {
       this.addPop = true;
-      this.categoryForm = {
-        id: '',
-        name: '',
-        level: '1',
-        status: ''
-      };
+      this.resetForm();
+      this.categoryForm.level = '1';
       this.$refs.categoryForm.resetFields();
     },
-    updateSubmit (cb, bool) {
+    updateSubmit (cb) {
       if (this.addPop) {
         this.$refs.categoryForm.validate((valid) => {
           if (valid) {
@@ -179,10 +175,10 @@ export default {
           }
         });
       } else {
-        this.updateAjax(cb, bool);
+        this.updateAjax(cb);
       }
     },
-    updateAjax (cb, bool) {
+    updateAjax (cb) {
       let data = {
         categoryName: this.categoryForm.name,
         categoryLevel: this.categoryForm.level,
@@ -198,8 +194,8 @@ export default {
         .then(res => {
           if (res.data.code === '20000') {
             this.$Message.info('新增成功');
-            cb && cb();
-            if (!bool) {
+            if (cb) cb();
+            else {
               let idx = this.itemIdx;
               this.rows[idx].categoryName = this.categoryForm.name;
               this.rows[idx].categoryLevel = this.categoryForm.level;
@@ -207,6 +203,14 @@ export default {
           }
         })
         .catch(error => console.log(error));
+    },
+    resetForm () {
+      this.categoryForm = {
+        id: '',
+        name: '',
+        level: '',
+        status: ''
+      };
     },
     cancel () {}
   }

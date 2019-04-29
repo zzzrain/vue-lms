@@ -1,6 +1,6 @@
 <template>
   <div class="table-list-cont pr25">
-    <Form label-position="left" :label-width="80" ref="searchForm" :model="searchForm" :rules="rules" inline class="clear-fix">
+    <Form label-position="left" :label-width="80" ref="searchForm" :model="searchForm" inline class="clear-fix">
       <Form-item label="规格ID" class="form-item">
         <Input placeholder="" v-model="searchForm.skuId"></Input>
       </Form-item>

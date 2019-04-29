@@ -58,10 +58,10 @@
           <Form-item label="采购商价格" prop="purchaserPrice" class="form-item">
             <Input v-model="skuForm.purchaserPrice" placeholder="请输入"></Input>
           </Form-item>
-          <Form-item label="商品规格" prop="skuUnit" style="width: 200px;">
+          <Form-item label="商品规格" prop="skuUnit" style="width: 200px;height: 32px;">
             <Radio-group v-model="skuForm.skuUnit">
-              <Radio label="1">箱</Radio>
-              <Radio label="2">瓶</Radio>
+              <Radio label="1">瓶</Radio>
+              <Radio label="2">箱</Radio>
             </Radio-group>
           </Form-item>
         </Form >

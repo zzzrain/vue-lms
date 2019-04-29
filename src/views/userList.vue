@@ -1,6 +1,6 @@
 <template>
   <div class="table-list-cont pr25">
-    <Form label-position="left" :label-width="60" ref="searchForm" :model="searchForm" :rules="rulesForm" inline class="cancel-fix">
+    <Form label-position="left" :label-width="60" ref="searchForm" :model="searchForm" inline class="clear-fix">
       <Form-item label="昵称" prop="userName" class="form-item" >
         <Input v-model="searchForm.userName"></Input>
       </Form-item>
@@ -23,13 +23,15 @@
       <Form-item label="——" prop="endTime" class="fl" :label-width="35">
         <Date-picker type="datetime" v-model="searchForm.endTime" placeholder="结束时间" style="width: 160px"></Date-picker>
       </Form-item>
-      <Form-item :label-width="0" class="fl">
-        <Button type="success" @click="userList(1)" style="margin-left: 8px">查询</Button>
-        <Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>
-      </Form-item>
+      <!--<Form-item :label-width="0" class="fl">-->
+        <!--<Button type="success" @click="userList(1)" style="margin-left: 8px">查询</Button>-->
+        <!--<Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>-->
+      <!--</Form-item>-->
     </Form>
-    <div class="addGoods mb20" style="width: 56px;">
+    <div class="addGoods mb20" style="text-align: left">
       <Button type="primary" @click="userPop">新增</Button>
+      <Button type="success" @click="userList(1)" style="margin-left: 8px">查询</Button>
+      <Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>
       <Modal
         v-model="addPop"
         title="新增用户"
@@ -93,10 +95,10 @@
               :max-size="2048"
               :on-success="handleSuccess"
               action="/api/lms/admin/fileUpload/uploadFile?isThumb=1&isImage=true">
-              <div v-if="userForm.certificateUrl" class="img-wrap oh">
+              <div v-if="userForm.certificateUrl" class="img-wrap oh po">
                 <img :src="userForm.certificateUrl" alt="图片详情" style="height: 150px;">
               </div>
-              <div v-else class="img-wrap oh">
+              <div v-else class="img-wrap oh po">
               </div>
             </Upload>
           </Form-item>
@@ -173,13 +175,6 @@ export default {
         certificateNo: [
           { required: false, message: '请输证件号', trigger: 'blur' }
         ]
-      },
-      rulesForm: {
-        userName: [],
-        userType: [],
-        mobile: [],
-        startTime: [{ required: false, type: 'date' }],
-        endTime: [{ required: false, type: 'date' }]
       }
     };
   },
@@ -273,7 +268,7 @@ export default {
                   vm.userForm.status = status;
                   vm.altUser(function () {
                     params.row.status = btn;
-                  }, true);
+                  });
                 }
               }
             }, btn)
@@ -355,6 +350,7 @@ export default {
     },
     userPop () {
       this.addPop = true;
+      this.resetForm();
       this.userForm.roleId = '1';
       this.userForm.userType = '1';
     },
@@ -383,13 +379,13 @@ export default {
         }
       });
     },
-    altUser (cb, bool) {
-      if (bool) {
+    altUser (cb) {
+      if (cb) {
         let data = {
           id: this.userForm.id,
           status: this.userForm.status === '启用' ? 0 : 1
         };
-        this.altAjax(data, cb, bool);
+        this.altAjax(data, cb);
       } else {
         this.$refs.userForm.validate((valid) => {
           if (valid) {
@@ -405,18 +401,19 @@ export default {
               wxPerm: 1
             };
             console.log(JSON.stringify(data));
-            this.altAjax(data, cb, bool);
+            this.altAjax(data, cb);
           }
         });
       }
     },
-    altAjax (data, cb, bool) {
+    altAjax (data, cb) {
       this.$axios
         .post('/api/lms/admin/user/updateUser', data)
         .then(res => {
           if (res.data.code === '20000') {
             this.$Message.info('修改成功');
-            if (!bool) {
+            if (cb) cb();
+            else {
               // 修改成功后把数据重新写入表格
               data.roleId = common.role(data.roleId);
               data.userType = common.role(data.userType);
@@ -424,7 +421,6 @@ export default {
               data.createTime = this.rows[this.userIdx].createTime;
               this.rows.splice(this.userIdx, 1, data);
             }
-            cb && cb();
           }
         })
         .catch(error => console.log(error));
@@ -444,6 +440,19 @@ export default {
         desc: '文件 ' + file.name + ' 太大，不能超过 2M。'
       });
     },
+    resetForm () {
+      this.userForm = {
+        id: '',
+        userName: '',
+        userAccount: '',
+        userPassword: '',
+        roleId: '',
+        userType: '',
+        mobile: '',
+        certificateNo: '',
+        certificateUrl: ''
+      };
+    },
     cancel (name) {
       // 清空功能需要给每个加上prop属性
       this.$refs[name].resetFields();
@@ -455,7 +464,7 @@ export default {
 <style scoped lang="scss">
   .form-item {
     float: left;
-    width: 15%;
+    width: 16%;
     padding-right: 20px;
   }
   .img-wrap {

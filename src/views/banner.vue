@@ -29,10 +29,10 @@
           action="/api/lms/admin/fileUpload/uploadFile">
           <Button icon="ios-cloud-upload-outline" style="width: 100px;">上传文件</Button>
         </Upload>
-        <div v-if="bannerForm.filePath" class="img-wrap oh">
+        <div v-if="bannerForm.filePath" class="img-wrap oh po">
           <img :src="bannerForm.filePath" alt="图片详情" style="height: 150px;">
         </div>
-        <div v-else class="img-wrap mt20 oh"></div>
+        <div v-else class="img-wrap mt20 oh po"></div>
       </Modal>
       <Modal
         v-model="picPop"
@@ -139,15 +139,17 @@ export default {
               },
               on: {
                 click: function () {
-                  console.log(params.row);
                   let row = params.row;
+                  console.log(params);
                   vm.bannerIdx = params.index;
-                  vm.bannerForm.id = id;
-                  vm.bannerForm.sort = common.sort(row.sort);
-                  vm.bannerForm.bannerPosition = common.bp(row.bannerPosition);
-                  vm.bannerForm.createTime = common.format(row.createTime);
-                  vm.bannerForm.updateTime = common.format(row.updateTime);
-                  vm.bannerForm.filePath = row.filePath;
+                  vm.bannerForm = {
+                    id,
+                    sort: common.sort(row.sort),
+                    bannerPosition: common.bp(row.bannerPosition),
+                    createTime: common.format(row.createTime),
+                    updateTime: common.format(row.updateTime),
+                    filePath: row.filePath
+                  };
                   vm.addPop = true;
                 }
               }
@@ -167,7 +169,7 @@ export default {
                   vm.bannerForm.status = status;
                   vm.bannerAdd(function () {
                     params.row.status = btn;
-                  }, true);
+                  });
                 }
               }
             }, btn)
@@ -211,39 +213,37 @@ export default {
     },
     bannerPop () {
       this.addPop = true;
-      this.bannerForm = {
-        id: '',
-        status: '',
-        sort: '1',
-        bannerPosition: '1',
-        filePath: ''
-      };
-      this.$refs.userForm.resetFields();
+      this.resetForm();
+      this.bannerForm.status = 1;
+      this.bannerForm.sort = '1';
+      this.bannerForm.bannerPosition = '1';
     },
-    bannerAdd (cb, bool) {
+    bannerAdd (cb) {
+      console.log(this.bannerForm);
       let bannerForm = this.bannerForm;
       let data = {};
-      if (bannerForm.id) {
-        data.id = bannerForm.id;
-      }
-      if (bool) {
+      if (cb) {
         data.status = bannerForm.status === '启用' ? 0 : 1;
       } else {
         data = {
           filePath: bannerForm.filePath,
           operatorUserId: 3,
           sizeDesc: '',
-          bannerPosition: parseInt(bannerForm.bannerPosition) || '2',
-          sort: parseInt(bannerForm.sort) || '1',
-          status: 1
+          sort: parseInt(bannerForm.sort),
+          bannerPosition: parseInt(bannerForm.bannerPosition)
         };
+      }
+      // 修改需要id
+      if (bannerForm.id) {
+        data.id = bannerForm.id;
       }
       console.log(JSON.stringify(data));
       this.$axios
         .post('/api/lms/admin/banner/bannerUpdate', data)
         .then(res => {
           if (res.data.code === '20000') {
-            if (!bool) {
+            if (cb) cb();
+            else {
               this.$Message.info('修改成功');
               data.bannerPosition = common.bp(data.bannerPosition);
               data.sort = common.sort(data.sort);
@@ -252,13 +252,21 @@ export default {
               data.updateTime = bannerForm.updateTime;
               this.rows.splice(this.bannerIdx, 1, data);
             }
-            cb && cb();
           }
         })
         .catch(error => console.log(error));
     },
     handleSuccess (res) {
       this.bannerForm.filePath = res.data.url;
+    },
+    resetForm () {
+      this.bannerForm = {
+        id: '',
+        status: '',
+        sort: '',
+        bannerPosition: '',
+        filePath: ''
+      };
     }
   }
 };
