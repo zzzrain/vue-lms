@@ -68,7 +68,7 @@ export default {
       });
     },
     getCodeImage () {
-      this.codeImg = '/api/admin/static_code/getCodeImage';
+      this.codeImg = '/api/lms/admin/static_code/getCodeImage';
     }
   }
 };
