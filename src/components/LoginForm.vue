@@ -1,14 +1,14 @@
 <template>
   <Form ref="loginForm" :model="loginForm" :rules="rules" style="position: relative;">
     <Form-item prop="username">
-      <Input v-model="loginForm.username" placeholder="请输入用户名" >
+      <Input v-model="loginForm.username" placeholder="请输入用户名" autofocus="autofocus">
         <span slot="prepend">
           <Icon :size="16" type="ios-person"></Icon>
         </span>
       </Input>
     </Form-item>
     <Form-item prop="password">
-      <Input v-model="loginForm.password" type="password" placeholder="请输入密码" >
+      <Input v-model="loginForm.password" type="password" placeholder="请输入密码">
         <span slot="prepend">
           <Icon :size="14" type="md-lock"></Icon>
         </span>
@@ -17,7 +17,7 @@
     <Form-item label="验证码" :label-width="60" style="width: 132px;" prop="staticCode">
       <Input v-model="loginForm.staticCode"></Input>
     </Form-item>
-    <Form-item class="img-code" style="width: 110px;position: absolute;bottom: 10px;right: 10px;">
+    <Form-item class="img-code po">
       <img :src="codeImg" @click="getCodeImage" alt="验证码">
     </Form-item>
     <Form-item>
@@ -59,6 +59,8 @@ export default {
             .then(res => {
               if (res.data.code === '20000') {
                 this.$router.push({ path: '/home' });
+              } else {
+                this.$Message.info(res.data.msg);
               }
             })
             .catch(error => console.log(error));
@@ -68,12 +70,17 @@ export default {
       });
     },
     getCodeImage () {
-      this.codeImg = '/api/lms/admin/static_code/getCodeImage';
+      this.codeImg = '/api/lms/admin/static_code/getCodeImage?' + Math.random();
     }
   }
 };
 </script>
 
-<style>
-
+<style lang="scss">
+  .img-code {
+    width: 110px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+  }
 </style>
