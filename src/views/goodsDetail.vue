@@ -11,6 +11,18 @@
         <Input v-model="formItem.goodsName" placeholder="请输入"></Input>
       </Form-item>
       <Form-item label="商品图片">
+        <div class="demo-upload-list po fl clear-fix" v-for="item in uploadList" :key="item.name">
+          <template v-if="item.status === 'finished'" class="fl">
+            <img :src="item.url" class="img-wrap">
+            <div class="demo-upload-list-cover">
+              <!--<Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>-->
+              <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+            </div>
+          </template>
+          <template v-else class="fl">
+            <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+          </template>
+        </div>
         <div class="fl">
           <Upload
             ref="upload"
@@ -21,13 +33,12 @@
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             :before-upload="handleBeforeUpload"
-            multiple
-            action="/api/lms/admin/fileUpload/uploadFile?isThumb=1&isImage=true"
-            style="display: inline-block;width:58px;">
-            <div v-if="formItem.goodsImg" class="img-wrap oh">
-              <img :src="formItem.goodsImg" alt="图片详情" style="height: 80px;">
-            </div>
-            <div v-else class="img-wrap oh"></div>
+            action="/api/lms/admin/fileUpload/uploadFile?isThumb=1&isImage=true">
+            <div class="demo-upload-area po"></div>
+            <!--<div v-if="formItem.goodsImg" class="img-wrap oh">-->
+              <!--<img :src="formItem.goodsImg" alt="图片详情" style="height: 80px;">-->
+            <!--</div>-->
+            <!--<div v-else class="img-wrap oh"></div>-->
           </Upload>
         </div>
       </Form-item>
@@ -110,6 +121,7 @@ export default {
         skuName: ''
       },
       categoryItem: [],
+      uploadList: [],
       // 表单规则校验不能通用，全部都要一一对应，坑的一B
       rules: {
         // 校验默认string,数字需要设置type
@@ -239,6 +251,7 @@ export default {
     ];
     this.rows = [];
     this.formItem.status = 1;
+    this.uploadList = this.$refs.upload.fileList;
   },
   methods: {
     categoryList () {
@@ -388,8 +401,15 @@ export default {
     handleReset (name) {
       this.$refs[name].resetFields();
     },
-    handleSuccess (res) {
+    handleSuccess (res, file) {
+      file.url = res.data.url;
+      file.name = res.data.name;
       this.formItem.goodsImg = res.data.url;
+    },
+    handleRemove (file) {
+      // 从 upload 实例删除数据
+      const fileList = this.$refs.upload.fileList;
+      this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
     },
     handleFormatError (file) {
       this.$Notice.warning({
@@ -404,13 +424,13 @@ export default {
       });
     },
     handleBeforeUpload () {
-      // const check = this.imgItem.length < 5;
-      // if (!check) {
-      //   this.$Notice.warning({
-      //     title: '最多只能上传 5 张图片。'
-      //   });
-      // }
-      // return check;
+      const check = this.uploadList.length < 5;
+      if (!check) {
+        this.$Notice.warning({
+          title: '最多只能上传 5 张图片。'
+        });
+      }
+      return check;
     }
   }
 };
@@ -423,9 +443,47 @@ export default {
   .img-wrap {
     width: 80px;
     height: 80px;
-    padding: 2px 0;
     text-align: center;
     border: #dcdcdc 1px solid;
-    box-sizing: content-box;
+    box-sizing: border-box;
+  }
+  .demo-upload-area {
+    display: inline-block;
+    width: 80px;
+    height:80px;
+    border: 1px dashed #dcdee2;
+    box-sizing: border-box;
+    background: url('../images/add-img.png') no-repeat 16px 16px;
+  }
+  .demo-upload-list{
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    text-align: center;
+    line-height: 80px;
+    background: #fff;
+    position: relative;
+    box-shadow: 0 1px 1px rgba(0,0,0,.2);
+    margin-right: 10px;
+    .demo-upload-list-cover{
+      display: none;
+      width: 80px;
+      height: 80px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: rgba(0,0,0,.6);
+      i{
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+        margin: 0 2px;
+      }
+    }
+    &:hover {
+      .demo-upload-list-cover {
+        display: block;
+      }
+    }
   }
 </style>
