@@ -244,7 +244,7 @@ export default {
           if (res.data.code === '20000') {
             if (cb) cb();
             else {
-              this.$Message.info('修改成功');
+              this.$Message.info(res.data.msg || '修改成功');
               data.bannerPosition = common.bp(data.bannerPosition);
               data.sort = common.sort(data.sort);
               data.status = common.state(data.status);

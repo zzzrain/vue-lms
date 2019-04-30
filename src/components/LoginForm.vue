@@ -60,7 +60,7 @@ export default {
               if (res.data.code === '20000') {
                 this.$router.push({ path: '/home' });
               } else {
-                this.$Message.info(res.data.msg);
+                this.$Message.error(res.data.msg);
               }
             })
             .catch(error => console.log(error));

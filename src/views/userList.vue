@@ -372,7 +372,7 @@ export default {
             .post('/api/lms/admin/user/addUser', data)
             .then(res => {
               if (res.data.code === '20000') {
-                this.$Message.info('新增成功');
+                this.$Message.info(res.data.msg || '新增成功');
               }
             })
             .catch(error => console.log(error));
@@ -411,7 +411,7 @@ export default {
         .post('/api/lms/admin/user/updateUser', data)
         .then(res => {
           if (res.data.code === '20000') {
-            this.$Message.info('修改成功');
+            this.$Message.info(res.data.msg || '修改成功');
             if (cb) cb();
             else {
               // 修改成功后把数据重新写入表格
