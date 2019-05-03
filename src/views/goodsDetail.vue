@@ -11,18 +11,18 @@
         <Input v-model="formItem.goodsName" placeholder="请输入"></Input>
       </Form-item>
       <Form-item label="商品图片">
-        <div class="demo-upload-list po fl clear-fix" v-for="item in uploadList" :key="item.name">
-          <template v-if="item.status === 'finished'" class="fl">
-            <img :src="item.url" class="img-wrap">
-            <div class="demo-upload-list-cover">
-              <!--<Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>-->
-              <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-            </div>
-          </template>
-          <template v-else class="fl">
-            <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-          </template>
-        </div>
+        <!--<div class="demo-upload-list po fl clear-fix" v-for="item in uploadList" :key="item.name">-->
+          <!--<template v-if="item.status === 'finished'" class="fl">-->
+            <!--<img :src="item.url" class="img-wrap">-->
+            <!--<div class="demo-upload-list-cover">-->
+              <!--&lt;!&ndash;<Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>&ndash;&gt;-->
+              <!--<Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>-->
+            <!--</div>-->
+          <!--</template>-->
+          <!--<template v-else class="fl">-->
+            <!--<Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>-->
+          <!--</template>-->
+        <!--</div>-->
         <div class="fl">
           <Upload
             ref="upload"
@@ -34,11 +34,11 @@
             :on-exceeded-size="handleMaxSize"
             :before-upload="handleBeforeUpload"
             action="/api/lms/admin/fileUpload/uploadFile?isThumb=1&isImage=true">
-            <div class="demo-upload-area po"></div>
-            <!--<div v-if="formItem.goodsImg" class="img-wrap oh">-->
-              <!--<img :src="formItem.goodsImg" alt="图片详情" style="height: 80px;">-->
-            <!--</div>-->
-            <!--<div v-else class="img-wrap oh"></div>-->
+            <!--<div class="demo-upload-area po"></div>-->
+            <div v-if="formItem.goodsImg" class="demo-upload-area po">
+              <img :src="formItem.goodsImg" alt="图片详情" class="img-wrap">
+            </div>
+            <div v-else class="img-wrap"></div>
           </Upload>
         </div>
       </Form-item>
@@ -280,9 +280,6 @@ export default {
           goodsId
         })
         .then(res => {
-          // const data = res.data && res.data.data;
-          // const dataList = data.list || [];
-          // console.log(res.data.data.list);
           if (res.data.code === '20000') {
             let formItem = res.data && res.data.data;
             if (formItem) {
@@ -295,6 +292,8 @@ export default {
                 skuInfos: formItem.skuDtos,
                 status: 1
               };
+              // this.uploadList = formItem.goodsImg.split();
+              // console.log(this.uploadList);
               this.rows = formItem.skuDtos.map(ele => {
                 ele.skuUnitCode = ele.skuUnit && ele.skuUnit.toString();
                 return ele;
@@ -355,6 +354,10 @@ export default {
         if (valid) {
           let formItem = this.formItem;
           let goodsId = this.formItem.goodsId;
+          // let goodsImg = '';
+          // this.uploadList.forEach(ele => {
+          //   goodsImg += ele.url + ',';
+          // });
           let data = {
             goodsName: formItem.goodsName,
             categoryId: formItem.categoryId,
@@ -403,7 +406,6 @@ export default {
     },
     handleSuccess (res, file) {
       file.url = res.data.url;
-      file.name = res.data.name;
       this.formItem.goodsImg = res.data.url;
     },
     handleRemove (file) {
@@ -441,10 +443,9 @@ export default {
     width: 300px;
   }
   .img-wrap {
-    width: 80px;
-    height: 80px;
+    max-width: 78px;
+    height: 78px;
     text-align: center;
-    border: #dcdcdc 1px solid;
     box-sizing: border-box;
   }
   .demo-upload-area {
@@ -452,7 +453,7 @@ export default {
     width: 80px;
     height:80px;
     border: 1px dashed #dcdee2;
-    box-sizing: border-box;
+    /*box-sizing: border-box;*/
     background: url('../images/add-img.png') no-repeat 16px 16px;
   }
   .demo-upload-list{
