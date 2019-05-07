@@ -1,0 +1,214 @@
+<template>
+  <div class="detail-cont">
+    <div class="pr30"><Button type="info" class="fr" onclick="window.history.back()">返回</Button></div>
+    <Form abel-position="left" :label-width="80" ref="userForm" :model="userForm" :rules="rules" style="width: 800px;">
+      <Form-item label="昵称" prop="userName" class="form-item">
+        <Input placeholder="请输入" :disabled="type" v-model="userForm.userName"></Input>
+      </Form-item>
+      <Form-item label="账号" prop="userAccount" class="form-item">
+        <Input placeholder="请输入" :disabled="type" v-model="userForm.userAccount"></Input>
+      </Form-item>
+      <Form-item label="手机号" prop="mobile" class="form-item">
+        <Input placeholder="请输入" :disabled="type" v-model="userForm.mobile"></Input>
+      </Form-item>
+      <Form-item label="角色" prop="userType" class="form-item">
+        <Select placeholder="请选择" :disabled="type" v-model="userForm.userType">
+          <Option value="1">采购员</Option>
+          <Option value="2">代理商</Option>
+          <Option value="3">业务员</Option>
+          <Option value="4">财务员</Option>
+          <Option value="5">仓管员</Option>
+          <Option value="6">发货员</Option>
+        </Select>
+      </Form-item>
+      <Form-item label="关联代理商" prop="agetUserId" class="form-item">
+        <Input placeholder="请输入ID" :disabled="type" v-model="userForm.agetUserId"></Input>
+      </Form-item>
+      <Form-item label="对应财务员" prop="sellerUserId" class="form-item">
+        <Input placeholder="请输入ID" :disabled="type" v-model="userForm.sellerUserId"></Input>
+      </Form-item>
+      <Form-item label="关联业务员" prop="financeUserId" class="form-item">
+        <Input placeholder="请输入ID" :disabled="type" v-model="userForm.financeUserId"></Input>
+      </Form-item>
+      <Form-item label="证件" prop="certificateNo" class="form-item">
+        <Input placeholder="请输入证件号码" :disabled="type" v-model="userForm.certificateNo"></Input>
+      </Form-item>
+      <Form-item v-if="type" class="form-item">
+        <div class="img-wrap oh po">
+          <img :src="userForm.certificateUrl" alt="图片详情" style="height: 150px;">
+        </div>
+      </Form-item>
+      <Form-item v-else class="form-item">
+        <Upload
+          ref="upload"
+          :show-upload-list="false"
+          :format="['jpg','jpeg','png']"
+          :max-size="2048"
+          :on-success="handleSuccess"
+          action="/api/lms/admin/fileUpload/uploadFile?isThumb=1&isImage=true">
+          <div v-if="userForm.certificateUrl" class="img-wrap oh po">
+            <img :src="userForm.certificateUrl" alt="图片详情" style="height: 150px;">
+          </div>
+          <div v-else class="img-wrap oh po"></div>
+        </Upload>
+      </Form-item>
+      <Form-item
+      >
+        <Button type="primary" @click="handleSubmit('userForm')">提交</Button>
+        <Button @click="handleReset('userForm')" style="margin-left: 8px">重置</Button>
+      </Form-item>
+    </Form >
+  </div>
+</template>
+
+<script>
+import common from '@/common/common.js';
+import FileUpload from '@/components/FileUpload';
+export default {
+  components: {
+    FileUpload
+  },
+  data () {
+    return {
+      userForm: {
+        id: '',
+        userName: '',
+        userAccount: '',
+        roleId: '',
+        userType: '',
+        mobile: '',
+        agetUserId: '',
+        sellerUserId: '',
+        financeUserId: '',
+        certificateNo: '',
+        certificateUrl: ''
+      },
+      rules: {
+        userName: [
+          { required: true, message: '请输入名称', trigger: 'blur' }
+        ],
+        userAccount: [
+          { required: true, message: '请输入账号', trigger: 'blur' }
+        ],
+        userPassword: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
+        ],
+        certificateNo: [
+          { required: false, message: '请输证件号', trigger: 'blur' }
+        ]
+      },
+      type: false
+    };
+  },
+  mounted () {
+    let userId = parseInt(common.getParams('id'));
+    let type = common.getParams('type');
+    this.userForm.id = userId;
+    if (type.toString() === 'see') this.type = true;
+    if (userId) this.userDetail(userId);
+  },
+  methods: {
+    userDetail (id) {
+      this.$axios
+        .post(`/api/lms/admin/user/userDetail`, {
+          userId: id
+        })
+        .then(res => {
+          const data = res.data && res.data.data;
+          if (res.data.code === '20000') {
+            this.userForm = {
+              id: data.id,
+              roleId: data.roleId && data.roleId.toString(),
+              userType: data.userType && data.userType.toString(),
+              userName: data.userName,
+              userAccount: data.userAccount,
+              mobile: data.mobile,
+              agetUserId: data.agetUserId,
+              sellerUserId: data.sellerUserId,
+              financeUserId: data.financeUserId,
+              certificateNo: data.certificateNo,
+              certificateUrl: data.certificateUrl
+            };
+          }
+        })
+        .catch(error => console.log(error));
+    },
+    handleSubmit (name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          let data = {
+            id: this.userForm.id,
+            roleId: parseInt(this.userForm.userType),
+            userType: parseInt(this.userForm.userType),
+            userName: this.userForm.userName,
+            mobile: this.userForm.mobile,
+            agetUserId: parseInt(this.userForm.agetUserId),
+            sellerUserId: parseInt(this.userForm.sellerUserId),
+            financeUserId: parseInt(this.userForm.financeUserId),
+            certificateNo: this.userForm.certificateNo,
+            certificateUrl: this.userForm.certificateUrl,
+            status: 1,
+            wxPerm: 1
+          };
+          console.log(JSON.stringify(data));
+          this.$axios
+            .post('/api/lms/admin/user/updateUser', data)
+            .then(res => {
+              if (res.data.code === '20000') {
+                this.$Message.info(res.data.msg || '修改成功');
+              }
+            })
+            .catch(error => console.log(error));
+        }
+      });
+    },
+    handleReset (name) {
+      this.$refs[name].resetFields();
+    },
+    handleSuccess (res) {
+      this.userForm.certificateUrl = res.data.url;
+    },
+    handleFormatError (file) {
+      this.$Notice.warning({
+        title: '文件格式不正确',
+        desc: '文件 ' + file.name + ' 格式不正确，请上传 jpg 或 png 格式的图片。'
+      });
+    },
+    handleMaxSize (file) {
+      this.$Notice.warning({
+        title: '超出文件大小限制',
+        desc: '文件 ' + file.name + ' 太大，不能超过 2M。'
+      });
+    },
+    resetForm () {
+      this.userForm = {
+        id: '',
+        userName: '',
+        userAccount: '',
+        userPassword: '',
+        roleId: '',
+        userType: '',
+        mobile: '',
+        certificateNo: '',
+        certificateUrl: ''
+      };
+    },
+    cancel (name) {
+      // 清空功能需要给每个加上prop属性
+      this.$refs[name].resetFields();
+    }
+  }
+};
+</script>
+
+<style scoped lang="scss">
+  .form-item {
+    width: 600px;
+  }
+  .img-wrap {
+    width: 270px;
+    height: 150px;
+    text-align: center;
+    border: #dcdcdc 1px solid;
+  }
+</style>

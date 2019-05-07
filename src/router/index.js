@@ -11,6 +11,7 @@ import order from '@/views/order';
 import bill from '@/views/bill';
 import banner from '@/views/banner';
 import userList from '@/views/userList';
+import userDetail from '@/views/userDetail';
 
 Vue.use(Router);
 
@@ -36,6 +37,11 @@ export default new Router({
           path: 'userList',
           name: 'userList',
           component: userList
+        },
+        {
+          path: 'userDetail',
+          name: 'userDetail',
+          component: userDetail
         },
         {
           path: 'category',

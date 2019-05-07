@@ -219,7 +219,7 @@ export default {
           let row = params.row;
           let id = row.id;
           let status = row.status;
-          let userIdx = params.index;
+          // let userIdx = params.index;
           let type = status === '启用' ? 'error' : 'success';
           let btn = status === '启用' ? '停用' : '启用';
           return h('div', [
@@ -233,9 +233,9 @@ export default {
               },
               on: {
                 click: function () {
-                  vm.userIdx = userIdx;
-                  vm.altPop = true;
-                  vm.userDetail(id);
+                  // vm.userIdx = userIdx;
+                  // vm.altPop = true;
+                  vm.userDetail('alt', id);
                 }
               }
             }, '修改'),
@@ -249,8 +249,8 @@ export default {
               },
               on: {
                 click: function () {
-                  vm.detailPop = true;
-                  vm.userDetail(id);
+                  // vm.detailPop = true;
+                  vm.userDetail('see', id);
                 }
               }
             }, '详情'),
@@ -326,27 +326,8 @@ export default {
         })
         .catch(error => console.log(error));
     },
-    userDetail (id) {
-      this.$axios
-        .post(`/api/lms/admin/user/userDetail`, {
-          userId: id
-        })
-        .then(res => {
-          const data = res.data && res.data.data;
-          if (res.data.code === '20000') {
-            this.userForm = {
-              id: data.id,
-              roleId: data.roleId && data.roleId.toString(),
-              userType: data.userType && data.userType.toString(),
-              userName: data.userName,
-              userAccount: data.userAccount,
-              mobile: data.mobile,
-              certificateNo: data.certificateNo,
-              certificateUrl: data.certificateUrl
-            };
-          }
-        })
-        .catch(error => console.log(error));
+    userDetail (type, id) {
+      this.$router.push(`/home/userDetail?type=${type}&id=${id}`);
     },
     userPop () {
       this.addPop = true;
@@ -468,9 +449,9 @@ export default {
     padding-right: 20px;
   }
   .img-wrap {
-    width: 270px;
-    height: 150px;
-    text-align: center;
-    border: #dcdcdc 1px solid;
-  }
+     width: 270px;
+     height: 150px;
+     text-align: center;
+     border: #dcdcdc 1px solid;
+   }
 </style>
