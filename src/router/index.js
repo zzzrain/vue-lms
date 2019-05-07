@@ -8,6 +8,7 @@ import goodsList from '@/views/goodsList';
 import goodsDetail from '@/views/goodsDetail';
 import stock from '@/views/stock';
 import order from '@/views/order';
+import orderLog from '@/views/orderLog';
 import bill from '@/views/bill';
 import banner from '@/views/banner';
 import userList from '@/views/userList';
@@ -73,6 +74,11 @@ export default new Router({
           path: 'order',
           name: 'order',
           component: order
+        },
+        {
+          path: 'orderLog',
+          name: 'orderLog',
+          component: orderLog
         },
         {
           path: 'bill',

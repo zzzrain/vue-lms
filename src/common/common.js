@@ -55,6 +55,36 @@ module.exports = {
     }
     return res;
   },
+  optType (ele) {
+    let res = '';
+    switch (ele) {
+      case 1 :
+        res = '代理商确认';
+        break;
+      case 2 :
+        res = '财务确认';
+        break;
+      case 3 :
+        res = '仓管员出货';
+        break;
+      case 4 :
+        res = '发货员发货';
+        break;
+      case 5 :
+        res = '用户收货';
+        break;
+      case 6 :
+        res = '完成';
+        break;
+      case 7 :
+        res = '取消';
+        break;
+      default:
+        res = '未知';
+        break;
+    }
+    return res;
+  },
   state (ele) {
     let res = '';
     switch (ele) {

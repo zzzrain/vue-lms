@@ -39,7 +39,7 @@ export default {
     };
   },
   mounted () {
-    // let vm = this;
+    let vm = this;
     this.orderList();
     this.cols = [
       {
@@ -75,6 +75,7 @@ export default {
         key: 'action',
         align: 'center',
         render: (h, params) => {
+          console.log(params);
           return h('div', [
             h('Button', {
               props: {
@@ -86,10 +87,23 @@ export default {
               },
               on: {
                 click: function () {
-                  console.log(params.index);
                 }
               }
-            }, '详情')
+            }, '详情'),
+            h('Button', {
+              props: {
+                type: 'success',
+                size: 'small'
+              },
+              style: {
+                marginRight: '8px'
+              },
+              on: {
+                click: function () {
+                  vm.orderLog(params.row.orderId);
+                }
+              }
+            }, '记录')
           ]);
         }
       }
@@ -135,6 +149,9 @@ export default {
           }
         })
         .catch(error => console.log(error));
+    },
+    orderLog (id) {
+      this.$router.push(`/home/orderLog?id=${id}`);
     },
     cancel (name) {
       // 清空功能需要给每个加上prop属性
