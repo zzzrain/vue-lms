@@ -37,7 +37,7 @@
         title="新增用户"
         width="400"
         @on-ok="addUser">
-        <Form abel-position="left" :label-width="60" ref="userForm" :model="userForm" :rules="rules">
+        <Form abel-position="left" :label-width="80" ref="userForm" :model="userForm" :rules="rules">
           <Form-item label="昵称" prop="userName">
             <Input placeholder="请输入" v-model="userForm.userName"></Input>
           </Form-item>
@@ -45,7 +45,7 @@
             <Input placeholder="请输入" v-model="userForm.userAccount"></Input>
           </Form-item>
           <Form-item label="密码" prop="userPassword">
-            <Input placeholder="请输入" v-model="userForm.userPassword"></Input>
+            <Input type="password" placeholder="请输入" v-model="userForm.userPassword"></Input>
           </Form-item>
           <Form-item label="手机号" prop="mobile">
             <Input placeholder="请输入" v-model="userForm.mobile"></Input>
@@ -59,6 +59,15 @@
               <Option value="5">仓管员</Option>
               <Option value="6">发货员</Option>
             </Select>
+          </Form-item>
+          <Form-item label="关联代理商" prop="agetUserId">
+            <Input placeholder="请输入ID" v-model="userForm.agetUserId"></Input>
+          </Form-item>
+          <Form-item label="对应财务员" prop="sellerUserId">
+            <Input placeholder="请输入ID" v-model="userForm.sellerUserId"></Input>
+          </Form-item>
+          <Form-item label="关联业务员" prop="financeUserId">
+            <Input placeholder="请输入ID" v-model="userForm.financeUserId"></Input>
           </Form-item>
         </Form >
       </Modal>
@@ -152,6 +161,9 @@ export default {
         roleId: '',
         userType: '',
         mobile: '',
+        agetUserId: '',
+        sellerUserId: '',
+        financeUserId: '',
         certificateNo: '',
         certificateUrl: ''
       },
@@ -345,6 +357,9 @@ export default {
             userAccount: this.userForm.userAccount,
             userPassword: this.userForm.userPassword,
             mobile: this.userForm.mobile,
+            agetUserId: this.userForm.agetUserId,
+            sellerUserId: this.userForm.sellerUserId,
+            financeUserId: this.userForm.financeUserId,
             status: 1,
             wxPerm: 1
           };

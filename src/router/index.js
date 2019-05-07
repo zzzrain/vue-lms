@@ -12,6 +12,7 @@ import bill from '@/views/bill';
 import banner from '@/views/banner';
 import userList from '@/views/userList';
 import userDetail from '@/views/userDetail';
+import resetPassword from '@/views/resetPassword';
 
 Vue.use(Router);
 
@@ -42,6 +43,11 @@ export default new Router({
           path: 'userDetail',
           name: 'userDetail',
           component: userDetail
+        },
+        {
+          path: 'resetPassword',
+          name: 'resetPassword',
+          component: resetPassword
         },
         {
           path: 'category',
