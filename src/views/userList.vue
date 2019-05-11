@@ -51,7 +51,7 @@
             <Input placeholder="请输入" v-model="userForm.mobile"></Input>
           </Form-item>
           <Form-item label="角色" prop="userType">
-            <Select placeholder="请选择" v-model="userForm.userType">
+            <Select placeholder="请选择" v-model="userForm.userType" @change="resetRelate">
               <Option value="1">采购员</Option>
               <Option value="2">代理商</Option>
               <Option value="3">业务员</Option>
@@ -60,14 +60,20 @@
               <Option value="6">发货员</Option>
             </Select>
           </Form-item>
-          <Form-item label="关联代理商" prop="agetUserId">
-            <Input placeholder="请输入ID" v-model="userForm.agetUserId"></Input>
+          <Form-item v-if="userForm.userType === '1' || userForm.userType === '2'" label="关联业务员" prop="financeUserId">
+            <Select v-model="relateItem.financeUserId">
+              <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+            </Select>
           </Form-item>
-          <Form-item label="对应财务员" prop="sellerUserId">
-            <Input placeholder="请输入ID" v-model="userForm.sellerUserId"></Input>
+          <Form-item v-if="userForm.userType === '1'" label="关联代理商" prop="agetUserId">
+            <Select v-model="relateItem.agetUserId">
+              <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+            </Select>
           </Form-item>
-          <Form-item label="关联业务员" prop="financeUserId">
-            <Input placeholder="请输入ID" v-model="userForm.financeUserId"></Input>
+          <Form-item v-if="userForm.userType === '1'" label="对应财务员" prop="sellerUserId">
+            <Select v-model="relateItem.sellerUserId">
+              <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+            </Select>
           </Form-item>
         </Form >
       </Modal>
@@ -166,8 +172,15 @@ export default {
       self: this,
       cols: [],
       rows: [],
-      userIdx: '',
+      ywyList: [],
+      dlsList: [],
+      cwyList: [],
       // 若带上默认值，userDetail请求后不能双向改变数据
+      relateItem: {
+        financeUserId: '',
+        agetUserId: '',
+        sellerUserId: ''
+      },
       userForm: {
         id: '',
         userName: '',
@@ -176,9 +189,6 @@ export default {
         roleId: '',
         userType: '',
         mobile: '',
-        agetUserId: '',
-        sellerUserId: '',
-        financeUserId: '',
         certificateNo: '',
         certificateUrl: ''
       },
@@ -207,12 +217,16 @@ export default {
         certificateNo: [
           { required: false, message: '请输证件号', trigger: 'blur' }
         ]
-      }
+      },
+      userIdx: ''
     };
   },
   mounted () {
     let vm = this;
     this.userList();
+    this.userTypeList(3);
+    this.userTypeList(2);
+    this.userTypeList(4);
     this.cols = [
       {
         title: 'id',
@@ -239,8 +253,8 @@ export default {
         key: 'status'
       },
       {
-        title: '创建时间',
-        key: 'createTime'
+        title: '更新时间',
+        key: 'updateTime'
       },
       {
         title: '操作',
@@ -354,20 +368,44 @@ export default {
         .post('/api/lms/admin/user/userList', data)
         .then(res => {
           if (res.data.code === '20000') {
-            const data = res.data && res.data.data;
-            const dataList = data.list || [];
+            let data = res.data && res.data.data;
+            let dataList = data.list || [];
             this.total = data.total;
             this.rows = dataList
               .sort((x, y) => {
-                return y.createTime - x.createTime;
+                return y.updateTime - x.updateTime;
               })
               .map(ele => {
                 ele.roleId = common.role(ele.roleId);
                 ele.userType = common.role(ele.userType);
                 ele.status = common.state(ele.status);
-                ele.createTime = common.format(ele.createTime);
+                ele.updateTime = common.format(ele.updateTime);
                 return ele;
               });
+          }
+        })
+        .catch(error => console.log(error));
+    },
+    userTypeList (userType) {
+      this.$axios
+        .post('/api/lms/admin/user/userTypeList', {
+          userType
+        })
+        .then(res => {
+          if (res.data.code === '20000') {
+            switch (userType) {
+              case 3 :
+                this.ywyList = res.data.data;
+                break;
+              case 2 :
+                this.dlsList = res.data.data;
+                break;
+              case 4 :
+                this.cwyList = res.data.data;
+                break;
+              default :
+                break;
+            }
           }
         })
         .catch(error => console.log(error));
@@ -385,18 +423,22 @@ export default {
       this.$refs.userForm.validate((valid) => {
         if (valid) {
           let data = {
-            roleId: parseInt(this.userForm.roleId),
-            userType: parseInt(this.userForm.roleId),
+            roleId: parseInt(this.userForm.userType),
+            userType: parseInt(this.userForm.userType),
             userName: this.userForm.userName,
             userAccount: this.userForm.userAccount,
             userPassword: this.userForm.userPassword,
             mobile: this.userForm.mobile,
-            agetUserId: this.userForm.agetUserId,
-            sellerUserId: this.userForm.sellerUserId,
-            financeUserId: this.userForm.financeUserId,
             status: 1,
             wxPerm: 1
           };
+          if (data.userType === 1) {
+            data.financeUserId = this.relateItem.financeUserId;
+            data.agetUserId = this.relateItem.agetUserId;
+            data.sellerUserId = this.relateItem.sellerUserId;
+          } else if (data.userType === 2) {
+            data.financeUserId = this.relateItem.financeUserId;
+          }
           console.log(JSON.stringify(data));
           this.$axios
             .post('/api/lms/admin/user/addUser', data)
@@ -442,15 +484,16 @@ export default {
         .then(res => {
           if (res.data.code === '20000') {
             this.$Message.info(res.data.msg || '修改成功');
-            if (cb) cb();
-            else {
-              // 修改成功后把数据重新写入表格
-              data.roleId = common.role(data.roleId);
-              data.userType = common.role(data.userType);
-              data.status = common.state(data.status);
-              data.createTime = this.rows[this.userIdx].createTime;
-              this.rows.splice(this.userIdx, 1, data);
-            }
+            cb && cb();
+            // if (cb) cb();
+            // else {
+            //   // 修改成功后把数据重新写入表格
+            //   data.roleId = common.role(data.roleId);
+            //   data.userType = common.role(data.userType);
+            //   data.status = common.state(data.status);
+            //   data.updateTime = this.rows[this.userIdx].updateTime;
+            //   this.rows.splice(this.userIdx, 1, data);
+            // }
           }
         })
         .catch(error => console.log(error));
@@ -491,6 +534,13 @@ export default {
         mobile: '',
         certificateNo: '',
         certificateUrl: ''
+      };
+    },
+    resetRelate () {
+      this.relateItem = {
+        financeUserId: '',
+        agetUserId: '',
+        sellerUserId: ''
       };
     },
     cancel (name) {

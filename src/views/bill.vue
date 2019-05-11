@@ -72,7 +72,7 @@ export default {
         key: 'remark'
       },
       {
-        title: '创建时间',
+        title: '更新时间',
         key: 'createTime'
       }
     ];

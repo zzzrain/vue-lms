@@ -115,7 +115,7 @@ export default {
         key: 'createTime'
       },
       {
-        title: '修改时间',
+        title: '更新时间',
         key: 'updateTime'
       },
       {

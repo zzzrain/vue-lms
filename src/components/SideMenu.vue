@@ -5,8 +5,8 @@
         <Icon type="ios-wineglass"></Icon>商品管理
       </template>
       <router-link to="/home/category"><Menu-item name="1-1">类目管理</Menu-item></router-link>
-      <router-link to="/home/goodsList"><Menu-item name="1-2">商品列表</Menu-item></router-link>
-      <router-link to="/home/goodsRelease"><Menu-item name="1-3">发布管理</Menu-item></router-link>
+      <router-link to="/home/goodsRelease"><Menu-item name="1-2">发布管理</Menu-item></router-link>
+      <router-link to="/home/goodsList"><Menu-item name="1-3">商品列表</Menu-item></router-link>
     </Submenu>
     <Submenu name="2">
       <template slot="title">

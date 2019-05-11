@@ -1,6 +1,6 @@
 <template>
   <div class="detail-cont">
-    <div class="pr30"><Button type="info" class="fr" onclick="window.history.back()">返回</Button></div>
+    <!--<div class="pr30"><Button type="info" class="fr" onclick="window.history.back()">返回</Button></div>-->
     <Form abel-position="left" :label-width="80" ref="userForm" :model="userForm" :rules="rules" style="width: 800px;">
       <Form-item label="昵称" prop="userName" class="form-item">
         <Input placeholder="请输入" :disabled="type" v-model="userForm.userName"></Input>
@@ -21,24 +21,33 @@
           <Option value="6">发货员</Option>
         </Select>
       </Form-item>
-      <Form-item label="关联代理商" prop="agetUserId" class="form-item">
-        <Input placeholder="请输入ID" :disabled="type" v-model="userForm.agetUserId"></Input>
+      <Form-item v-if="userForm.userType === '1' || userForm.userType === '2'" label="关联业务员" prop="financeUserId" class="form-item">
+        <Input v-if="type" placeholder="请输入ID" :disabled="type" v-model="relateItem.financeUserId"></Input>
+        <Select v-else v-model="relateItem.financeUserId">
+          <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+        </Select>
       </Form-item>
-      <Form-item label="对应财务员" prop="sellerUserId" class="form-item">
-        <Input placeholder="请输入ID" :disabled="type" v-model="userForm.sellerUserId"></Input>
+      <Form-item v-if="userForm.userType === '1'" label="关联代理商" prop="agetUserId" class="form-item">
+        <Input v-if="type" placeholder="请输入ID" :disabled="type" v-model="relateItem.agetUserId"></Input>
+        <Select v-else v-model="relateItem.agetUserId">
+          <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+        </Select>
       </Form-item>
-      <Form-item label="关联业务员" prop="financeUserId" class="form-item">
-        <Input placeholder="请输入ID" :disabled="type" v-model="userForm.financeUserId"></Input>
+      <Form-item v-if="userForm.userType === '1'" label="对应财务员" prop="sellerUserId" class="form-item">
+        <Input v-if="type" placeholder="请输入ID" :disabled="type" v-model="relateItem.sellerUserId"></Input>
+        <Select v-else v-model="relateItem.sellerUserId">
+          <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+        </Select>
       </Form-item>
       <Form-item label="证件" prop="certificateNo" class="form-item">
         <Input placeholder="请输入证件号码" :disabled="type" v-model="userForm.certificateNo"></Input>
       </Form-item>
-      <Form-item v-if="type" class="form-item">
+      <Form-item v-if="type" label="证件附件" class="form-item">
         <div class="img-wrap oh po">
           <img :src="userForm.certificateUrl" alt="图片详情" style="height: 150px;">
         </div>
       </Form-item>
-      <Form-item v-else class="form-item">
+      <Form-item v-else label="证件附件" class="form-item">
         <Upload
           ref="upload"
           :show-upload-list="false"
@@ -69,6 +78,14 @@ export default {
   },
   data () {
     return {
+      ywyList: [],
+      dlsList: [],
+      cwyList: [],
+      relateItem: {
+        sellerUserId: '',
+        financeUserId: '',
+        agetUserId: ''
+      },
       userForm: {
         id: '',
         userName: '',
@@ -76,9 +93,6 @@ export default {
         roleId: '',
         userType: '',
         mobile: '',
-        agetUserId: '',
-        sellerUserId: '',
-        financeUserId: '',
         certificateNo: '',
         certificateUrl: ''
       },
@@ -105,8 +119,35 @@ export default {
     this.userForm.id = userId;
     if (type.toString() === 'see') this.type = true;
     if (userId) this.userDetail(userId);
+    this.userTypeList(3);
+    this.userTypeList(2);
+    this.userTypeList(4);
   },
   methods: {
+    userTypeList (userType) {
+      this.$axios
+        .post('/api/lms/admin/user/userTypeList', {
+          userType
+        })
+        .then(res => {
+          if (res.data.code === '20000') {
+            switch (userType) {
+              case 3 :
+                this.ywyList = res.data.data;
+                break;
+              case 2 :
+                this.dlsList = res.data.data;
+                break;
+              case 4 :
+                this.cwyList = res.data.data;
+                break;
+              default :
+                break;
+            }
+          }
+        })
+        .catch(error => console.log(error));
+    },
     userDetail (id) {
       this.$axios
         .post(`/api/lms/admin/user/userDetail`, {
@@ -122,11 +163,13 @@ export default {
               userName: data.userName,
               userAccount: data.userAccount,
               mobile: data.mobile,
-              agetUserId: data.agetUserId,
-              sellerUserId: data.sellerUserId,
-              financeUserId: data.financeUserId,
               certificateNo: data.certificateNo,
               certificateUrl: data.certificateUrl
+            };
+            this.relateItem = {
+              financeUserId: data.financeUserId,
+              agetUserId: data.agetUserId,
+              sellerUserId: data.sellerUserId
             };
           }
         })
@@ -141,14 +184,18 @@ export default {
             userType: parseInt(this.userForm.userType),
             userName: this.userForm.userName,
             mobile: this.userForm.mobile,
-            agetUserId: parseInt(this.userForm.agetUserId),
-            sellerUserId: parseInt(this.userForm.sellerUserId),
-            financeUserId: parseInt(this.userForm.financeUserId),
             certificateNo: this.userForm.certificateNo,
             certificateUrl: this.userForm.certificateUrl,
             status: 1,
             wxPerm: 1
           };
+          if (data.userType === 1) {
+            data.financeUserId = this.relateItem.financeUserId;
+            data.agetUserId = this.relateItem.agetUserId;
+            data.sellerUserId = this.relateItem.sellerUserId;
+          } else if (data.userType === 2) {
+            data.financeUserId = this.relateItem.financeUserId;
+          }
           console.log(JSON.stringify(data));
           this.$axios
             .post('/api/lms/admin/user/updateUser', data)

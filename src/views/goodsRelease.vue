@@ -327,7 +327,7 @@ export default {
             goodsDesc: formItem.goodsDesc,
             goodsImg: formItem.goodsImg,
             skuInfos: formItem.skuInfos,
-            status: 1
+            status: formItem.status
           };
           if (goodsId) {
             data.goodsId = goodsId;
