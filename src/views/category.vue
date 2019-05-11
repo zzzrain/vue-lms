@@ -11,11 +11,11 @@
           <Form-item label="名称" prop="name">
             <Input placeholder="请输入" v-model="categoryForm.name"></Input>
           </Form-item>
-          <Form-item label="等级" prop="level">
-            <Select placeholder="请选择" v-model="categoryForm.level">
-              <Option value="1">一级</Option>
-            </Select>
-          </Form-item>
+          <!--<Form-item label="等级" prop="level">-->
+            <!--<Select placeholder="请选择" v-model="categoryForm.level">-->
+              <!--<Option value="1">一级</Option>-->
+            <!--</Select>-->
+          <!--</Form-item>-->
         </Form >
       </Modal>
     </div>
@@ -66,10 +66,10 @@ export default {
         title: '名称',
         key: 'categoryName'
       },
-      {
-        title: '等级',
-        key: 'categoryLevel'
-      },
+      // {
+      //   title: '等级',
+      //   key: 'categoryLevel'
+      // },
       {
         title: '状态',
         key: 'status'
@@ -83,7 +83,8 @@ export default {
         key: 'action',
         align: 'center',
         render: (h, params) => {
-          let status = params.row.status;
+          let row = params.row;
+          let status = row.status;
           let type = status === '启用' ? 'error' : 'success';
           let btn = status === '启用' ? '停用' : '启用';
           return h('div', [
@@ -101,9 +102,9 @@ export default {
                   vm.addPop = true;
                   vm.handle = '修改类目';
                   vm.itemIdx = params.index;
-                  vm.categoryForm.id = params.row.id;
-                  vm.categoryForm.status = params.row.status;
-                  vm.categoryForm.name = params.row.categoryName;
+                  vm.categoryForm.id = row.id;
+                  vm.categoryForm.status = row.status;
+                  vm.categoryForm.name = row.categoryName;
                 }
               }
             }, '修改'),
@@ -117,12 +118,10 @@ export default {
               },
               on: {
                 click: function () {
-                  vm.categoryForm.id = params.row.id;
-                  vm.categoryForm.status = params.row.status;
-                  vm.categoryForm.name = params.row.categoryName;
-                  vm.updateSubmit(function () {
-                    params.row.status = btn;
-                  });
+                  vm.categoryForm.id = row.id;
+                  vm.categoryForm.status = row.status;
+                  vm.categoryForm.name = row.categoryName;
+                  vm.updateSubmit(() => { row.status = btn; });
                 }
               }
             }, btn)
@@ -148,15 +147,15 @@ export default {
           const dataList = data.list || [];
           if (res.data.code === '20000') {
             this.total = data.total;
-            dataList.forEach(ele => {
-              this.rows.push({
-                id: ele.id,
-                categoryName: ele.categoryName,
-                categoryLevel: ele.categoryLevel,
-                status: common.state(ele.status),
-                createTime: common.format(ele.createTime)
+            this.rows = dataList
+              .sort((x, y) => {
+                return y.createTime - x.createTime;
+              })
+              .map(ele => {
+                ele.status = common.state(ele.status);
+                ele.createTime = common.format(ele.createTime);
+                return ele;
               });
-            });
           }
         })
         .catch(error => console.log(error));
@@ -193,13 +192,15 @@ export default {
         .post('/api/lms/admin/category/updateCategory', data)
         .then(res => {
           if (res.data.code === '20000') {
-            this.$Message.info('新增成功');
+            this.$Message.info(res.data.msg || '新增成功');
             if (cb) cb();
             else {
               let idx = this.itemIdx;
               this.rows[idx].categoryName = this.categoryForm.name;
               this.rows[idx].categoryLevel = this.categoryForm.level;
             }
+          } else {
+            this.$Message.info(res.data.msg || '操作失败');
           }
         })
         .catch(error => console.log(error));

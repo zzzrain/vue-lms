@@ -86,7 +86,6 @@
 </template>
 
 <script>
-import common from '@/common/common.js';
 import FileUpload from '@/components/FileUpload';
 export default {
   components: {
@@ -156,9 +155,6 @@ export default {
     };
   },
   mounted () {
-    let goodsId = parseInt(common.getParams('id'));
-    this.formItem.goodsId = goodsId;
-    this.goodsDetail(goodsId);
     this.categoryList();
     this.cols = [
       {
@@ -266,36 +262,6 @@ export default {
             this.categoryItem = dataList.filter(ele => {
               return ele.status === 1;
             });
-          }
-        })
-        .catch(error => console.log(error));
-    },
-    goodsDetail (goodsId) {
-      this.$axios
-        .post('/api/lms/admin/goods/goodsDetail', {
-          goodsId
-        })
-        .then(res => {
-          if (res.data.code === '20000') {
-            let formItem = res.data && res.data.data;
-            if (formItem) {
-              this.formItem = {
-                goodsId: formItem.goodsId,
-                goodsName: formItem.goodsName,
-                categoryId: formItem.categoryId,
-                goodsDesc: formItem.goodsDesc,
-                goodsImg: formItem.goodsImg,
-                skuInfos: formItem.skuDtos,
-                status: 1
-              };
-              // this.uploadList = formItem.goodsImg.split();
-              // console.log(this.uploadList);
-              this.rows = formItem.skuDtos.map(ele => {
-                ele.skuUnitCode = ele.skuUnit && ele.skuUnit.toString();
-                return ele;
-              });
-              this.cols.unshift({ title: '规格ID', key: 'skuId' });
-            }
           }
         })
         .catch(error => console.log(error));

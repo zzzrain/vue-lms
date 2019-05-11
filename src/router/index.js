@@ -6,6 +6,7 @@ import Home from '@/views/home';
 import category from '@/views/category';
 import goodsList from '@/views/goodsList';
 import goodsDetail from '@/views/goodsDetail';
+import goodsRelease from '@/views/goodsRelease';
 import stock from '@/views/stock';
 import order from '@/views/order';
 import orderLog from '@/views/orderLog';
@@ -64,6 +65,11 @@ export default new Router({
           path: 'goodsDetail',
           name: 'goodsDetail',
           component: goodsDetail
+        },
+        {
+          path: 'goodsRelease',
+          name: 'goodsRelease',
+          component: goodsRelease
         },
         {
           path: 'stock',

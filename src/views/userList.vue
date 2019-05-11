@@ -322,18 +322,17 @@ export default {
             const data = res.data && res.data.data;
             const dataList = data.list || [];
             this.total = data.total;
-            dataList.forEach(ele => {
-              this.rows.push({
-                id: ele.id,
-                roleId: common.role(ele.roleId),
-                userType: common.role(ele.userType),
-                userName: ele.userName,
-                userAccount: ele.userAccount,
-                mobile: ele.mobile,
-                status: common.state(ele.status),
-                createTime: common.format(ele.createTime)
+            this.rows = dataList
+              .sort((x, y) => {
+                return y.createTime - x.createTime;
+              })
+              .map(ele => {
+                ele.roleId = common.role(ele.roleId);
+                ele.userType = common.role(ele.userType);
+                ele.status = common.state(ele.status);
+                ele.createTime = common.format(ele.createTime);
+                return ele;
               });
-            });
           }
         })
         .catch(error => console.log(error));

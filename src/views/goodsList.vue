@@ -1,11 +1,16 @@
 <template>
   <div class="table-list-cont pr25">
     <Form label-position="left" :label-width="80" ref="searchForm" :rules="rules" inline class="clear-fix">
-      <Form-item label="商品ID" class="form-item">
-        <Input placeholder="" v-model="goodsId"></Input>
-      </Form-item>
+      <!--<Form-item label="商品ID" class="form-item">-->
+        <!--<Input placeholder="" v-model="goodsId"></Input>-->
+      <!--</Form-item>-->
       <Form-item label="商品名称" class="form-item">
         <Input placeholder="" v-model="goodsName"></Input>
+      </Form-item>
+      <Form-item label="商品类目" class="form-item">
+        <Select v-model="categoryId">
+          <Option v-for="item in categoryItem" :key="item.id" :value="item.id">{{ item.categoryName }}</Option>
+        </Select>
       </Form-item>
       <Form-item class="form-item"></Form-item>
       <Form-item>
@@ -13,9 +18,6 @@
         <!--<Button @click="clear('searchForm')" style="margin-left: 8px">清空</Button>-->
       </Form-item>
     </Form >
-    <div class="addGoods mb20" style="text-align: left;">
-      <router-link to="/home/goodsDetail"><Button type="primary">新增</Button></router-link>
-    </div>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
     <div class="fr">
       <Page :total="total" show-elevator @on-change="changePage"></Page>
@@ -34,6 +36,8 @@ export default {
       rows: [],
       goodsId: '',
       goodsName: '',
+      categoryId: '',
+      categoryItem: [],
       rules: {
         goodsId: [],
         goodsName: []
@@ -43,37 +47,15 @@ export default {
   mounted () {
     let vm = this;
     this.goodsList();
+    this.categoryList();
     this.cols = [
       {
-        title: '商品ID',
+        title: '商品编号',
         key: 'goodsId'
       },
       {
         title: '商品名称',
         key: 'goodsName'
-      },
-      {
-        title: '图片',
-        key: 'goodsImg',
-        render: (h, params) => {
-          let src = params && params.row && params.row.goodsImg;
-          return h('div', [
-            h('img', {
-              attrs: {
-                src,
-                alt: '商品图片'
-              },
-              style: {
-                height: '100px',
-                margin: '5px'
-              },
-              on: {
-                click: function () {
-                }
-              }
-            })
-          ]);
-        }
       },
       {
         title: '所属类目',
@@ -84,7 +66,7 @@ export default {
         key: 'status'
       },
       {
-        title: '修改时间',
+        title: '更新时间',
         key: 'createTime'
       },
       {
@@ -92,7 +74,8 @@ export default {
         key: 'action',
         align: 'center',
         render: (h, params) => {
-          let status = params.row.status;
+          let row = params.row;
+          let status = row.status;
           let type = status === '启用' ? 'error' : 'success';
           let btn = status === '启用' ? '停用' : '启用';
           return h('div', [
@@ -106,7 +89,7 @@ export default {
               },
               on: {
                 click: function () {
-                  vm.goodsDetail(params.row.goodsId);
+                  vm.goodsDetail(row.goodsId, row.status);
                 }
               }
             }, '修改'),
@@ -120,7 +103,11 @@ export default {
               },
               on: {
                 click: function () {
-                  params.row.status = btn;
+                  let id = row.id;
+                  let status = row.status === '启用' ? 0 : 1;
+                  vm.updateGoods(id, status, function () {
+                    row.status = btn;
+                  });
                 }
               }
             }, btn)
@@ -135,6 +122,23 @@ export default {
       this.rows = [];
       this.goodsList(page);
     },
+    categoryList () {
+      this.$axios
+        .post('/api/lms/admin/category/categoryList', {
+          pageNum: 1,
+          pageSize: 999
+        })
+        .then(res => {
+          const data = res.data && res.data.data;
+          const dataList = data.list || [];
+          if (res.data.code === '20000') {
+            this.categoryItem = dataList.filter(ele => {
+              return ele.status === 1;
+            });
+          }
+        })
+        .catch(error => console.log(error));
+    },
     goodsList (pageNum) {
       this.rows = [];
       this.$axios
@@ -145,21 +149,32 @@ export default {
           pageSize: 10
         })
         .then(res => {
-          const data = res.data && res.data.data;
-          const dataList = data.list || [];
+          let data = res.data && res.data.data;
+          let dataList = data.list || [];
           if (res.data.code === '20000') {
             this.total = data.total;
-            dataList.forEach(ele => {
-              this.rows.push({
-                categoryName: ele.categoryName,
-                goodsId: ele.goodsId,
-                goodsName: ele.goodsName,
-                goodsImg: ele.goodsImg,
-                status: common.state(ele.status),
-                createTime: common.format(ele.createTime)
+            this.rows = dataList
+              .sort((x, y) => {
+                return y.createTime - x.createTime;
+              })
+              .map(ele => {
+                ele.status = common.state(ele.status);
+                ele.createTime = common.format(ele.createTime);
+                return ele;
               });
-            });
           }
+        })
+        .catch(error => console.log(error));
+    },
+    updateGoods (id, status, cb) {
+      this.$axios
+        .post('/api/lms/admin/goods/updateGoods', {
+          id,
+          status
+        })
+        .then(res => {
+          if (res.data.code === '20000') cb();
+          else this.$Message.info(res.data.msg || '操作失败');
         })
         .catch(error => console.log(error));
     },

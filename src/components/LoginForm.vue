@@ -31,7 +31,7 @@ export default {
   data () {
     return {
       loginForm: {
-        username: 'super_admin',
+        username: '',
         password: '',
         staticCode: ''
       },
