@@ -131,6 +131,20 @@
           </Form-item>
         </Form >
       </Modal>
+      <Modal
+        v-model="resetPop"
+        title="重置密码"
+        width="400"
+        @on-ok="resetPsw">
+        <Form label-position="left" :label-width="60" ref="pswForm" :model="pswForm" class="clear-fix">
+          <Form-item label="旧密码" prop="oldPwd">
+            <Input type="password" v-model="pswForm.oldPwd"></Input>
+          </Form-item>
+          <Form-item label="新密码" prop="newPwd">
+            <Input type="password" v-model="pswForm.newPwd"></Input>
+          </Form-item>
+        </Form>
+      </Modal>
     </div>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
     <div class="fr">
@@ -148,6 +162,7 @@ export default {
       addPop: false,
       altPop: false,
       detailPop: false,
+      resetPop: false,
       self: this,
       cols: [],
       rows: [],
@@ -173,6 +188,11 @@ export default {
         mobile: '',
         startTime: '',
         endTime: ''
+      },
+      pswForm: {
+        userId: '',
+        oldPwd: '',
+        newPwd: ''
       },
       rules: {
         userName: [
@@ -226,7 +246,7 @@ export default {
         title: '操作',
         key: 'action',
         align: 'center',
-        width: 200,
+        width: 240,
         render: (h, params) => {
           let row = params.row;
           let id = row.id;
@@ -266,6 +286,21 @@ export default {
                 }
               }
             }, '详情'),
+            h('Button', {
+              props: {
+                type: 'info',
+                size: 'small'
+              },
+              style: {
+                marginRight: '8px'
+              },
+              on: {
+                click: function () {
+                  vm.resetPop = true;
+                  vm.pswForm.userId = id;
+                }
+              }
+            }, '重置'),
             h('Button', {
               props: {
                 type,
@@ -416,6 +451,16 @@ export default {
               data.createTime = this.rows[this.userIdx].createTime;
               this.rows.splice(this.userIdx, 1, data);
             }
+          }
+        })
+        .catch(error => console.log(error));
+    },
+    resetPsw () {
+      this.$axios
+        .post('/api/lms/admin/user/resetPwd', this.pswForm)
+        .then(res => {
+          if (res.data.code === '20000') {
+            this.$Message.info(res.data.msg || '重置成功');
           }
         })
         .catch(error => console.log(error));

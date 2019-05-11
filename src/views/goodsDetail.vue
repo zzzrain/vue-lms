@@ -7,7 +7,7 @@
         </Select>
       </Form-item>
       <Form-item label="商品名称" prop="goodsName">
-        <Input v-model="formItem.goodsName" placeholder="请输入"></Input>
+        <Input v-model="formItem.goodsName" placeholder="请输入商品名称"></Input>
       </Form-item>
       <Form-item label="商品图片">
         <!--<div class="demo-upload-list po fl clear-fix" v-for="item in uploadList" :key="item.name">-->
@@ -42,7 +42,7 @@
         </div>
       </Form-item>
       <Form-item label="商品描述" prop="goodsDesc">
-        <Input v-model="formItem.goodsDesc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
+        <Input v-model="formItem.goodsDesc" type="textarea" :autosize="{minRows: 5,maxRows: 5}" placeholder="请输入..."></Input>
       </Form-item>
       <div class="addGoods mb10 m40" style="text-align: left;">
         <Button type="primary" @click="addPop">添加规格</Button>
@@ -74,6 +74,15 @@
               <Radio label="2">箱</Radio>
             </Radio-group>
           </Form-item>
+          <!--<Form-item label="库存数量" prop="repertoryNum" class="form-item">-->
+            <!--<Input v-model="skuForm.repertoryNum" placeholder="请输入"></Input>-->
+          <!--</Form-item>-->
+          <!--<Form-item label="库存单位" prop="repertoryUnit" style="width: 200px;height: 32px;">-->
+            <!--<Radio-group v-model="skuForm.repertoryUnit">-->
+              <!--<Radio label="1">瓶</Radio>-->
+              <!--<Radio label="2">箱</Radio>-->
+            <!--</Radio-group>-->
+          <!--</Form-item>-->
         </Form >
       </Modal>
       <Table border :context="self" :columns="cols" :data="rows" class="mt30 mb30 ml40"></Table>
@@ -112,6 +121,8 @@ export default {
         skuInfos: []
       },
       skuForm: {
+        // repertoryNum: '',
+        // repertoryUnit: '',
         agentPrice: '',
         limitAgentPrice: '',
         purchaserPrice: '',
@@ -148,9 +159,16 @@ export default {
         skuUnit: [
           { required: true }
         ],
+        repertoryNum: [
+          { required: true, message: '数量不能为空', trigger: 'blur' }
+        ],
+        repertoryUnit: [
+          { required: true }
+        ],
         goodsDesc: [
           { required: true, message: '请输入商品信息', trigger: 'blur' },
-          { type: 'string', min: 5, message: '介绍不能少于20字', trigger: 'blur' }
+          { type: 'string', min: 5, message: '介绍不能少于5个字', trigger: 'blur' },
+          { type: 'string', max: 200, message: '介绍不能多于200字', trigger: 'blur' }
         ]
       }
     };
@@ -185,6 +203,14 @@ export default {
         title: '商品规格',
         key: 'skuUnit'
       },
+      // {
+      //   title: '库存数量',
+      //   key: 'repertoryNum'
+      // },
+      // {
+      //   title: '库存单位',
+      //   key: 'repertoryUnit'
+      // },
       {
         title: '操作',
         key: 'action',
@@ -211,6 +237,8 @@ export default {
                   if (vm.handleCheck()) {
                     let row = params.row;
                     vm.addSku = true;
+                    // skuForm.repertoryNum = row.repertoryNum;
+                    // skuForm.repertoryUnit = row.repertoryUnit.toString();
                     skuForm.agentPrice = row.agentPrice;
                     skuForm.limitAgentPrice = row.limitAgentPrice;
                     skuForm.purchaserPrice = row.purchaserPrice;
@@ -286,12 +314,13 @@ export default {
                 goodsDesc: formItem.goodsDesc,
                 goodsImg: formItem.goodsImg,
                 skuInfos: formItem.skuDtos,
-                status: 1
+                status: formItem.status
               };
               // this.uploadList = formItem.goodsImg.split();
               // console.log(this.uploadList);
               this.rows = formItem.skuDtos.map(ele => {
-                ele.skuUnitCode = ele.skuUnit && ele.skuUnit.toString();
+                ele.skuUnit = ele.skuUnit && common.skuUnit(ele.skuUnit);
+                // ele.repertoryUnit = ele.repertoryUnit && common.skuUnit(ele.repertoryUnit);
                 return ele;
               });
               this.cols.unshift({ title: '规格ID', key: 'skuId' });
@@ -305,13 +334,13 @@ export default {
       this.skuCtrl = 'add';
       this.$refs.skuForm.resetFields();
       this.skuForm.skuUnit = '1';
+      // this.skuForm.repertoryUnit = '1';
     },
     skuPop () {
       let skuForm = this.skuForm;
       let skuData = {
-        buyNum: 1,
-        repertoryUnit: '1',
-        repertoryNum: 999,
+        // repertoryNum: parseInt(skuForm.repertoryNum),
+        // repertoryUnit: parseInt(skuForm.repertoryUnit),
         skuName: skuForm.skuName,
         agentPrice: parseInt(skuForm.agentPrice),
         limitAgentPrice: parseInt(skuForm.limitAgentPrice),
@@ -319,6 +348,9 @@ export default {
         skuPrice: parseInt(skuForm.skuPrice),
         skuUnit: parseInt(skuForm.skuUnit)
       };
+      // let rowsData = Object.assign({}, skuData);
+      // rowsData.skuUnit = common.skuUnit(rowsData.skuUnit);
+      // rowsData.repertoryUnit = common.skuUnit(rowsData.repertoryUnit);
       console.log(this.skuCtrl);
       if (this.skuCtrl === 'add') {
         this.rows.push(skuData);
@@ -360,7 +392,7 @@ export default {
             goodsDesc: formItem.goodsDesc,
             goodsImg: formItem.goodsImg,
             skuInfos: formItem.skuInfos,
-            status: 1
+            status: formItem.status
           };
           if (goodsId) {
             data.goodsId = goodsId;

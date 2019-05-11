@@ -161,10 +161,12 @@ export default {
       this.rows = [];
       this.stockList(page);
     },
-    stockList (pageNum) {
+    stockList (pageNum, add, id) {
       let searchForm = this.searchForm;
+      let skuId = parseInt(searchForm.skuId);
+      if (add) skuId = id;
       let data = {
-        skuId: parseInt(searchForm.skuId),
+        skuId,
         pageNum,
         pageSize: 10
       };
@@ -220,7 +222,7 @@ export default {
             .then(res => {
               if (res.data.code === '20000') {
                 this.$Message.info(res.data.msg || '新增成功');
-                this.stockList(data.skuId);
+                this.stockList(1, true, data.skuId);
               }
             })
             .catch(error => console.log(error));

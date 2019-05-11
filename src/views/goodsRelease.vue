@@ -7,7 +7,7 @@
         </Select>
       </Form-item>
       <Form-item label="商品名称" prop="goodsName">
-        <Input v-model="formItem.goodsName" placeholder="请输入"></Input>
+        <Input v-model="formItem.goodsName" placeholder="请输入商品名称"></Input>
       </Form-item>
       <Form-item label="商品图片">
         <!--<div class="demo-upload-list po fl clear-fix" v-for="item in uploadList" :key="item.name">-->
@@ -42,7 +42,7 @@
         </div>
       </Form-item>
       <Form-item label="商品描述" prop="goodsDesc">
-        <Input v-model="formItem.goodsDesc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
+        <Input v-model="formItem.goodsDesc" type="textarea" :autosize="{minRows: 5,maxRows: 5}" placeholder="请输入..."></Input>
       </Form-item>
       <div class="addGoods mb10 m40" style="text-align: left;">
         <Button type="primary" @click="addPop">添加规格</Button>
@@ -86,6 +86,7 @@
 </template>
 
 <script>
+import common from '@/common/common.js';
 import FileUpload from '@/components/FileUpload';
 export default {
   components: {
@@ -149,7 +150,8 @@ export default {
         ],
         goodsDesc: [
           { required: true, message: '请输入商品信息', trigger: 'blur' },
-          { type: 'string', min: 5, message: '介绍不能少于20字', trigger: 'blur' }
+          { type: 'string', min: 5, message: '介绍不能少于5个字', trigger: 'blur' },
+          { type: 'string', max: 200, message: '介绍不能多于200字', trigger: 'blur' }
         ]
       }
     };
@@ -275,9 +277,6 @@ export default {
     skuPop () {
       let skuForm = this.skuForm;
       let skuData = {
-        buyNum: 1,
-        repertoryUnit: '1',
-        repertoryNum: 999,
         skuName: skuForm.skuName,
         agentPrice: parseInt(skuForm.agentPrice),
         limitAgentPrice: parseInt(skuForm.limitAgentPrice),
@@ -285,11 +284,13 @@ export default {
         skuPrice: parseInt(skuForm.skuPrice),
         skuUnit: parseInt(skuForm.skuUnit)
       };
+      let rowsData = Object.assign({}, skuData);
+      rowsData.skuUnit = common.skuUnit(rowsData.skuUnit);
       console.log(this.skuCtrl);
       if (this.skuCtrl === 'add') {
-        this.rows.push(skuData);
+        this.rows.push(rowsData);
       } else if (this.skuCtrl === 'alt') {
-        this.rows.splice(this.skuIdx, 1, skuData);
+        this.rows.splice(this.skuIdx, 1, rowsData);
       } else {
         this.rows.splice(this.skuIdx, 1);
       }
