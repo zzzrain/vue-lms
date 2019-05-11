@@ -1,6 +1,6 @@
 <template>
   <div class="login-con">
-    <Card icon="log-in" title="欢迎登录">
+    <Card icon="log-in" title="蓝慕斯采购管理系统">
       <div class="form-con">
         <LoginForm></LoginForm>
       </div>

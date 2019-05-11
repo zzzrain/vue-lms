@@ -1,17 +1,11 @@
 <template>
-  <div class="avatar-cont mb20">
-    <div class="user-avatar-dropdown">
-      <Dropdown @on-click="logout">
-        <Badge>
-          <Avatar/>
-        </Badge>
-        <Icon :size="18" type="md-arrow-dropdown"></Icon>
-        <DropdownMenu slot="list">
-          <DropdownItem name="logout">退出登录</DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
-    </div>
-  </div>
+  <Dropdown @on-click="logout">
+    <span class="po" style="color:#2d8cf0;">欢迎您，xxx</span>
+    <Icon :size="18" type="md-arrow-dropdown"></Icon>
+    <DropdownMenu slot="list">
+      <DropdownItem name="logout">退出登录</DropdownItem>
+    </DropdownMenu>
+  </Dropdown>
 </template>
 
 <script>
@@ -22,7 +16,7 @@ export default {
         .post('/api/lms/admin/user/loginout')
         .then(res => {
           if (res.data.code === '20000') {
-            this.$router.push({ path: '/' });
+            this.$router.push({ path: '/login' });
           }
         })
         .catch(error => console.log(error));
@@ -32,11 +26,4 @@ export default {
 </script>
 
 <style lang="scss">
-  .avatar-cont {
-    padding: 10px 20px;
-    height: 52px;
-    .user-avatar-dropdown {
-      float: right;
-    }
-  }
 </style>

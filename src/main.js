@@ -8,9 +8,10 @@ import iview from 'iview';
 import './common/common.scss';
 import 'iview/dist/styles/iview.css';
 
+Vue.use(iview);
 Vue.config.productionTip = false;
 Vue.prototype.$axios = axios;
-Vue.use(iview);
+Vue.prototype.$Message.config({ top: 300 });
 
 /* eslint-disable no-new */
 new Vue({
