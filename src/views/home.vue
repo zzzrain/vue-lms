@@ -7,16 +7,19 @@
     <div class="right-cont fl">
       <router-view></router-view>
     </div>
+    <Footer></Footer>
   </div>
 </template>
 
 <script>
 import SideMenu from '@/components/SideMenu';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 export default {
   components: {
     SideMenu,
-    Header
+    Header,
+    Footer
   },
   data () {
     return {

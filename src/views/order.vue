@@ -43,29 +43,29 @@ export default {
     this.orderList();
     this.cols = [
       {
-        title: '订单编码',
+        title: '订单编号',
         key: 'orderId'
       },
       {
-        title: '订单总价',
+        title: '订单金额',
         key: 'totalPrice'
       },
       {
         title: '订单状态 ',
         key: 'status'
       },
-      {
-        title: '详细地址',
-        key: 'detailAddress'
-      },
-      {
-        title: '配送方式',
-        key: 'dispatchType'
-      },
-      {
-        title: '备注',
-        key: 'remark'
-      },
+      // {
+      //   title: '详细地址',
+      //   key: 'detailAddress'
+      // },
+      // {
+      //   title: '配送方式',
+      //   key: 'dispatchType'
+      // },
+      // {
+      //   title: '备注',
+      //   key: 'remark'
+      // },
       {
         title: '更新时间',
         key: 'createTime'
