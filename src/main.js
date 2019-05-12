@@ -14,6 +14,21 @@ Vue.config.productionTip = false;
 Vue.prototype.$axios = axios;
 Vue.prototype.$Message.config({ top: 300 });
 
+// 登录权限控制
+router.beforeEach(async (to, from, next) => {
+  let permissions = to.meta.permissions;
+  let cookie = document.cookie.split(';');
+  cookie = cookie.map(ele => {
+    return ele.replace('username=', '');
+  });
+  if (permissions && !cookie[0]) {
+    alert('请先登录');
+    next('/');
+  } else {
+    next();
+  }
+});
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

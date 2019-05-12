@@ -58,7 +58,10 @@ export default {
             })
             .then(res => {
               if (res.data.code === '20000') {
-                this.$router.push({ path: '/home' });
+                let username = res.data.data.userName;
+                document.cookie = `username=${username};`;
+                this.$store.commit('setUsername', username);
+                this.$router.push({ path: '/home/goodsList' });
               } else {
                 this.$Message.error(res.data.msg);
               }

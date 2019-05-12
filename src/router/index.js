@@ -18,85 +18,96 @@ import resetPassword from '@/views/resetPassword';
 
 Vue.use(Router);
 
-export default new Router({
-  routes: [
-    // {
-    //   path: '/',
-    //   name: 'HelloWorld',
-    //   component: HelloWorld
-    // },
-    {
-      path: '/login',
-      name: 'login',
-      component: Login
+let routes = [
+  {
+    path: '/',
+    redirect: '/login'
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: Home,
+    redirect: 'home/goodsList',
+    meta: {
+      permissions: true
     },
-    {
-      path: '/home',
-      name: 'home',
-      redirect: 'home/goodsList',
-      component: Home,
-      children: [
-        {
-          path: 'userList',
-          name: 'userList',
-          component: userList
-        },
-        {
-          path: 'userDetail',
-          name: 'userDetail',
-          component: userDetail
-        },
-        {
-          path: 'resetPassword',
-          name: 'resetPassword',
-          component: resetPassword
-        },
-        {
-          path: 'category',
-          name: 'category',
-          component: category
-        },
-        {
-          path: 'goodsList',
-          name: 'goodsList',
-          component: goodsList
-        },
-        {
-          path: 'goodsDetail',
-          name: 'goodsDetail',
-          component: goodsDetail
-        },
-        {
-          path: 'goodsRelease',
-          name: 'goodsRelease',
-          component: goodsRelease
-        },
-        {
-          path: 'stock',
-          name: 'stock',
-          component: stock
-        },
-        {
-          path: 'order',
-          name: 'order',
-          component: order
-        },
-        {
-          path: 'orderLog',
-          name: 'orderLog',
-          component: orderLog
-        },
-        {
-          path: 'bill',
-          name: 'bill',
-          component: bill
-        },
-        {
-          path: 'banner',
-          name: 'banner',
-          component: banner
-        }
-      ]
-    }
-  ]
+    children: [
+      {
+        path: 'userList',
+        name: 'userList',
+        component: userList
+      },
+      {
+        path: 'userDetail',
+        name: 'userDetail',
+        component: userDetail
+      },
+      {
+        path: 'resetPassword',
+        name: 'resetPassword',
+        component: resetPassword
+      },
+      {
+        path: 'category',
+        name: 'category',
+        component: category
+      },
+      {
+        path: 'goodsList',
+        name: 'goodsList',
+        component: goodsList
+      },
+      {
+        path: 'goodsDetail',
+        name: 'goodsDetail',
+        component: goodsDetail
+      },
+      {
+        path: 'goodsRelease',
+        name: 'goodsRelease',
+        component: goodsRelease
+      },
+      {
+        path: 'stock',
+        name: 'stock',
+        component: stock
+      },
+      {
+        path: 'order',
+        name: 'order',
+        component: order
+      },
+      {
+        path: 'orderLog',
+        name: 'orderLog',
+        component: orderLog
+      },
+      {
+        path: 'bill',
+        name: 'bill',
+        component: bill
+      },
+      {
+        path: 'banner',
+        name: 'banner',
+        component: banner
+      }
+    ]
+  }
+];
+// 加入权限检测
+routes = routes.map(x => {
+  if (x.meta && x.meta.permissions) {
+    x.children.map(y => {
+      y.meta = {permissions: true};
+    });
+  }
+  return x;
 });
+
+export default new Router({ routes });

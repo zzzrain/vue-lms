@@ -23,8 +23,6 @@ export default {
     Breadcrumb,
     Header,
     Footer
-  },
-  data () {
   }
 };
 </script>

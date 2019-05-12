@@ -6,7 +6,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     exChange: '',
-    exSelect: ''
+    exSelect: '',
+    userName: ''
   },
   mutations: {
     setChange (state, data) {
@@ -14,6 +15,9 @@ export default new Vuex.Store({
     },
     setSelect (state, data) {
       state.exSelect = data;
+    },
+    setUsername (state, data) {
+      state.userName = data;
     }
   },
   getters: {
