@@ -3,6 +3,7 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router';
+import store from './store';
 import axios from 'axios';
 import iview from 'iview';
 import './common/common.scss';
@@ -17,6 +18,7 @@ Vue.prototype.$Message.config({ top: 300 });
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 });

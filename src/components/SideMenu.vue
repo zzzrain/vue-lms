@@ -1,5 +1,5 @@
 <template>
-  <Menu :theme="theme2" active-name="1-2" :open-names="['1']" style="width: 100%;">
+  <Menu theme="dark" ref="side_menu" :active-name="acName" :open-names="opName" @on-select="onSelect" @on-open-change="onChange" style="width: 100%;">
     <Submenu name="1">
       <template slot="title">
         <Icon type="ios-wineglass"></Icon>商品管理
@@ -43,9 +43,63 @@
 <script>
 export default {
   data () {
+    let name = this.$route.name;
+    let acName = '1-2';
+    let opName = ['1'];
+    switch (name) {
+      case 'category':
+        acName = '1-1';
+        opName = ['1'];
+        break;
+      case 'goodsRelease':
+        acName = '1-2';
+        opName = ['1'];
+        break;
+      case 'goodsList':
+        acName = '1-3';
+        opName = ['1'];
+        break;
+      case 'stock':
+        acName = '2-1';
+        opName = ['2'];
+        break;
+      case 'order':
+        acName = '3-1';
+        opName = ['3'];
+        break;
+      case 'bill':
+        acName = '4-1';
+        opName = ['4'];
+        break;
+      case 'userList':
+        acName = '5-1';
+        opName = ['5'];
+        break;
+      case 'banner':
+        acName = '6-1';
+        opName = ['6'];
+        break;
+      default:
+        acName = '1-2';
+        opName = ['1'];
+        break;
+    }
     return {
-      theme2: 'dark'
+      acName,
+      opName
     };
+  },
+  mounted () {
+    this.$store.commit('setSelect', this.acName);
+    this.$store.commit('setChange', this.opName);
+  },
+  methods: {
+    onSelect (key) {
+      this.$store.commit('setSelect', key);
+    },
+    onChange (key) {
+      this.$store.commit('setChange', key);
+    }
   }
 };
 </script>
