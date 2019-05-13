@@ -2,10 +2,10 @@
   <div class="order-info" style="padding-bottom: 100px">
     <h3 class="pb10">基本信息</h3>
     <p>订单编号：{{ formItem.orderId }}</p>
-    <p>商品总数：{{ formItem.pickNum }}</p>
+    <!--<p>商品总数：{{ formItem.pickNum }}</p>-->
     <p>订单金额：￥{{ formItem.totalPrice }}元</p>
-    <p>订单状态：{{ formItem.status }}</p>
-    <p>购买时间：{{ formItem.buyTime }}</p>
+    <!--<p>订单状态：{{ formItem.status }}</p>-->
+    <!--<p>购买时间：{{ formItem.buyTime }}</p>-->
     <p>备注：{{ formItem.remark }}</p>
     <h3 class="pt20 pb10">商品信息</h3>
     <Table border :context="self" :columns="cols" :data="rows" class="mt30 mb30 ml40" style="width: 701.5px;"></Table>
@@ -14,16 +14,16 @@
     <p>收货地址：{{ formItem.address }}</p>
     <p>收件人：{{ formItem.receiverName }}</p>
     <p>联系号码：{{ formItem.receiverMobile }}</p>
-    <p>物流编码：</p>
-    <p>物流单据：</p>
-    <h3 class="pt20 pb10">操作信息</h3>
-    <p>采购商名称：</p>
-    <p>业务员名称：</p>
-    <p>经销商名称：确认时间：</p>
-    <p>财务员名称：确认时间：</p>
-    <p>仓管人员：出货时间：</p>
-    <p>发货人员：发货时间：</p>
-    <p>收货人员：收货时间：</p>
+    <!--<p>物流编码：</p>-->
+    <!--<p>物流单据：</p>-->
+    <!--<h3 class="pt20 pb10">操作信息</h3>-->
+    <!--<p>采购商名称：</p>-->
+    <!--<p>业务员名称：</p>-->
+    <!--<p>经销商名称：确认时间：</p>-->
+    <!--<p>财务员名称：确认时间：</p>-->
+    <!--<p>仓管人员：出货时间：</p>-->
+    <!--<p>发货人员：发货时间：</p>-->
+    <!--<p>收货人员：收货时间：</p>-->
   </div>
 </template>
 
