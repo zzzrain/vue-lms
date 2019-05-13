@@ -3,7 +3,7 @@
     <h3 class="pb10">基本信息</h3>
     <p>订单编号：{{ formItem.orderId }}</p>
     <p>商品总数：{{ formItem.pickNum }}</p>
-    <p>订单金额：￥{{ formItem.totalPrice }}</p>
+    <p>订单金额：￥{{ formItem.totalPrice }}元</p>
     <p>订单状态：{{ formItem.status }}</p>
     <p>购买时间：{{ formItem.buyTime }}</p>
     <p>备注：{{ formItem.remark }}</p>

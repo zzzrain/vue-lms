@@ -18,14 +18,21 @@
         title="增加库存"
         @on-ok="stockAdd"
         @on-cancel="cancel">
-        <Form abel-position="left" :label-width="70" ref="stockForm" :model="stockForm" :rules="rules">
-          <Form-item label="规格ID" prop="skuId">
-            <Input placeholder="请输入" v-model="stockForm.skuId"></Input>
+        <Form abel-position="left" :label-width="70" :rules="rules">
+          <Form-item label="商品名称">
+            <Select v-model="goodsId" @on-change="selectGoods(goodsId)">
+              <Option v-for="item in goodsItem" :key="item.id" :value="item.goodsId">{{ item.goodsName }}</Option>
+            </Select>
+          </Form-item>
+          <Form-item label="规格名称" prop="skuId">
+            <Select v-model="stockForm.skuId">
+              <Option v-for="item in skuItem" :key="item.id" :value="item.skuId">{{ item.skuName }}</Option>
+            </Select>
           </Form-item>
           <!--<Form-item label="规格名称" prop="skuId">-->
             <!--<Input placeholder="请输入" v-model="stockForm.skuName"></Input>-->
           <!--</Form-item>-->
-          <Form-item label="数量" prop="skuNum">
+          <Form-item label="数量">
             <Input placeholder="请输入" v-model="stockForm.skuNum"></Input>
           </Form-item>
           <Form-item label="规格单位" prop="skuUnit" style="width: 200px;">
@@ -77,6 +84,10 @@ export default {
       cols: [],
       rows: [],
       itemIdx: '',
+      goodsId: '',
+      goodsItem: [],
+      skuItemTemp: [],
+      skuItem: [],
       stockForm: {
         repertoryId: '',
         skuId: '',
@@ -155,11 +166,43 @@ export default {
       }
     ];
     this.rows = [];
+    this.goodsList();
   },
   methods: {
     changePage (page) {
       this.rows = [];
       this.stockList(page);
+    },
+    goodsList () {
+      this.rows = [];
+      this.$axios
+        .post('/api/lms/admin/goods/goodsList', {
+          pageNum: 1,
+          pageSize: 999
+        })
+        .then(res => {
+          let data = res.data && res.data.data;
+          let dataList = data.list || [];
+          if (res.data.code === '20000') {
+            this.goodsItem = dataList
+              .sort((x, y) => {
+                return y.createTime - x.createTime;
+              });
+            dataList.map(x => {
+              x.skuDtos.map(y => {
+                y.goodsId = x.goodsId;
+                this.skuItemTemp.push(y);
+              });
+            });
+          }
+        })
+        .catch(error => console.log(error));
+    },
+    selectGoods (goodsId) {
+      this.skuItem = this.skuItemTemp.filter(ele => {
+        return ele.goodsId === goodsId;
+      });
+      console.log(this.skuItem);
     },
     stockList (pageNum, add, id) {
       let searchForm = this.searchForm;
