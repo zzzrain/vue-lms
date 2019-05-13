@@ -6,7 +6,7 @@
         <Input placeholder="请输入" :disabled="type" v-model="userForm.userName"></Input>
       </Form-item>
       <Form-item label="账号" prop="userAccount" class="form-item">
-        <Input placeholder="请输入" :disabled="type" v-model="userForm.userAccount"></Input>
+        <Input placeholder="请输入" :disabled="true" v-model="userForm.userAccount"></Input>
       </Form-item>
       <Form-item label="手机号" prop="mobile" class="form-item">
         <Input placeholder="请输入" :disabled="type" v-model="userForm.mobile"></Input>
@@ -217,6 +217,9 @@ export default {
             .then(res => {
               if (res.data.code === '20000') {
                 this.$Message.info('修改成功');
+                setTimeout(() => {
+                  window.history.back();
+                }, 2000);
               }
             })
             .catch(error => console.log(error));

@@ -87,6 +87,7 @@ export default {
               },
               on: {
                 click: function () {
+                  vm.orderDetail(params.row.orderId);
                 }
               }
             }, '详情'),
@@ -103,7 +104,7 @@ export default {
                   vm.orderLog(params.row.orderId);
                 }
               }
-            }, '记录')
+            }, '日志')
           ]);
         }
       }
@@ -149,6 +150,9 @@ export default {
           }
         })
         .catch(error => console.log(error));
+    },
+    orderDetail (id) {
+      this.$router.push(`/home/orderDetail?id=${id}`);
     },
     orderLog (id) {
       this.$router.push(`/home/orderLog?id=${id}`);

@@ -10,6 +10,7 @@ import goodsRelease from '@/views/goodsRelease';
 import stock from '@/views/stock';
 import order from '@/views/order';
 import orderLog from '@/views/orderLog';
+import orderDetail from '@/views/orderDetail';
 import bill from '@/views/bill';
 import banner from '@/views/banner';
 import userList from '@/views/userList';
@@ -86,6 +87,11 @@ let routes = [
         path: 'orderLog',
         name: 'orderLog',
         component: orderLog
+      },
+      {
+        path: 'orderDetail',
+        name: 'orderDetail',
+        component: orderDetail
       },
       {
         path: 'bill',
