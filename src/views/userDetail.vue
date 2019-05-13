@@ -21,21 +21,21 @@
           <Option value="6">发货员</Option>
         </Select>
       </Form-item>
-      <Form-item v-if="userForm.userType === '1' || userForm.userType === '2'" label="关联业务员" prop="financeUserId" class="form-item">
-        <Input v-if="type" placeholder="请输入ID" :disabled="type" v-model="relateItem.financeUserId"></Input>
-        <Select v-else v-model="relateItem.financeUserId">
-          <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
-        </Select>
-      </Form-item>
       <Form-item v-if="userForm.userType === '1'" label="关联代理商" prop="agetUserId" class="form-item">
         <Input v-if="type" placeholder="请输入ID" :disabled="type" v-model="relateItem.agetUserId"></Input>
         <Select v-else v-model="relateItem.agetUserId">
           <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
         </Select>
       </Form-item>
-      <Form-item v-if="userForm.userType === '1'" label="对应财务员" prop="sellerUserId" class="form-item">
+      <Form-item v-if="userForm.userType === '2'" label="关联业务员" prop="sellerUserId" class="form-item">
         <Input v-if="type" placeholder="请输入ID" :disabled="type" v-model="relateItem.sellerUserId"></Input>
         <Select v-else v-model="relateItem.sellerUserId">
+          <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+        </Select>
+      </Form-item>
+      <Form-item v-if="userForm.userType === '3' || userForm.userType === '5' || userForm.userType === '6'" label="对应财务员" prop="financeUserId" class="form-item">
+        <Input v-if="type" placeholder="请输入ID" :disabled="type" v-model="relateItem.financeUserId"></Input>
+        <Select v-else v-model="relateItem.financeUserId">
           <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
         </Select>
       </Form-item>
@@ -167,9 +167,9 @@ export default {
               certificateUrl: data.certificateUrl
             };
             this.relateItem = {
-              financeUserId: data.financeUserId,
               agetUserId: data.agetUserId,
-              sellerUserId: data.sellerUserId
+              sellerUserId: data.sellerUserId,
+              financeUserId: data.financeUserId
             };
           }
         })
@@ -189,12 +189,20 @@ export default {
             status: 1,
             wxPerm: 1
           };
-          if (data.userType === 1) {
-            data.financeUserId = this.relateItem.financeUserId;
-            data.agetUserId = this.relateItem.agetUserId;
-            data.sellerUserId = this.relateItem.sellerUserId;
-          } else if (data.userType === 2) {
-            data.financeUserId = this.relateItem.financeUserId;
+          switch (data.userType) {
+            case 1 :
+              data.agetUserId = this.relateItem.agetUserId;
+              break;
+            case 2 :
+              data.sellerUserId = this.relateItem.sellerUserId;
+              break;
+            case 3 :
+            case 5 :
+            case 6 :
+              data.financeUserId = this.relateItem.financeUserId;
+              break;
+            default:
+              break;
           }
           console.log(JSON.stringify(data));
           this.$axios

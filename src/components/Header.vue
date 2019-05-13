@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <h2 style="color:#2d8cf0;">蓝慕斯酒业</h2>
+    <h2 style="color:#2d8cf0;">蓝慕诗酒业</h2>
     <h2 style="color:#2d8cf0;margin-left: 54px">采购管理系统</h2>
     <LoginIcon class="login-icon"></LoginIcon>
   </div>
