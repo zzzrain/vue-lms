@@ -67,7 +67,7 @@
           <div v-else class="img-wrap oh po"></div>
         </Upload>
       </Form-item>
-      <Form-item v-if="!type">
+      <Form-item v-if="!type" class="form-item">
         <Button type="primary" @click="handleSubmit('userForm')">提交</Button>
         <Button @click="handleReset('userForm')" style="margin-left: 8px">重置</Button>
       </Form-item>

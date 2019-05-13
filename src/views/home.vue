@@ -23,6 +23,10 @@ export default {
     Breadcrumb,
     Header,
     Footer
+  },
+  mounted () {
+    let left = document.querySelector('.left-cont');
+    left.style.height = window.screen.height - 20 + 'px';
   }
 };
 </script>
@@ -30,8 +34,7 @@ export default {
 <style scoped lang="scss">
   .left-cont {
     width: 15%;
-    height: 900px;
-    min-height: 900px;
+    /*min-height: 800px;*/
     background: #515a6e
   }
   .right-cont {

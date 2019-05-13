@@ -89,7 +89,7 @@ export default {
               totalPrice: formItem.totalPrice,
               remark: formItem.remark,
               status: formItem.status,
-              dispatchType: formItem.dispatchType,
+              dispatchType: common.dispatch(formItem.dispatchType),
               buyTime: common.format(formItem.buyTime),
               address,
               receiverName: formItem.receiverName,

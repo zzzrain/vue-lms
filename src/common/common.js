@@ -156,5 +156,20 @@ module.exports = {
         break;
     }
     return res;
+  },
+  dispatch (ele) {
+    let res = '';
+    switch (ele) {
+      case 1 :
+        res = '物流配送';
+        break;
+      case 2 :
+        res = '自提';
+        break;
+      default:
+        res = '未知状态';
+        break;
+    }
+    return res;
   }
 };
