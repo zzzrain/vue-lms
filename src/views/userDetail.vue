@@ -22,19 +22,25 @@
         </Select>
       </Form-item>
       <Form-item v-if="userForm.userType === '1'" label="关联代理商" prop="agetUserId" class="form-item">
-        <Input v-if="type" placeholder="请输入ID" :disabled="type" v-model="relateItem.agetUserId"></Input>
+        <Select v-if="type" v-model="relateItem.agetUserId" disabled>
+          <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+        </Select>
         <Select v-else v-model="relateItem.agetUserId">
           <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
         </Select>
       </Form-item>
       <Form-item v-if="userForm.userType === '2'" label="关联业务员" prop="sellerUserId" class="form-item">
-        <Input v-if="type" placeholder="请输入ID" :disabled="type" v-model="relateItem.sellerUserId"></Input>
+        <Select v-if="type" v-model="relateItem.sellerUserId" disabled>
+          <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+        </Select>
         <Select v-else v-model="relateItem.sellerUserId">
           <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
         </Select>
       </Form-item>
-      <Form-item v-if="userForm.userType === '3' || userForm.userType === '5' || userForm.userType === '6'" label="对应财务员" prop="financeUserId" class="form-item">
-        <Input v-if="type" placeholder="请输入ID" :disabled="type" v-model="relateItem.financeUserId"></Input>
+      <Form-item v-if="userForm.userType !== '1' && userForm.userType !== '4'" label="对应财务员" prop="financeUserId" class="form-item">
+        <Select v-if="type" v-model="relateItem.financeUserId" disabled>
+          <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+        </Select>
         <Select v-else v-model="relateItem.financeUserId">
           <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
         </Select>
@@ -132,11 +138,11 @@ export default {
         .then(res => {
           if (res.data.code === '20000') {
             switch (userType) {
-              case 3 :
-                this.ywyList = res.data.data;
-                break;
               case 2 :
                 this.dlsList = res.data.data;
+                break;
+              case 3 :
+                this.ywyList = res.data.data;
                 break;
               case 4 :
                 this.cwyList = res.data.data;
@@ -195,6 +201,7 @@ export default {
               break;
             case 2 :
               data.sellerUserId = this.relateItem.sellerUserId;
+              data.financeUserId = this.relateItem.financeUserId;
               break;
             case 3 :
             case 5 :
