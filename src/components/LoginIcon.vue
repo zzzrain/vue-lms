@@ -10,6 +10,18 @@
 
 <script>
 export default {
+  data () {
+    return {
+      username: ''
+    };
+  },
+  mounted () {
+    let cookie = document.cookie.split(';');
+    cookie = cookie.map(ele => {
+      return ele.replace('username=', '');
+    });
+    this.username = cookie[0];
+  },
   methods: {
     logout () {
       this.$axios
@@ -22,12 +34,12 @@ export default {
         })
         .catch(error => console.log(error));
     }
-  },
-  computed: {
-    username () {
-      return this.$store.getters.getChange.userName;
-    }
   }
+  // computed: {
+  //   username () {
+  //     return this.$store.getters.getChange.userName;
+  //   }
+  // }
 };
 </script>
 
