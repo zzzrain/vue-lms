@@ -401,12 +401,12 @@ export default {
               .post('/api/lms/admin/goods/updateGoods', data)
               .then(res => {
                 if (res.data.code === '20000') {
-                  this.$Message.info(res.data.msg || '修改成功');
+                  this.$Message.info('修改成功');
                   setTimeout(() => {
                     window.history.back();
                   }, 2000);
                 } else {
-                  this.$Message.info(res.data.msg || '操作失败');
+                  this.$Message.info('操作失败');
                 }
               })
               .catch(error => console.log(error));
@@ -416,12 +416,12 @@ export default {
               .post('/api/lms/admin/goods/publishGoods', data)
               .then(res => {
                 if (res.data.code === '20000') {
-                  this.$Message.info(res.data.msg || '新增成功');
+                  this.$Message.info('新增成功');
                   setTimeout(() => {
                     window.history.back();
                   }, 2000);
                 } else {
-                  this.$Message.info(res.data.msg || '操作失败');
+                  this.$Message.info('操作失败');
                 }
               })
               .catch(error => console.log(error));

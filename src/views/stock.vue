@@ -221,7 +221,7 @@ export default {
             .post('/api/lms/admin/repertory/addRepertory', data)
             .then(res => {
               if (res.data.code === '20000') {
-                this.$Message.info(res.data.msg || '新增成功');
+                this.$Message.info('新增成功');
                 this.stockList(1, true, data.skuId);
               }
             })
@@ -247,7 +247,7 @@ export default {
             .post('/api/lms/admin/repertory/updateRepertory', data)
             .then(res => {
               if (res.data.code === '20000') {
-                this.$Message.info(res.data.msg || '修改成功');
+                this.$Message.info('修改成功');
                 // this.rows[idx].skuName = data.skuName;
                 this.rows[idx].skuNum = data.skuNum;
                 this.rows[idx].skuUnit = common.skuUnit(data.skuUnit);

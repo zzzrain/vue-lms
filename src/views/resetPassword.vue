@@ -32,7 +32,7 @@ export default {
         .post('/api/lms/admin/user/resetPwd', this.searchForm)
         .then(res => {
           if (res.data.code === '20000') {
-            this.$Message.info(res.data.msg || '重置成功');
+            this.$Message.info('重置成功');
           }
         })
         .catch(error => console.log(error));

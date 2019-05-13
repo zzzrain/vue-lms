@@ -1,7 +1,7 @@
 <template>
   <div class="footer">
     <p>广州粒子贸易有限公司</p>
-    <p>&reg; www.lmsxo.vom</p>
+    <p>&reg; www.lmsxo.com</p>
   </div>
 </template>
 

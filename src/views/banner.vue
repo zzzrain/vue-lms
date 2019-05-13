@@ -219,8 +219,8 @@ export default {
       this.bannerForm.bannerPosition = '1';
     },
     bannerAdd (cb) {
-      console.log(this.bannerForm);
       let bannerForm = this.bannerForm;
+      let message = '新增成功';
       let data = {};
       if (cb) {
         data.status = bannerForm.status === '启用' ? 0 : 1;
@@ -236,6 +236,7 @@ export default {
       // 修改需要id
       if (bannerForm.id) {
         data.id = bannerForm.id;
+        message = '修改成功';
       }
       console.log(JSON.stringify(data));
       this.$axios
@@ -244,13 +245,13 @@ export default {
           if (res.data.code === '20000') {
             if (cb) cb();
             else {
-              this.$Message.info(res.data.msg || '修改成功');
               data.bannerPosition = common.bp(data.bannerPosition);
               data.sort = common.sort(data.sort);
               data.status = common.state(data.status);
               data.createTime = bannerForm.createTime;
               data.updateTime = bannerForm.updateTime;
               this.rows.splice(this.bannerIdx, 1, data);
+              this.$Message.info(message);
             }
           }
         })

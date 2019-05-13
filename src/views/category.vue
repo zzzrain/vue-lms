@@ -178,12 +178,14 @@ export default {
       }
     },
     updateAjax (cb) {
+      let message = '新增成功';
       let data = {
         categoryName: this.categoryForm.name,
         categoryLevel: this.categoryForm.level,
         status: 1
       };
       if (this.categoryForm.id) {
+        message = '修改成功';
         data.id = this.categoryForm.id;
         data.status = this.categoryForm.status === '启用' ? 0 : 1;
       }
@@ -192,7 +194,7 @@ export default {
         .post('/api/lms/admin/category/updateCategory', data)
         .then(res => {
           if (res.data.code === '20000') {
-            this.$Message.info(res.data.msg || '新增成功');
+            this.$Message.info(message);
             if (cb) cb();
             else {
               let idx = this.itemIdx;
@@ -200,7 +202,7 @@ export default {
               this.rows[idx].categoryLevel = this.categoryForm.level;
             }
           } else {
-            this.$Message.info(res.data.msg || '操作失败');
+            this.$Message.info('操作失败');
           }
         })
         .catch(error => console.log(error));

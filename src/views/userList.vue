@@ -452,7 +452,7 @@ export default {
             .post('/api/lms/admin/user/addUser', data)
             .then(res => {
               if (res.data.code === '20000') {
-                this.$Message.info(res.data.msg || '新增成功');
+                this.$Message.info('新增成功');
               }
             })
             .catch(error => console.log(error));
@@ -491,7 +491,7 @@ export default {
         .post('/api/lms/admin/user/updateUser', data)
         .then(res => {
           if (res.data.code === '20000') {
-            this.$Message.info(res.data.msg || '修改成功');
+            this.$Message.info('修改成功');
             cb && cb();
             // if (cb) cb();
             // else {
@@ -511,7 +511,9 @@ export default {
         .post('/api/lms/admin/user/resetPwd', this.pswForm)
         .then(res => {
           if (res.data.code === '20000') {
-            this.$Message.info(res.data.msg || '重置成功');
+            this.$Message.info('重置成功');
+          } else {
+            this.$Message.info('操作失败');
           }
         })
         .catch(error => console.log(error));

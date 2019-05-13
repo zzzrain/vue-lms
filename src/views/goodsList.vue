@@ -174,7 +174,7 @@ export default {
         })
         .then(res => {
           if (res.data.code === '20000') cb();
-          else this.$Message.info(res.data.msg || '操作失败');
+          else this.$Message.info('操作失败');
         })
         .catch(error => console.log(error));
     },

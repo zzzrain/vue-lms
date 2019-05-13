@@ -209,7 +209,7 @@ export default {
             .post('/api/lms/admin/user/updateUser', data)
             .then(res => {
               if (res.data.code === '20000') {
-                this.$Message.info(res.data.msg || '修改成功');
+                this.$Message.info('修改成功');
               }
             })
             .catch(error => console.log(error));
