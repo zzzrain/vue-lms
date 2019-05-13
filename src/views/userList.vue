@@ -70,7 +70,7 @@
               <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
             </Select>
           </Form-item>
-          <Form-item v-if="userForm.userType !== '1' && userForm.userType !== '4'" label="对应财务员" prop="financeUserId">
+          <Form-item v-if="userForm.userType !== '4'" label="对应财务员" prop="financeUserId">
             <Select v-model="relateItem.financeUserId">
               <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
             </Select>
@@ -435,6 +435,7 @@ export default {
           switch (data.userType) {
             case 1 :
               data.agetUserId = this.relateItem.agetUserId;
+              data.financeUserId = this.relateItem.financeUserId;
               break;
             case 2 :
               data.sellerUserId = this.relateItem.sellerUserId;

@@ -46,36 +46,7 @@ export default {
     };
   },
   mounted () {
-    this.cols = [
-      {
-        title: '订单编码',
-        key: 'mobile'
-      },
-      {
-        title: '订单总价',
-        key: 'totalPrice'
-      },
-      {
-        title: '订单状态 ',
-        key: 'status'
-      },
-      {
-        title: '详细地址',
-        key: 'detailAddress'
-      },
-      {
-        title: '配送方式',
-        key: 'dispatchType'
-      },
-      {
-        title: '备注',
-        key: 'remark'
-      },
-      {
-        title: '更新时间',
-        key: 'createTime'
-      }
-    ];
+    this.cols = [];
     this.rows = [];
   },
   methods: {
@@ -120,15 +91,8 @@ export default {
           const dataList = data.list || [];
           if (res.data.code === '20000') {
             this.total = data.total;
-            dataList.forEach(ele => {
+            dataList.forEach(() => {
               this.rows.push({
-                mobile: ele.mobile,
-                detailAddress: ele.detailAddress,
-                dispatchType: ele.dispatchType,
-                totalPrice: ele.totalPrice,
-                status: ele.status,
-                remark: ele.remark,
-                createTime: common.format(ele.createTime)
               });
             });
           }

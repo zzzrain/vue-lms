@@ -8,7 +8,7 @@
     <p>购买时间：{{ formItem.buyTime }}</p>
     <p>备注：{{ formItem.remark }}</p>
     <h3 class="pt20 pb10">商品信息</h3>
-    <Table border :context="self" :columns="cols" :data="rows" class="mt30 mb30 ml40" style="width: 750px;"></Table>
+    <Table border :context="self" :columns="cols" :data="rows" class="mt30 mb30 ml40" style="width: 701.5px;"></Table>
     <h3 class="pt20 pb10">物流信息</h3>
     <p>物流方式：{{ formItem.dispatchType }}</p>
     <p>收货地址：{{ formItem.address }}</p>
@@ -56,19 +56,23 @@ export default {
     this.cols = [
       {
         title: '商品名称',
-        key: 'goodsName'
+        key: 'goodsName',
+        width: 300
       },
       {
         title: '商品数量',
-        key: ''
+        key: 'num',
+        width: 100
       },
       {
-        title: '商品单价',
-        key: ''
+        title: '商品单位',
+        key: 'skuUnit',
+        width: 100
       },
       {
         title: '商品总价',
-        key: ''
+        key: 'skuPrice',
+        width: 200
       }
     ];
     this.rows = [];
@@ -96,8 +100,12 @@ export default {
               receiverMobile: formItem.receiverMobile,
               goods: formItem.goods
             };
-            this.rows = formItem.goods.map(ele => {
-              return ele;
+            formItem.goods.map(x => {
+              x.skuList.map(y => {
+                y.goodsName = `${x.goodsName}（${y.skuName}）`;
+                y.skuUnit = common.skuUnit(y.skuUnit);
+                this.rows.push(y);
+              });
             });
           }
         })
