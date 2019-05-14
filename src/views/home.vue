@@ -36,7 +36,7 @@ export default {
 <style scoped lang="scss">
   .left-cont {
     width: 15%;
-    /*min-height: 800px;*/
+    min-height: 800px;
     background: #515a6e
   }
   .right-cont {

@@ -2,7 +2,7 @@
   <Menu theme="dark" ref="side_menu" :active-name="acName" :open-names="opName" @on-select="onSelect" @on-open-change="onChange" style="width: 100%;">
     <Submenu name="1">
       <template slot="title">
-         <i><img src="../images/wineglass.png" alt=""></i>商品管理
+         <i><img src="../images/wineglass.png" alt=""></i> 商品管理
       </template>
       <router-link to="/home/category"><Menu-item name="1-1">类目管理</Menu-item></router-link>
       <router-link to="/home/goodsRelease"><Menu-item name="1-2">发布管理</Menu-item></router-link>
@@ -10,25 +10,25 @@
     </Submenu>
     <Submenu name="2">
       <template slot="title">
-        <Icon type="ios-document"></Icon> 库存管理
+        <i><img src="../images/stock.png" alt=""></i> 库存管理
       </template>
       <router-link to="/home/stock"><Menu-item name="2-1">库存管理</Menu-item></router-link>
     </Submenu>
     <Submenu name="3">
       <template slot="title">
-        <Icon type="ios-document"></Icon> 订单管理
+        <i><img src="../images/order.png" alt=""></i> 订单管理
       </template>
       <router-link to="/home/order"><Menu-item name="3-1">订单管理</Menu-item></router-link>
     </Submenu>
     <Submenu name="4">
       <template slot="title">
-        <Icon type="ios-document"></Icon> 统计管理
+        <i><img src="../images/bill.png" alt=""></i> 统计管理
       </template>
       <router-link to="/home/bill"><Menu-item name="4-1">统计管理</Menu-item></router-link>
     </Submenu>
     <Submenu name="5">
       <template slot="title">
-        <Icon type="ios-person"></Icon> 用户管理
+        <i><img src="../images/user.png" alt=""></i> 用户管理
       </template>
       <router-link to="/home/userList"><Menu-item name="5-1">用户管理</Menu-item></router-link>
     </Submenu>
