@@ -77,6 +77,8 @@ export default {
         align: 'center',
         render: (h, params) => {
           let row = params.row;
+          let id = row.goodsId;
+          let cid = row.categoryId;
           let status = row.status;
           let type = status === '启用' ? 'error' : 'success';
           let btn = status === '启用' ? '停用' : '启用';
@@ -91,7 +93,7 @@ export default {
               },
               on: {
                 click: function () {
-                  vm.goodsDetail(row.goodsId, row.status);
+                  vm.goodsDetail(id, row.status);
                 }
               }
             }, '修改'),
@@ -105,9 +107,8 @@ export default {
               },
               on: {
                 click: function () {
-                  let id = row.id;
                   let status = row.status === '启用' ? 0 : 1;
-                  vm.updateGoods(id, status, function () {
+                  vm.updateGoods(id, cid, status, function () {
                     row.status = btn;
                   });
                 }
@@ -168,15 +169,20 @@ export default {
         })
         .catch(error => console.log(error));
     },
-    updateGoods (id, status, cb) {
+    updateGoods (goodsId, categoryId, status, cb) {
       this.$axios
         .post('/api/lms/admin/goods/updateGoods', {
-          id,
+          goodsId,
+          categoryId,
           status
         })
         .then(res => {
-          if (res.data.code === '20000') cb();
-          else this.$Message.info('操作失败');
+          if (res.data.code === '20000') {
+            this.$Message.info('修改成功');
+            cb();
+          } else {
+            this.$Message.info('操作失败');
+          }
         })
         .catch(error => console.log(error));
     },
