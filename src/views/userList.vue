@@ -290,6 +290,9 @@ export default {
                 type: 'warning',
                 size: 'small'
               },
+              attr: {
+                href: `/home/userDetail?type=see&id=${id}`
+              },
               style: {
                 marginRight: '8px'
               },

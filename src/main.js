@@ -18,9 +18,10 @@ Vue.prototype.$Message.config({ top: 300 });
 router.beforeEach(async (to, from, next) => {
   let permissions = to.meta.permissions;
   let cookie = document.cookie.split(';');
-  cookie = cookie.map(ele => {
-    return ele.replace('username=', '');
+  cookie = cookie.filter(ele => {
+    return ele.indexOf('username=') >= 0;
   });
+  cookie[0] = cookie[0].replace('username=', '');
   if (permissions && !cookie[0]) {
     alert('请先登录');
     next('/');

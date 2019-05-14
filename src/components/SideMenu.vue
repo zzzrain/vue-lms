@@ -46,6 +46,7 @@ export default {
     let name = this.$route.name;
     let acName = '1-2';
     let opName = ['1'];
+    console.log(name);
     switch (name) {
       case 'category':
         acName = '1-1';
@@ -59,6 +60,10 @@ export default {
         acName = '1-3';
         opName = ['1'];
         break;
+      case 'goodsDetail':
+        acName = '1-3-1';
+        opName = ['1'];
+        break;
       case 'stock':
         acName = '2-1';
         opName = ['2'];
@@ -67,12 +72,20 @@ export default {
         acName = '3-1';
         opName = ['3'];
         break;
+      case 'orderDetail':
+        acName = '3-1-1';
+        opName = ['3'];
+        break;
       case 'bill':
         acName = '4-1';
         opName = ['4'];
         break;
       case 'userList':
         acName = '5-1';
+        opName = ['5'];
+        break;
+      case 'userDetail':
+        acName = '5-1-1';
         opName = ['5'];
         break;
       case 'banner':

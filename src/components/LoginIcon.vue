@@ -17,10 +17,10 @@ export default {
   },
   mounted () {
     let cookie = document.cookie.split(';');
-    cookie = cookie.map(ele => {
-      return ele.replace('username=', '');
+    cookie = cookie.filter(ele => {
+      return ele.indexOf('username=') >= 0;
     });
-    this.username = cookie[0];
+    this.username = cookie[0].replace('username=', '');
   },
   methods: {
     logout () {
