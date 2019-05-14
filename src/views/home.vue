@@ -26,7 +26,9 @@ export default {
   },
   mounted () {
     let left = document.querySelector('.left-cont');
-    left.style.height = document.body.scrollHeight + 'px';
+    setTimeout(() => {
+      left.style.height = document.body.scrollHeight + 'px';
+    }, 500);
   }
 };
 </script>

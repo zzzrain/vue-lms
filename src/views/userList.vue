@@ -458,6 +458,7 @@ export default {
             .then(res => {
               if (res.data.code === '20000') {
                 this.$Message.info('新增成功');
+                this.userList(1);
               }
             })
             .catch(error => console.log(error));
