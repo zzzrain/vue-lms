@@ -142,7 +142,7 @@ export default {
                 detailAddress: ele.detailAddress,
                 dispatchType: ele.dispatchType,
                 totalPrice: ele.totalPrice,
-                status: ele.status,
+                status: common.orderType(ele.status),
                 remark: ele.remark,
                 createTime: common.format(ele.createTime)
               });

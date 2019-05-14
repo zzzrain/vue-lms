@@ -171,5 +171,38 @@ module.exports = {
         break;
     }
     return res;
+  },
+  orderType (ele) {
+    let res = '';
+    switch (ele) {
+      case 1 :
+        res = '采购商确认';
+        break;
+      case 2 :
+        res = '代理商确认';
+        break;
+      case 3 :
+        res = '待财务确认';
+        break;
+      case 4 :
+        res = '待仓管出库';
+        break;
+      case 5 :
+        res = '待发货员发货';
+        break;
+      case 6 :
+        res = '待用户收货';
+        break;
+      case 7 :
+        res = '已完成';
+        break;
+      case 8 :
+        res = '已取消';
+        break;
+      default:
+        res = '未知';
+        break;
+    }
+    return res;
   }
 };

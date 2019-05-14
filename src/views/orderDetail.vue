@@ -4,7 +4,7 @@
     <p>订单编号：{{ formItem.orderId }}</p>
     <!--<p>商品总数：{{ formItem.pickNum }}</p>-->
     <p>订单金额：￥{{ formItem.totalPrice }}元</p>
-    <!--<p>订单状态：{{ formItem.status }}</p>-->
+    <p>订单状态：{{ formItem.status }}</p>
     <!--<p>购买时间：{{ formItem.buyTime }}</p>-->
     <p>备注：{{ formItem.remark }}</p>
     <h3 class="pt20 pb10">商品信息</h3>
@@ -16,6 +16,12 @@
     <p>联系号码：{{ formItem.receiverMobile }}</p>
     <!--<p>物流编码：</p>-->
     <!--<p>物流单据：</p>-->
+    <h3 class="pt20 pb10">操作信息</h3>
+    <p v-if="formItem.purchaser ">采购商名称：{{ formItem.purchaser }} &nbsp;&nbsp;&nbsp;&nbsp;联系方式：{{ formItem.purchaserMobile }}</p>
+    <p v-if="formItem.agentUser">代理商名称：{{ formItem.agentUser }} &nbsp;&nbsp;&nbsp;&nbsp;{{ formItem.agentUserMobile }}</p>
+    <p v-if="formItem.financeUser">财务员名称：{{ formItem.financeUser }} &nbsp;&nbsp;&nbsp;&nbsp;{{ formItem.financeUserMobile }}</p>
+    <p v-if="formItem.storeUser ">仓管人员：{{ formItem.storeUser }} &nbsp;&nbsp;&nbsp;&nbsp;{{ formItem.storeUserMobile }}</p>
+    <p v-if="formItem.sendUser">发货人员：{{ formItem.sendUser }} &nbsp;&nbsp;&nbsp;&nbsp;{{ formItem.sendUserMobile }}</p>
     <!--<h3 class="pt20 pb10">操作信息</h3>-->
     <!--<p>采购商名称：</p>-->
     <!--<p>业务员名称：</p>-->
@@ -44,8 +50,18 @@ export default {
         remark: '',
         dispatchType: '',
         address: '',
-        receiverName: '',
+        agentUser: '',
+        agentUserMobile: '',
+        purchaser: '',
+        purchaserMobile: '',
         receiverMobile: '',
+        receiverName: '',
+        financeUser: '',
+        financeUserMobile: '',
+        storeUser: '',
+        storeUserMobile: '',
+        sendUser: '',
+        sendUserMobile: '',
         goods: []
       }
     };
@@ -85,22 +101,13 @@ export default {
         })
         .then(res => {
           if (res.data.code === '20000') {
-            let formItem = res.data && res.data.data;
-            let address = formItem.provinceName + formItem.cityName + formItem.regionName + formItem.detailAddress;
-            this.formItem = {
-              orderId: formItem.orderId,
-              pickNum: formItem.pickNum,
-              totalPrice: formItem.totalPrice,
-              remark: formItem.remark,
-              status: formItem.status,
-              dispatchType: common.dispatch(formItem.dispatchType),
-              buyTime: common.format(formItem.buyTime),
-              address,
-              receiverName: formItem.receiverName,
-              receiverMobile: formItem.receiverMobile,
-              goods: formItem.goods
-            };
-            formItem.goods.map(x => {
+            let data = res.data && res.data.data;
+            data.dispatchType = common.dispatch(data.dispatchType);
+            data.status = common.orderType(data.status);
+            data.buyTime = common.format(data.buyTime);
+            data.address = data.provinceName + data.cityName + data.regionName + data.detailAddress;
+            this.formItem = data;
+            data.goods.map(x => {
               x.skuList.map(y => {
                 y.goodsName = `${x.goodsName}（${y.skuName}）`;
                 y.skuUnit = common.skuUnit(y.skuUnit);
