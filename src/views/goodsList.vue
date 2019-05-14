@@ -51,11 +51,13 @@ export default {
     this.cols = [
       {
         title: '商品编号',
-        key: 'goodsId'
+        key: 'goodsId',
+        width: 150
       },
       {
         title: '商品名称',
-        key: 'goodsName'
+        key: 'goodsName',
+        width: 250
       },
       {
         title: '所属类目',

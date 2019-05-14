@@ -2,7 +2,7 @@
   <Menu theme="dark" ref="side_menu" :active-name="acName" :open-names="opName" @on-select="onSelect" @on-open-change="onChange" style="width: 100%;">
     <Submenu name="1">
       <template slot="title">
-        <Icon type="ios-wineglass"></Icon>商品管理
+         <i><img src="../images/wineglass.png" alt=""></i>商品管理
       </template>
       <router-link to="/home/category"><Menu-item name="1-1">类目管理</Menu-item></router-link>
       <router-link to="/home/goodsRelease"><Menu-item name="1-2">发布管理</Menu-item></router-link>

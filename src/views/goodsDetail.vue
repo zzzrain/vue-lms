@@ -202,7 +202,7 @@ export default {
       {
         title: '商品规格',
         key: 'skuUnit'
-      },
+      }
       // {
       //   title: '库存数量',
       //   key: 'repertoryNum'
@@ -211,70 +211,70 @@ export default {
       //   title: '库存单位',
       //   key: 'repertoryUnit'
       // },
-      {
-        title: '操作',
-        key: 'action',
-        align: 'center',
-        width: 150,
-        render: (h, params) => {
-          let vm = this;
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '8px'
-              },
-              on: {
-                click: function () {
-                  console.log(params);
-                  let skuForm = vm.skuForm;
-                  vm.skuCtrl = 'alt';
-                  vm.skuIdx = params.index;
-                  vm.skuTag = params.row.skuId;
-                  if (vm.handleCheck()) {
-                    let row = params.row;
-                    vm.addSku = true;
-                    // skuForm.repertoryNum = row.repertoryNum;
-                    // skuForm.repertoryUnit = row.repertoryUnit.toString();
-                    skuForm.agentPrice = row.agentPrice;
-                    skuForm.limitAgentPrice = row.limitAgentPrice;
-                    skuForm.purchaserPrice = row.purchaserPrice;
-                    skuForm.skuName = row.skuName;
-                    skuForm.skuPrice = row.skuPrice;
-                    skuForm.skuUnit = row.skuUnit.toString();
-                  } else {
-                    vm.$Message.info('已发布规格不可操作');
-                  }
-                }
-              }
-            }, '修改'),
-            h('Button', {
-              props: {
-                type: 'error',
-                size: 'small'
-              },
-              style: {
-                marginRight: '8px'
-              },
-              on: {
-                click: function () {
-                  vm.skuCtrl = 'del';
-                  vm.skuIdx = params.index;
-                  vm.skuTag = params.row.skuId;
-                  if (vm.handleCheck()) {
-                    vm.skuPop();
-                  } else {
-                    vm.$Message.info('已发布规格不可操作');
-                  }
-                }
-              }
-            }, '删除')
-          ]);
-        }
-      }
+      // {
+      //   title: '操作',
+      //   key: 'action',
+      //   align: 'center',
+      //   width: 150,
+      //   render: (h, params) => {
+      //     let vm = this;
+      //     return h('div', [
+      //       h('Button', {
+      //         props: {
+      //           type: 'primary',
+      //           size: 'small'
+      //         },
+      //         style: {
+      //           marginRight: '8px'
+      //         },
+      //         on: {
+      //           click: function () {
+      //             console.log(params);
+      //             let skuForm = vm.skuForm;
+      //             vm.skuCtrl = 'alt';
+      //             vm.skuIdx = params.index;
+      //             vm.skuTag = params.row.skuId;
+      //             if (vm.handleCheck()) {
+      //               let row = params.row;
+      //               vm.addSku = true;
+      //               // skuForm.repertoryNum = row.repertoryNum;
+      //               // skuForm.repertoryUnit = row.repertoryUnit.toString();
+      //               skuForm.agentPrice = row.agentPrice;
+      //               skuForm.limitAgentPrice = row.limitAgentPrice;
+      //               skuForm.purchaserPrice = row.purchaserPrice;
+      //               skuForm.skuName = row.skuName;
+      //               skuForm.skuPrice = row.skuPrice;
+      //               skuForm.skuUnit = row.skuUnit.toString();
+      //             } else {
+      //               vm.$Message.info('已发布规格不可操作');
+      //             }
+      //           }
+      //         }
+      //       }, '修改'),
+      //       h('Button', {
+      //         props: {
+      //           type: 'error',
+      //           size: 'small'
+      //         },
+      //         style: {
+      //           marginRight: '8px'
+      //         },
+      //         on: {
+      //           click: function () {
+      //             vm.skuCtrl = 'del';
+      //             vm.skuIdx = params.index;
+      //             vm.skuTag = params.row.skuId;
+      //             if (vm.handleCheck()) {
+      //               vm.skuPop();
+      //             } else {
+      //               vm.$Message.info('已发布规格不可操作');
+      //             }
+      //           }
+      //         }
+      //       }, '删除')
+      //     ]);
+      //   }
+      // }
     ];
     this.rows = [];
     this.formItem.status = 1;

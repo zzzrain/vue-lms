@@ -82,24 +82,30 @@ export default {
       {
         title: '图片',
         key: 'filePath',
+        width: 200,
         render: (h, params) => {
           let src = params && params.row && params.row.filePath;
-          return h('div', [
-            h('img', {
-              attrs: {
-                src,
-                alt: '广告图片'
-              },
-              style: {
-                height: '100px',
-                margin: '5px'
-              },
-              on: {
-                click: function () {
+          return h('div',
+            {
+              style: { margin: '15px 0', height: '100px' }
+            },
+            [
+              h('img', {
+                attrs: {
+                  src,
+                  alt: '广告图片'
+                },
+                style: {
+                  width: '100%',
+                  height: '100px'
+                },
+                class: 'po',
+                on: {
+                  click: function () {
+                  }
                 }
-              }
-            })
-          ]);
+              })
+            ]);
         }
       },
       {

@@ -52,7 +52,7 @@
         title="规格信息"
         width="400"
         @on-ok="skuPop">
-        <Form abel-position="left" :label-width="110" ref="skuForm" :model="skuForm" :rules="rules">
+        <Form abel-position="left" :label-width="110" ref="skuForm" :model="skuForm" :rules="rules" style="height: 340px;">
           <Form-item label="规格名称" prop="skuName" class="form-item">
             <Input v-model="skuForm.skuName" placeholder="请输入"></Input>
           </Form-item>
@@ -68,7 +68,7 @@
           <Form-item label="采购商价格" prop="purchaserPrice" class="form-item">
             <Input v-model="skuForm.purchaserPrice" placeholder="请输入"></Input>
           </Form-item>
-          <Form-item label="商品规格" prop="skuUnit" style="width: 200px;height: 32px;">
+          <Form-item label="商品规格" prop="skuUnit" class="form-item">
             <Radio-group v-model="skuForm.skuUnit">
               <Radio label="1">瓶</Radio>
               <Radio label="2">箱</Radio>

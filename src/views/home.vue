@@ -1,5 +1,5 @@
 <template>
-  <div class="home-con">
+  <div class="home-con clear-fix">
     <Header></Header>
     <div class="left-cont fl">
       <SideMenu></SideMenu>
@@ -26,7 +26,7 @@ export default {
   },
   mounted () {
     let left = document.querySelector('.left-cont');
-    left.style.height = window.screen.height - 20 + 'px';
+    left.style.height = document.body.scrollHeight + 'px';
   }
 };
 </script>

@@ -8,7 +8,7 @@
     <!--<p>购买时间：{{ formItem.buyTime }}</p>-->
     <p>备注：{{ formItem.remark }}</p>
     <h3 class="pt20 pb10">商品信息</h3>
-    <Table border :context="self" :columns="cols" :data="rows" class="mt30 mb30 ml40" style="width: 701.5px;"></Table>
+    <Table border :context="self" :columns="cols" :data="rows" class="mt30 mb30 ml40" style="width: 801.5px;"></Table>
     <h3 class="pt20 pb10">物流信息</h3>
     <p>物流方式：{{ formItem.dispatchType }}</p>
     <p>收货地址：{{ formItem.address }}</p>
@@ -17,11 +17,16 @@
     <!--<p>物流编码：</p>-->
     <!--<p>物流单据：</p>-->
     <h3 class="pt20 pb10">操作信息</h3>
-    <p v-if="formItem.purchaser ">采购商名称：{{ formItem.purchaser }} &nbsp;&nbsp;&nbsp;&nbsp;联系方式：{{ formItem.purchaserMobile }}</p>
-    <p v-if="formItem.agentUser">代理商名称：{{ formItem.agentUser }} &nbsp;&nbsp;&nbsp;&nbsp;{{ formItem.agentUserMobile }}</p>
-    <p v-if="formItem.financeUser">财务员名称：{{ formItem.financeUser }} &nbsp;&nbsp;&nbsp;&nbsp;{{ formItem.financeUserMobile }}</p>
-    <p v-if="formItem.storeUser ">仓管人员：{{ formItem.storeUser }} &nbsp;&nbsp;&nbsp;&nbsp;{{ formItem.storeUserMobile }}</p>
-    <p v-if="formItem.sendUser">发货人员：{{ formItem.sendUser }} &nbsp;&nbsp;&nbsp;&nbsp;{{ formItem.sendUserMobile }}</p>
+    <p v-if="formItem.purchaser ">采购商名称：{{ formItem.purchaser }} &nbsp;&nbsp;&nbsp;&nbsp;
+      {{ formItem.purchaserMobile }}</p>
+    <p v-if="formItem.agentUser">代理商名称：{{ formItem.agentUser }} &nbsp;&nbsp;&nbsp;&nbsp;
+      {{ formItem.agentUserMobile }}</p>
+    <p v-if="formItem.financeUser">财务员名称：{{ formItem.financeUser }} &nbsp;&nbsp;&nbsp;&nbsp;
+      {{ formItem.financeUserMobile }}</p>
+    <p v-if="formItem.storeUser ">仓管人员：{{ formItem.storeUser }} &nbsp;&nbsp;&nbsp;&nbsp;
+      {{ formItem.storeUserMobile }}</p>
+    <p v-if="formItem.sendUser">发货人员：{{ formItem.sendUser }} &nbsp;&nbsp;&nbsp;&nbsp;
+      {{ formItem.sendUserMobile }}</p>
     <!--<h3 class="pt20 pb10">操作信息</h3>-->
     <!--<p>采购商名称：</p>-->
     <!--<p>业务员名称：</p>-->
@@ -76,6 +81,11 @@ export default {
         width: 300
       },
       {
+        title: '规格名称',
+        key: 'skuName',
+        width: 150
+      },
+      {
         title: '商品数量',
         key: 'num',
         width: 100
@@ -86,9 +96,9 @@ export default {
         width: 100
       },
       {
-        title: '商品总价',
+        title: '商品总价（元）',
         key: 'skuPrice',
-        width: 200
+        width: 150
       }
     ];
     this.rows = [];
@@ -109,7 +119,7 @@ export default {
             this.formItem = data;
             data.goods.map(x => {
               x.skuList.map(y => {
-                y.goodsName = `${x.goodsName}（${y.skuName}）`;
+                y.goodsName = x.goodsName;
                 y.skuUnit = common.skuUnit(y.skuUnit);
                 this.rows.push(y);
               });

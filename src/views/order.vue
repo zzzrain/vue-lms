@@ -47,7 +47,7 @@ export default {
         key: 'orderId'
       },
       {
-        title: '订单金额',
+        title: '订单金额（元）',
         key: 'totalPrice'
       },
       {
@@ -142,8 +142,8 @@ export default {
                 detailAddress: ele.detailAddress,
                 dispatchType: ele.dispatchType,
                 totalPrice: ele.totalPrice,
-                status: common.orderType(ele.status),
                 remark: ele.remark,
+                status: common.orderType(ele.status),
                 createTime: common.format(ele.createTime)
               });
             });
