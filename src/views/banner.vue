@@ -36,8 +36,11 @@
       </Modal>
       <Modal
         v-model="picPop"
+        width="900"
+        style="text-align: center;"
         title="图片详情">
-        <img :src="bannerForm.filePath" alt="图片详情">
+        <img :src="bannerForm.filePath" alt="图片详情" style="max-width: 800px;max-height: 400px">
+        <div slot="footer"></div>
       </Modal>
     </div>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
@@ -48,12 +51,8 @@
 </template>
 
 <script>
-// import FileUpload from '@/components/FileUpload';
 import common from '@/common/common.js';
 export default {
-  components: {
-    // FileUpload
-  },
   data () {
     return {
       total: 1,
@@ -77,14 +76,16 @@ export default {
     this.cols = [
       {
         title: '位置',
-        key: 'bannerPosition'
+        key: 'bannerPosition',
+        width: 120
       },
       {
         title: '图片',
         key: 'filePath',
-        width: 200,
+        width: 250,
         render: (h, params) => {
           let src = params && params.row && params.row.filePath;
+          let vm = this;
           return h('div',
             {
               style: { margin: '15px 0', height: '100px' }
@@ -102,6 +103,8 @@ export default {
                 class: 'po',
                 on: {
                   click: function () {
+                    vm.bannerForm.filePath = src;
+                    vm.picPop = true;
                   }
                 }
               })
@@ -110,11 +113,13 @@ export default {
       },
       {
         title: '状态',
-        key: 'status'
+        key: 'status',
+        width: 120
       },
       {
         title: '展示顺序',
-        key: 'sort'
+        key: 'sort',
+        width: 120
       },
       {
         title: '创建时间',

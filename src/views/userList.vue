@@ -228,13 +228,14 @@ export default {
     this.userTypeList(3);
     this.userTypeList(4);
     this.cols = [
-      {
-        title: 'id',
-        key: 'id'
-      },
+      // {
+      //   title: 'id',
+      //   key: 'id'
+      // },
       {
         title: '角色',
-        key: 'userType'
+        key: 'userType',
+        width: 120
       },
       {
         title: '昵称',
@@ -250,7 +251,8 @@ export default {
       },
       {
         title: '状态',
-        key: 'status'
+        key: 'status',
+        width: 100
       },
       {
         title: '更新时间',
