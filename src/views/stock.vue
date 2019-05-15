@@ -127,7 +127,8 @@ export default {
     this.cols = [
       {
         title: '库存ID',
-        key: 'id'
+        key: 'id',
+        width: 100
       },
       {
         title: '商品名称',
@@ -147,11 +148,13 @@ export default {
       },
       {
         title: '单位',
-        key: 'skuUnit'
+        key: 'skuUnit',
+        width: 100
       },
       {
         title: '更新时间',
-        key: 'updateTime'
+        key: 'updateTime',
+        width: 200
       },
       {
         title: '操作',
