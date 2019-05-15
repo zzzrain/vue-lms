@@ -23,26 +23,26 @@
       </Form-item>
       <Form-item v-if="userForm.userType === '1'" label="关联代理商" class="form-item" prop="agetUserId">
         <Select v-if="type" v-model="userForm.agetUserId" disabled>
-          <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+          <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
         </Select>
         <Select v-else v-model="userForm.agetUserId">
-          <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+          <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
         </Select>
       </Form-item>
       <Form-item v-if="userForm.userType === '1' || userForm.userType === '2'" label="关联业务员" class="form-item" prop="sellerUserId">
         <Select v-if="type" v-model="userForm.sellerUserId" disabled>
-          <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+          <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
         </Select>
         <Select v-else v-model="userForm.sellerUserId">
-          <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+          <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
         </Select>
       </Form-item>
       <Form-item v-if="userForm.userType !== '4'" label="对应财务员" class="form-item" prop="financeUserId">
         <Select v-if="type" v-model="userForm.financeUserId" disabled>
-          <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+          <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
         </Select>
         <Select v-else v-model="userForm.financeUserId">
-          <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+          <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
         </Select>
       </Form-item>
       <Form-item label="证件" prop="certificateNo" class="form-item">

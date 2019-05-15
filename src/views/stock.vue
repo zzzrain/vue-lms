@@ -111,7 +111,7 @@ export default {
       },
       rules: {
         skuId: [
-          { required: true, message: '请输入规格ID', trigger: 'change', type: 'number' }
+          { required: true, message: '请输入规格名称', trigger: 'change', type: 'number' }
         ],
         // skuName: [
         //   { required: true, message: '请输入规格名称', trigger: 'blur' }
@@ -128,6 +128,14 @@ export default {
       {
         title: '库存ID',
         key: 'id'
+      },
+      {
+        title: '商品名称',
+        key: ''
+      },
+      {
+        title: '所属类目',
+        key: ''
       },
       {
         title: '规格名称',

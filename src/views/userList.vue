@@ -61,17 +61,17 @@
           </Form-item>
           <Form-item v-if="userForm.userType === '1'" label="关联代理商" prop="agetUserId">
             <Select v-model="userForm.agetUserId">
-              <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+              <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
             </Select>
           </Form-item>
           <Form-item v-if="userForm.userType === '1' || userForm.userType === '2'" label="关联业务员" prop="sellerUserId">
             <Select v-model="userForm.sellerUserId">
-              <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+              <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
             </Select>
           </Form-item>
           <Form-item v-if="userForm.userType !== '4'" label="对应财务员" prop="financeUserId">
             <Select v-model="userForm.financeUserId">
-              <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
+              <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
             </Select>
           </Form-item>
         </Form >
