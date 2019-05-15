@@ -47,44 +47,44 @@
       <div class="addGoods mb10 m40" style="text-align: left;">
         <Button type="primary" @click="addPop">添加规格</Button>
       </div>
-      <Modal
-        v-model="addSku"
-        title="规格信息"
-        width="400">
-        <Form abel-position="left" :label-width="110" ref="skuForm" :model="skuForm" :rules="rules" style="height: 340px;">
-          <Form-item label="规格名称" prop="skuName" class="form-item">
-            <Input v-model="skuForm.skuName" placeholder="请输入"></Input>
-          </Form-item>
-          <Form-item label="商品原价" prop="skuPrice" class="form-item">
-            <Input v-model="skuForm.skuPrice" placeholder="请输入"></Input>
-          </Form-item>
-          <Form-item label="代理商价格" prop="agentPrice" class="form-item">
-            <Input v-model="skuForm.agentPrice" placeholder="请输入"></Input>
-          </Form-item>
-          <Form-item label="代理商限定价格" prop="limitAgentPrice" class="form-item">
-            <Input v-model="skuForm.limitAgentPrice" placeholder="请输入"></Input>
-          </Form-item>
-          <Form-item label="采购商价格" prop="purchaserPrice" class="form-item">
-            <Input v-model="skuForm.purchaserPrice" placeholder="请输入"></Input>
-          </Form-item>
-          <Form-item label="商品规格" prop="skuUnit" class="form-item">
-            <Radio-group v-model="skuForm.skuUnit">
-              <Radio label="1">瓶</Radio>
-              <Radio label="2">箱</Radio>
-            </Radio-group>
-          </Form-item>
-        </Form >
-        <div slot="footer">
-          <Button type="error" @click="cancelPop">取消</Button>
-          <Button type="primary" @click="skuPop">确定</Button>
-        </div>
-      </Modal>
       <Table border :context="self" :columns="cols" :data="rows" class="mt30 mb30 ml40"></Table>
       <Form-item>
         <Button type="primary" @click="handleSubmit('formItem')">提交</Button>
         <Button @click="handleReset('formItem')" style="margin-left: 8px">重置</Button>
       </Form-item>
     </Form>
+    <Modal
+      v-model="addSku"
+      title="规格信息"
+      width="400">
+      <Form abel-position="left" :label-width="110" ref="skuForm" :model="skuForm" :rules="rules">
+        <Form-item label="规格名称" prop="skuName" class="form-item">
+          <Input v-model="skuForm.skuName" placeholder="请输入"></Input>
+        </Form-item>
+        <Form-item label="商品原价" prop="skuPrice" class="form-item">
+          <Input v-model="skuForm.skuPrice" placeholder="请输入"></Input>
+        </Form-item>
+        <Form-item label="代理商价格" prop="agentPrice" class="form-item">
+          <Input v-model="skuForm.agentPrice" placeholder="请输入"></Input>
+        </Form-item>
+        <!--<Form-item label="代理商限定价格" prop="limitAgentPrice" class="form-item">-->
+          <!--<Input v-model="skuForm.limitAgentPrice" placeholder="请输入"></Input>-->
+        <!--</Form-item>-->
+        <Form-item label="采购商价格" prop="purchaserPrice" class="form-item">
+          <Input v-model="skuForm.purchaserPrice" placeholder="请输入"></Input>
+        </Form-item>
+        <Form-item label="商品规格" prop="skuUnit" class="form-item">
+          <Radio-group v-model="skuForm.skuUnit">
+            <Radio label="1">瓶</Radio>
+            <Radio label="2">箱</Radio>
+          </Radio-group>
+        </Form-item>
+      </Form >
+      <div slot="footer">
+        <Button type="error" @click="cancelPop">取消</Button>
+        <Button type="primary" @click="skuPop('skuForm')">确定</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -174,10 +174,10 @@ export default {
         title: '代理商价格',
         key: 'agentPrice'
       },
-      {
-        title: '代理商限定价格',
-        key: 'limitAgentPrice'
-      },
+      // {
+      //   title: '代理商限定价格',
+      //   key: 'limitAgentPrice'
+      // },
       {
         title: '采购商价格',
         key: 'purchaserPrice'
@@ -277,32 +277,37 @@ export default {
       this.$refs.skuForm.resetFields();
       this.skuForm.skuUnit = '1';
     },
-    skuPop () {
-      let skuForm = this.skuForm;
-      let skuData = {
-        skuName: skuForm.skuName,
-        agentPrice: parseInt(skuForm.agentPrice),
-        limitAgentPrice: parseInt(skuForm.limitAgentPrice),
-        purchaserPrice: parseInt(skuForm.purchaserPrice),
-        skuPrice: parseInt(skuForm.skuPrice),
-        skuUnit: parseInt(skuForm.skuUnit)
-      };
-      let rowsData = Object.assign({}, skuData);
-      rowsData.skuUnit = common.skuUnit(rowsData.skuUnit);
-      console.log(this.skuCtrl);
-      if (this.skuCtrl === 'add') {
-        this.rows.push(rowsData);
-      } else if (this.skuCtrl === 'alt') {
-        this.rows.splice(this.skuIdx, 1, rowsData);
-      } else {
-        this.rows.splice(this.skuIdx, 1);
-      }
-      // 如果添加sku，上面的push也会影响skuDtos的数据，需做判断
-      if (!this.formItem.goodsId) {
-        this.formItem.skuInfos.push(skuData);
-      }
-      // console.log(skuData);
-      // console.log(this.formItem);
+    skuPop (name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          this.addSku = false;
+          let skuForm = this.skuForm;
+          let skuData = {
+            skuName: skuForm.skuName,
+            agentPrice: parseInt(skuForm.agentPrice),
+            // limitAgentPrice: parseInt(skuForm.limitAgentPrice),
+            purchaserPrice: parseInt(skuForm.purchaserPrice),
+            skuPrice: parseInt(skuForm.skuPrice),
+            skuUnit: parseInt(skuForm.skuUnit)
+          };
+          let rowsData = Object.assign({}, skuData);
+          rowsData.skuUnit = common.skuUnit(rowsData.skuUnit);
+          console.log(this.skuCtrl);
+          if (this.skuCtrl === 'add') {
+            this.rows.push(rowsData);
+          } else if (this.skuCtrl === 'alt') {
+            this.rows.splice(this.skuIdx, 1, rowsData);
+          } else {
+            this.rows.splice(this.skuIdx, 1);
+          }
+          // 如果添加sku，上面的push也会影响skuDtos的数据，需做判断
+          if (!this.formItem.goodsId) {
+            this.formItem.skuInfos.push(skuData);
+          }
+          // console.log(skuData);
+          // console.log(this.formItem);
+        }
+      });
     },
     handleCheck () {
       let isDel = true;

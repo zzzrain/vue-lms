@@ -60,7 +60,8 @@ export default {
               if (res.data.code === '20000') {
                 let username = res.data.data.userName;
                 let userId = res.data.data.id;
-                document.cookie = `username=${username}userId=${userId};`;
+                document.cookie = `username=${username};`;
+                document.cookie = `userId=${userId};`;
                 this.$store.commit('setUsername', username);
                 this.$router.push({ path: '/home/goodsList' });
               } else {

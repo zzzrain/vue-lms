@@ -335,9 +335,7 @@ export default {
                 click: function () {
                   vm.userForm.id = id;
                   vm.userForm.status = status;
-                  vm.altUser(function () {
-                    params.row.status = btn;
-                  });
+                  vm.altUser(() => { params.row.status = btn; }, true);
                 }
               }
             }, btn)
@@ -430,6 +428,7 @@ export default {
     addUser () {
       this.$refs.userForm.validate((valid) => {
         if (valid) {
+          this.addPop = false;
           let data = {
             roleId: parseInt(this.userForm.userType),
             userType: parseInt(this.userForm.userType),
@@ -470,13 +469,13 @@ export default {
         }
       });
     },
-    altUser (cb) {
-      if (cb) {
+    altUser (cb, isStatus) {
+      if (isStatus) {
         let data = {
           id: this.userForm.id,
           status: this.userForm.status === '启用' ? 0 : 1
         };
-        this.altAjax(data, cb);
+        this.altAjax(data, cb, isStatus);
       } else {
         this.$refs.userForm.validate((valid) => {
           if (valid) {
@@ -497,13 +496,13 @@ export default {
         });
       }
     },
-    altAjax (data, cb) {
+    altAjax (data, cb, isStatus) {
       this.$axios
         .post('/api/lms/admin/user/updateUser', data)
         .then(res => {
           if (res.data.code === '20000') {
             this.$Message.info('修改成功');
-            cb && cb();
+            if (isStatus) cb();
             // if (cb) cb();
             // else {
             //   // 修改成功后把数据重新写入表格
@@ -569,6 +568,7 @@ export default {
       this.$refs[name].resetFields();
     },
     cancelPop () {
+      this.addPop = false;
       this.resetPop = false;
     }
   }

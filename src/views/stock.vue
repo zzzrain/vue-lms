@@ -255,6 +255,7 @@ export default {
     stockAdd () {
       this.$refs.stockForm.validate((valid) => {
         if (valid) {
+          this.addPop = false;
           let stockForm = this.stockForm;
           let data = {
             optType: 1,
@@ -279,6 +280,7 @@ export default {
     stockAlt () {
       this.$refs.stockForm.validate((valid) => {
         if (valid) {
+          this.altPop = false;
           let stockForm = this.stockForm;
           let idx = this.itemIdx;
           let data = {
