@@ -20,7 +20,7 @@ export default {
     cookie = cookie.filter(ele => {
       return ele.indexOf('username=') >= 0;
     });
-    this.username = cookie[0].replace('username=', '');
+    this.username = cookie[0] && cookie[0].replace('username=', '');
   },
   methods: {
     logout () {

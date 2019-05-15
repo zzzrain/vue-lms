@@ -21,7 +21,7 @@ router.beforeEach(async (to, from, next) => {
   cookie = cookie.filter(ele => {
     return ele.indexOf('username=') >= 0;
   });
-  cookie[0] = cookie[0].replace('username=', '');
+  cookie[0] = cookie[0] && cookie[0].replace('username=', '');
   if (permissions && !cookie[0]) {
     alert('请先登录');
     next('/');

@@ -3,9 +3,7 @@
     <div class="addCategory mb20" style="text-align: left;">
       <Button type="primary" @click="categoryPop">新增</Button>
       <Modal
-        v-model="addPop"
-        @on-ok="updateSubmit"
-        @on-cancel="cancel">
+        v-model="addPop">
         <p slot="header">{{ handle }}</p>
         <Form abel-position="left" :label-width="50" ref="categoryForm" :model="categoryForm" :rules="rules">
           <Form-item label="名称" prop="name">
@@ -17,6 +15,10 @@
             <!--</Select>-->
           <!--</Form-item>-->
         </Form >
+        <div slot="footer">
+          <Button type="error" @click="cancelPop">取消</Button>
+          <Button type="primary" @click="updateSubmit">确定</Button>
+        </div>
       </Modal>
     </div>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
@@ -194,6 +196,7 @@ export default {
         .post('/api/lms/admin/category/updateCategory', data)
         .then(res => {
           if (res.data.code === '20000') {
+            this.addPop = false;
             this.$Message.info(message);
             if (cb) cb();
             else {
@@ -215,7 +218,9 @@ export default {
         status: ''
       };
     },
-    cancel () {}
+    cancelPop () {
+      this.addPop = false;
+    }
   }
 };
 </script>
