@@ -183,6 +183,10 @@ export default {
     this.categoryList();
     this.cols = [
       {
+        title: '规格ID',
+        key: 'skuId'
+      },
+      {
         title: '规格名称',
         key: 'skuName'
       },
@@ -326,7 +330,6 @@ export default {
                 // ele.repertoryUnit = ele.repertoryUnit && common.skuUnit(ele.repertoryUnit);
                 return ele;
               });
-              this.cols.unshift({ title: '规格ID', key: 'skuId' });
             }
           }
         })

@@ -1,7 +1,7 @@
 <template>
   <div class="detail-cont">
     <!--<div class="pr30"><Button type="info" class="fr" onclick="window.history.back()">返回</Button></div>-->
-    <Form abel-position="left" :label-width="80" ref="userForm" :model="userForm" :rules="rules" style="width: 800px;">
+    <Form abel-position="left" :label-width="90" ref="userForm" :model="userForm" :rules="rules" style="width: 800px;">
       <Form-item label="昵称" prop="userName" class="form-item">
         <Input placeholder="请输入" :disabled="type" v-model="userForm.userName"></Input>
       </Form-item>
@@ -12,7 +12,7 @@
         <Input placeholder="请输入" :disabled="type" v-model="userForm.mobile"></Input>
       </Form-item>
       <Form-item label="角色" prop="userType" class="form-item">
-        <Select placeholder="请选择" :disabled="type" v-model="userForm.userType">
+        <Select placeholder="请选择" :disabled="type" v-model="userForm.userType" @on-change="resetRelate">
           <Option value="1">采购员</Option>
           <Option value="2">代理商</Option>
           <Option value="3">业务员</Option>
@@ -21,27 +21,27 @@
           <Option value="6">发货员</Option>
         </Select>
       </Form-item>
-      <Form-item v-if="userForm.userType === '1'" label="关联代理商" prop="agetUserId" class="form-item">
-        <Select v-if="type" v-model="relateItem.agetUserId" disabled>
+      <Form-item v-if="userForm.userType === '1'" label="关联代理商" class="form-item" prop="agetUserId">
+        <Select v-if="type" v-model="userForm.agetUserId" disabled>
           <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
         </Select>
-        <Select v-else v-model="relateItem.agetUserId">
+        <Select v-else v-model="userForm.agetUserId">
           <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
         </Select>
       </Form-item>
-      <Form-item v-if="userForm.userType === '2'" label="关联业务员" prop="sellerUserId" class="form-item">
-        <Select v-if="type" v-model="relateItem.sellerUserId" disabled>
+      <Form-item v-if="userForm.userType === '1' || userForm.userType === '2'" label="关联业务员" class="form-item" prop="sellerUserId">
+        <Select v-if="type" v-model="userForm.sellerUserId" disabled>
           <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
         </Select>
-        <Select v-else v-model="relateItem.sellerUserId">
+        <Select v-else v-model="userForm.sellerUserId">
           <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
         </Select>
       </Form-item>
-      <Form-item v-if="userForm.userType !== '4'" label="对应财务员" prop="financeUserId" class="form-item">
-        <Select v-if="type" v-model="relateItem.financeUserId" disabled>
+      <Form-item v-if="userForm.userType !== '4'" label="对应财务员" class="form-item" prop="financeUserId">
+        <Select v-if="type" v-model="userForm.financeUserId" disabled>
           <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
         </Select>
-        <Select v-else v-model="relateItem.financeUserId">
+        <Select v-else v-model="userForm.financeUserId">
           <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
         </Select>
       </Form-item>
@@ -87,11 +87,6 @@ export default {
       ywyList: [],
       dlsList: [],
       cwyList: [],
-      relateItem: {
-        sellerUserId: '',
-        financeUserId: '',
-        agetUserId: ''
-      },
       userForm: {
         id: '',
         userName: '',
@@ -100,7 +95,10 @@ export default {
         userType: '',
         mobile: '',
         certificateNo: '',
-        certificateUrl: ''
+        certificateUrl: '',
+        agetUserId: '',
+        sellerUserId: '',
+        financeUserId: ''
       },
       rules: {
         userName: [
@@ -114,6 +112,15 @@ export default {
         ],
         certificateNo: [
           { required: false, message: '请输证件号', trigger: 'blur' }
+        ],
+        agetUserId: [
+          { required: true, message: '请选择代理商', trigger: 'change', type: 'number' }
+        ],
+        sellerUserId: [
+          { required: true, message: '请选择业务员', trigger: 'change', type: 'number' }
+        ],
+        financeUserId: [
+          { required: true, message: '请选择财务员', trigger: 'change', type: 'number' }
         ]
       },
       type: false
@@ -160,7 +167,7 @@ export default {
           userId: id
         })
         .then(res => {
-          const data = res.data && res.data.data;
+          let data = res.data && res.data.data;
           if (res.data.code === '20000') {
             this.userForm = {
               id: data.id,
@@ -170,9 +177,7 @@ export default {
               userAccount: data.userAccount,
               mobile: data.mobile,
               certificateNo: data.certificateNo,
-              certificateUrl: data.certificateUrl
-            };
-            this.relateItem = {
+              certificateUrl: data.certificateUrl,
               agetUserId: data.agetUserId,
               sellerUserId: data.sellerUserId,
               financeUserId: data.financeUserId
@@ -182,32 +187,34 @@ export default {
         .catch(error => console.log(error));
     },
     handleSubmit (name) {
+      let userForm = this.userForm;
       this.$refs[name].validate((valid) => {
         if (valid) {
           let data = {
-            id: this.userForm.id,
-            roleId: parseInt(this.userForm.userType),
-            userType: parseInt(this.userForm.userType),
-            userName: this.userForm.userName,
-            mobile: this.userForm.mobile,
-            certificateNo: this.userForm.certificateNo,
-            certificateUrl: this.userForm.certificateUrl,
+            id: userForm.id,
+            roleId: parseInt(userForm.userType),
+            userType: parseInt(userForm.userType),
+            userName: userForm.userName,
+            mobile: userForm.mobile,
+            certificateNo: userForm.certificateNo,
+            certificateUrl: userForm.certificateUrl,
             status: 1,
             wxPerm: 1
           };
           switch (data.userType) {
             case 1 :
-              data.agetUserId = this.relateItem.agetUserId;
-              data.financeUserId = this.relateItem.financeUserId;
+              data.agetUserId = userForm.agetUserId;
+              data.sellerUserId = userForm.sellerUserId;
+              data.financeUserId = userForm.financeUserId;
               break;
             case 2 :
-              data.sellerUserId = this.relateItem.sellerUserId;
-              data.financeUserId = this.relateItem.financeUserId;
+              data.sellerUserId = userForm.sellerUserId;
+              data.financeUserId = userForm.financeUserId;
               break;
             case 3 :
             case 5 :
             case 6 :
-              data.financeUserId = this.relateItem.financeUserId;
+              data.financeUserId = userForm.financeUserId;
               break;
             default:
               break;
@@ -255,8 +262,16 @@ export default {
         userType: '',
         mobile: '',
         certificateNo: '',
-        certificateUrl: ''
+        certificateUrl: '',
+        agetUserId: '',
+        sellerUserId: '',
+        financeUserId: ''
       };
+    },
+    resetRelate () {
+      this.userForm.financeUserId = '';
+      this.userForm.agetUserId = '';
+      this.userForm.sellerUserId = '';
     },
     cancel (name) {
       // 清空功能需要给每个加上prop属性

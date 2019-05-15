@@ -36,7 +36,7 @@
         v-model="addPop"
         title="新增用户"
         width="400">
-        <Form abel-position="left" :label-width="80" ref="userForm" :model="userForm" :rules="rules">
+        <Form abel-position="left" :label-width="90" ref="userForm" :model="userForm" :rules="rules">
           <Form-item label="昵称" prop="userName">
             <Input placeholder="请输入" v-model="userForm.userName"></Input>
           </Form-item>
@@ -50,7 +50,7 @@
             <Input placeholder="请输入" v-model="userForm.mobile"></Input>
           </Form-item>
           <Form-item label="角色" prop="userType">
-            <Select placeholder="请选择" v-model="userForm.userType" @change="resetRelate">
+            <Select placeholder="请选择" v-model="userForm.userType" @on-change="resetRelate">
               <Option value="1">采购员</Option>
               <Option value="2">代理商</Option>
               <Option value="3">业务员</Option>
@@ -60,17 +60,17 @@
             </Select>
           </Form-item>
           <Form-item v-if="userForm.userType === '1'" label="关联代理商" prop="agetUserId">
-            <Select v-model="relateItem.agetUserId">
+            <Select v-model="userForm.agetUserId">
               <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
             </Select>
           </Form-item>
-          <Form-item v-if="userForm.userType === '2'" label="关联业务员" prop="sellerUserId">
-            <Select v-model="relateItem.sellerUserId">
+          <Form-item v-if="userForm.userType === '1' || userForm.userType === '2'" label="关联业务员" prop="sellerUserId">
+            <Select v-model="userForm.sellerUserId">
               <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
             </Select>
           </Form-item>
           <Form-item v-if="userForm.userType !== '4'" label="对应财务员" prop="financeUserId">
-            <Select v-model="relateItem.financeUserId">
+            <Select v-model="userForm.financeUserId">
               <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userAccount }}</Option>
             </Select>
           </Form-item>
@@ -137,11 +137,6 @@ export default {
       ywyList: [],
       cwyList: [],
       // 若带上默认值，userDetail请求后不能双向改变数据
-      relateItem: {
-        financeUserId: '',
-        agetUserId: '',
-        sellerUserId: ''
-      },
       userForm: {
         id: '',
         userName: '',
@@ -151,7 +146,10 @@ export default {
         userType: '',
         mobile: '',
         certificateNo: '',
-        certificateUrl: ''
+        certificateUrl: '',
+        agetUserId: '',
+        sellerUserId: '',
+        financeUserId: ''
       },
       searchForm: {
         userName: '',
@@ -177,6 +175,15 @@ export default {
         ],
         certificateNo: [
           { required: false, message: '请输证件号', trigger: 'blur' }
+        ],
+        agetUserId: [
+          { required: true, message: '请选择代理商', trigger: 'change', type: 'number' }
+        ],
+        sellerUserId: [
+          { required: true, message: '请选择业务员', trigger: 'change', type: 'number' }
+        ],
+        financeUserId: [
+          { required: true, message: '请选择财务员', trigger: 'change', type: 'number' }
         ]
       },
       userIdx: ''
@@ -384,67 +391,70 @@ export default {
       this.userForm.userType = '1';
     },
     addUser () {
+      let userForm = this.userForm;
       this.$refs.userForm.validate((valid) => {
         if (valid) {
           this.addPop = false;
           let data = {
-            roleId: parseInt(this.userForm.userType),
-            userType: parseInt(this.userForm.userType),
-            userName: this.userForm.userName,
-            userAccount: this.userForm.userAccount,
-            userPassword: this.userForm.userPassword,
-            mobile: this.userForm.mobile,
+            roleId: parseInt(userForm.userType),
+            userType: parseInt(userForm.userType),
+            userName: userForm.userName,
+            userAccount: userForm.userAccount,
+            userPassword: userForm.userPassword,
+            mobile: userForm.mobile,
             status: 1,
             wxPerm: 1
           };
           switch (data.userType) {
             case 1 :
-              data.agetUserId = this.relateItem.agetUserId;
-              data.financeUserId = this.relateItem.financeUserId;
+              data.agetUserId = userForm.agetUserId;
+              data.sellerUserId = userForm.sellerUserId;
+              data.financeUserId = userForm.financeUserId;
               break;
             case 2 :
-              data.sellerUserId = this.relateItem.sellerUserId;
-              data.financeUserId = this.relateItem.financeUserId;
+              data.sellerUserId = userForm.sellerUserId;
+              data.financeUserId = userForm.financeUserId;
               break;
             case 3 :
             case 5 :
             case 6 :
-              data.financeUserId = this.relateItem.financeUserId;
+              data.financeUserId = userForm.financeUserId;
               break;
             default:
               break;
           }
           console.log(JSON.stringify(data));
-          this.$axios
-            .post('/api/lms/admin/user/addUser', data)
-            .then(res => {
-              if (res.data.code === '20000') {
-                this.$Message.info('新增成功');
-                this.userList(1);
-              }
-            })
-            .catch(error => console.log(error));
+          // this.$axios
+          //   .post('/api/lms/admin/user/addUser', data)
+          //   .then(res => {
+          //     if (res.data.code === '20000') {
+          //       this.$Message.info('新增成功');
+          //       this.userList(1);
+          //     }
+          //   })
+          //   .catch(error => console.log(error));
         }
       });
     },
     altUser (cb, isStatus) {
+      let userForm = this.userForm;
       if (isStatus) {
         let data = {
-          id: this.userForm.id,
-          status: this.userForm.status === '启用' ? 0 : 1
+          id: userForm.id,
+          status: userForm.status === '启用' ? 0 : 1
         };
         this.altAjax(data, cb, isStatus);
       } else {
         this.$refs.userForm.validate((valid) => {
           if (valid) {
             let data = {
-              id: this.userForm.id,
-              roleId: parseInt(this.userForm.userType),
-              userType: parseInt(this.userForm.userType),
-              userName: this.userForm.userName,
-              mobile: this.userForm.mobile,
-              certificateNo: this.userForm.certificateNo,
-              certificateUrl: this.userForm.certificateUrl,
+              id: userForm.id,
+              roleId: parseInt(userForm.userType),
+              userType: parseInt(userForm.userType),
+              userName: userForm.userName,
+              mobile: userForm.mobile,
+              certificateNo: userForm.certificateNo,
+              certificateUrl: userForm.certificateUrl,
               status: 1,
               wxPerm: 1
             };
@@ -481,7 +491,7 @@ export default {
           if (res.data.code === '20000') {
             this.$Message.info('重置成功');
           } else {
-            this.$Message.info('操作失败');
+            this.$Message.error('操作失败');
           }
         })
         .catch(error => console.log(error));
@@ -511,15 +521,16 @@ export default {
         userType: '',
         mobile: '',
         certificateNo: '',
-        certificateUrl: ''
+        certificateUrl: '',
+        agetUserId: '',
+        sellerUserId: '',
+        financeUserId: ''
       };
     },
     resetRelate () {
-      this.relateItem = {
-        financeUserId: '',
-        agetUserId: '',
-        sellerUserId: ''
-      };
+      this.userForm.financeUserId = '';
+      this.userForm.agetUserId = '';
+      this.userForm.sellerUserId = '';
     },
     cancel (name) {
       // 清空功能需要给每个加上prop属性
