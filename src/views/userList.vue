@@ -81,48 +81,6 @@
         </div>
       </Modal>
       <Modal
-        v-model="altPop"
-        title="修改信息"
-        width="400"
-        @on-ok="altUser">
-        <Form abel-position="left" :label-width="60" ref="userForm" :model="userForm" :rules="rules">
-          <Form-item label="昵称" prop="userName">
-            <Input placeholder="请输入" v-model="userForm.userName"></Input>
-          </Form-item>
-          <Form-item label="手机号" prop="mobile">
-            <Input placeholder="请输入" v-model="userForm.mobile"></Input>
-          </Form-item>
-          <Form-item label="角色" prop="userType">
-            <Select placeholder="请选择" v-model="userForm.userType">
-              <Option value="1">采购员</Option>
-              <Option value="2">代理商</Option>
-              <Option value="3">业务员</Option>
-              <Option value="4">财务员</Option>
-              <Option value="5">仓管员</Option>
-              <Option value="6">发货员</Option>
-            </Select>
-          </Form-item>
-          <Form-item label="证件" prop="certificateNo">
-            <Input placeholder="请输入证件号码" v-model="userForm.certificateNo"></Input>
-          </Form-item>
-          <Form-item>
-            <Upload
-              ref="upload"
-              :show-upload-list="false"
-              :format="['jpg','jpeg','png']"
-              :max-size="2048"
-              :on-success="handleSuccess"
-              action="/api/lms/admin/fileUpload/uploadFile?isThumb=1&isImage=true">
-              <div v-if="userForm.certificateUrl" class="img-wrap oh po">
-                <img :src="userForm.certificateUrl" alt="图片详情" style="height: 150px;">
-              </div>
-              <div v-else class="img-wrap oh po">
-              </div>
-            </Upload>
-          </Form-item>
-        </Form >
-      </Modal>
-      <Modal
         v-model="detailPop"
         title="详细信息"
         width="400">

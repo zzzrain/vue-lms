@@ -16,27 +16,27 @@
       <Modal
         v-model="addPop"
         title="增加库存">
-        <Form abel-position="left" :label-width="70" :rules="rules">
+        <Form abel-position="left" :label-width="70" ref="stockAddForm" :model="stockAddForm" :rules="rules">
           <Form-item label="商品名称">
             <Select v-model="goodsId" @on-change="selectGoods(goodsId)">
               <Option v-for="item in goodsItem" :key="item.id" :value="item.goodsId">{{ item.goodsName }}</Option>
             </Select>
           </Form-item>
           <Form-item label="规格名称" prop="skuId">
-            <Select v-model="stockForm.skuId">
+            <Select v-model="stockAddForm.skuId">
               <Option v-for="item in skuItem" :key="item.id" :value="item.skuId">{{ item.skuName }}</Option>
             </Select>
           </Form-item>
           <!--<Form-item label="规格名称" prop="skuId">-->
-            <!--<Input placeholder="请输入" v-model="stockForm.skuName"></Input>-->
+            <!--<Input placeholder="请输入" v-model="stockAddForm.skuName"></Input>-->
           <!--</Form-item>-->
-          <Form-item label="数量">
-            <Input placeholder="请输入" v-model="stockForm.skuNum"></Input>
+          <Form-item label="数量" prop="skuNum">
+            <Input placeholder="请输入" v-model="stockAddForm.skuNum"></Input>
           </Form-item>
           <Form-item label="规格单位" prop="skuUnit" style="width: 200px;">
-            <Radio-group v-model="stockForm.skuUnit">
-              <Radio label="1">箱</Radio>
-              <Radio label="2">瓶</Radio>
+            <Radio-group v-model="stockAddForm.skuUnit">
+              <Radio label="1">瓶</Radio>
+              <Radio label="2">箱</Radio>
             </Radio-group>
           </Form-item>
         </Form >
@@ -48,17 +48,17 @@
       <Modal
         v-model="altPop"
         title="修改库存">
-        <Form abel-position="left" :label-width="70" ref="stockForm" :model="stockForm" :rules="rules">
+        <Form abel-position="left" :label-width="70" ref="stockAltForm" :model="stockAltForm" :rules="rules">
           <!--<Form-item label="规格名称" prop="skuName">-->
-            <!--<Input placeholder="请输入" v-model="stockForm.skuName"></Input>-->
+            <!--<Input placeholder="请输入" v-model="stockAltForm.skuName"></Input>-->
           <!--</Form-item>-->
           <Form-item label="数量" prop="skuNum">
-            <Input placeholder="请输入" v-model="stockForm.skuNum"></Input>
+            <Input placeholder="请输入" v-model="stockAltForm.skuNum"></Input>
           </Form-item>
           <Form-item label="规格单位" prop="skuUnit" style="width: 200px;">
-            <Radio-group v-model="stockForm.skuUnit">
-              <Radio label="1">箱</Radio>
-              <Radio label="2">瓶</Radio>
+            <Radio-group v-model="stockAltForm.skuUnit">
+              <Radio label="1">瓶</Radio>
+              <Radio label="2">箱</Radio>
             </Radio-group>
           </Form-item>
         </Form >
@@ -92,7 +92,14 @@ export default {
       goodsItem: [],
       skuItemTemp: [],
       skuItem: [],
-      stockForm: {
+      stockAddForm: {
+        repertoryId: '',
+        skuId: '',
+        // skuName: '',
+        skuNum: '',
+        skuUnit: ''
+      },
+      stockAltForm: {
         repertoryId: '',
         skuId: '',
         // skuName: '',
@@ -144,7 +151,7 @@ export default {
         align: 'center',
         render: (h, params) => {
           let row = params.row;
-          let stockForm = vm.stockForm;
+          let stockAltForm = vm.stockAltForm;
           return h('div', [
             h('Button', {
               props: {
@@ -159,9 +166,9 @@ export default {
                   console.log(params);
                   vm.altPop = true;
                   vm.itemIdx = params.index;
-                  // stockForm.skuName = row.skuName;
-                  stockForm.skuNum = row.skuNum;
-                  stockForm.skuUnit = row.skuUnitCode;
+                  // stockAltForm.skuName = row.skuName;
+                  stockAltForm.skuNum = row.skuNum;
+                  stockAltForm.skuUnit = row.skuUnitCode;
                 }
               }
             }, '修改')
@@ -170,6 +177,7 @@ export default {
       }
     ];
     this.rows = [];
+    this.stockAddForm.skuUnit = '1';
     this.goodsList();
   },
   methods: {
@@ -243,26 +251,26 @@ export default {
     },
     stockPop () {
       this.addPop = true;
-      this.$refs.stockForm.resetFields();
-      this.stockForm = {
+      this.$refs.stockAltForm.resetFields();
+      this.stockAltForm = {
         repertoryId: '',
         skuId: '',
-        skuName: '',
+        // skuName: '',
         skuNum: '',
         skuUnit: '1'
       };
     },
     stockAdd () {
-      this.$refs.stockForm.validate((valid) => {
+      this.$refs.stockAddForm.validate((valid) => {
         if (valid) {
           this.addPop = false;
-          let stockForm = this.stockForm;
+          let stockAddForm = this.stockAddForm;
           let data = {
             optType: 1,
-            // skuName: stockForm.skuName,
-            skuId: parseInt(stockForm.skuId),
-            skuNum: parseInt(stockForm.skuNum),
-            skuUnit: parseInt(stockForm.skuUnit)
+            // skuName: stockAddForm.skuName,
+            skuId: parseInt(stockAddForm.skuId),
+            skuNum: parseInt(stockAddForm.skuNum),
+            skuUnit: parseInt(stockAddForm.skuUnit)
           };
           console.log(JSON.stringify(data));
           this.$axios
@@ -278,18 +286,18 @@ export default {
       });
     },
     stockAlt () {
-      this.$refs.stockForm.validate((valid) => {
+      this.$refs.stockAltForm.validate((valid) => {
         if (valid) {
           this.altPop = false;
-          let stockForm = this.stockForm;
+          let stockAltForm = this.stockAltForm;
           let idx = this.itemIdx;
           let data = {
             optType: 2,
             repertoryId: this.rows[idx].id,
-            // skuName: stockForm.skuName,
+            // skuName: stockAltForm.skuName,
             skuId: this.rows[idx].skuId,
-            skuNum: parseInt(stockForm.skuNum),
-            skuUnit: parseInt(stockForm.skuUnit)
+            skuNum: parseInt(stockAltForm.skuNum),
+            skuUnit: parseInt(stockAltForm.skuUnit)
           };
           console.log(JSON.stringify(data));
           this.$axios

@@ -57,7 +57,7 @@
       v-model="addSku"
       title="规格信息"
       width="400">
-      <Form abel-position="left" :label-width="110" ref="skuForm" :model="skuForm" :rules="rules">
+      <Form abel-position="left" :label-width="110" ref="skuForm" :model="skuForm" :rules="rules" style="height: 330px;">
         <Form-item label="规格名称" prop="skuName" class="form-item">
           <Input v-model="skuForm.skuName" placeholder="请输入"></Input>
         </Form-item>
@@ -67,9 +67,9 @@
         <Form-item label="代理商价格" prop="agentPrice" class="form-item">
           <Input v-model="skuForm.agentPrice" placeholder="请输入"></Input>
         </Form-item>
-        <!--<Form-item label="代理商限定价格" prop="limitAgentPrice" class="form-item">-->
-          <!--<Input v-model="skuForm.limitAgentPrice" placeholder="请输入"></Input>-->
-        <!--</Form-item>-->
+        <Form-item label="代理商限定价格" prop="limitAgentPrice" class="form-item">
+          <Input v-model="skuForm.limitAgentPrice" placeholder="请输入"></Input>
+        </Form-item>
         <Form-item label="采购商价格" prop="purchaserPrice" class="form-item">
           <Input v-model="skuForm.purchaserPrice" placeholder="请输入"></Input>
         </Form-item>
@@ -285,7 +285,7 @@ export default {
           let skuData = {
             skuName: skuForm.skuName,
             agentPrice: parseInt(skuForm.agentPrice),
-            // limitAgentPrice: parseInt(skuForm.limitAgentPrice),
+            limitAgentPrice: parseInt(skuForm.limitAgentPrice),
             purchaserPrice: parseInt(skuForm.purchaserPrice),
             skuPrice: parseInt(skuForm.skuPrice),
             skuUnit: parseInt(skuForm.skuUnit)
