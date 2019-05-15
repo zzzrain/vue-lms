@@ -290,5 +290,6 @@ export default {
     height: 150px;
     text-align: center;
     border: #dcdcdc 1px solid;
+    background: url('../images/add-pic.png') no-repeat 103px 43px;
   }
 </style>
