@@ -45,7 +45,28 @@ export default {
     };
   },
   mounted () {
-    this.cols = [];
+    this.cols = [
+      {
+        title: '订单编号',
+        key: 'orderId'
+      },
+      {
+        title: '订单金额（元）',
+        key: 'totalPrice'
+      },
+      {
+        title: '订单状态 ',
+        key: 'status'
+      },
+      {
+        title: '收货地址',
+        key: 'detailAddress'
+      },
+      {
+        title: '购买时间',
+        key: 'createTime'
+      }
+    ];
     this.rows = [];
   },
   methods: {
