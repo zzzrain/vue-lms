@@ -50,14 +50,14 @@
       <Table border :context="self" :columns="cols" :data="rows" class="mt30 mb30 ml40"></Table>
       <Form-item>
         <Button type="primary" @click="handleSubmit('formItem')">提交</Button>
-        <Button @click="handleReset('formItem')" style="margin-left: 8px">重置</Button>
+        <Button @click="handleReset('formItem')" style="margin-left: 8px">清空</Button>
       </Form-item>
     </Form>
     <Modal
       v-model="addSku"
       title="规格信息"
-      width="400">
-      <Form abel-position="left" :label-width="110" ref="skuForm" :model="skuForm" :rules="rules" style="height: 330px;">
+      width="360">
+      <Form abel-position="left" :label-width="110" ref="skuForm" :model="skuForm" :rules="rules" style="height: 250px;">
         <Form-item label="规格名称" prop="skuName" class="form-item">
           <Input v-model="skuForm.skuName" placeholder="请输入"></Input>
         </Form-item>
@@ -67,18 +67,18 @@
         <Form-item label="代理商价格" prop="agentPrice" class="form-item">
           <Input v-model="skuForm.agentPrice" placeholder="请输入"></Input>
         </Form-item>
-        <Form-item label="代理商限定价格" prop="limitAgentPrice" class="form-item">
-          <Input v-model="skuForm.limitAgentPrice" placeholder="请输入"></Input>
-        </Form-item>
+        <!--<Form-item label="代理商限定价格" prop="limitAgentPrice" class="form-item">-->
+          <!--<Input v-model="skuForm.limitAgentPrice" placeholder="请输入"></Input>-->
+        <!--</Form-item>-->
         <Form-item label="采购商价格" prop="purchaserPrice" class="form-item">
           <Input v-model="skuForm.purchaserPrice" placeholder="请输入"></Input>
         </Form-item>
-        <Form-item label="商品规格" prop="skuUnit" class="form-item">
-          <Radio-group v-model="skuForm.skuUnit">
-            <Radio label="1">瓶</Radio>
-            <Radio label="2">箱</Radio>
-          </Radio-group>
-        </Form-item>
+        <!--<Form-item label="商品规格" prop="skuUnit" class="form-item">-->
+          <!--<Radio-group v-model="skuForm.skuUnit">-->
+            <!--<Radio label="1">瓶</Radio>-->
+            <!--<Radio label="2">箱</Radio>-->
+          <!--</Radio-group>-->
+        <!--</Form-item>-->
       </Form >
       <div slot="footer">
         <Button type="error" @click="cancelPop">取消</Button>
@@ -182,10 +182,10 @@ export default {
         title: '采购商价格',
         key: 'purchaserPrice'
       },
-      {
-        title: '商品规格',
-        key: 'skuUnit'
-      },
+      // {
+      //   title: '商品规格',
+      //   key: 'skuUnit'
+      // },
       {
         title: '操作',
         key: 'action',
@@ -213,11 +213,11 @@ export default {
                     let row = params.row;
                     vm.addSku = true;
                     skuForm.agentPrice = row.agentPrice;
-                    skuForm.limitAgentPrice = row.limitAgentPrice;
+                    // skuForm.limitAgentPrice = row.limitAgentPrice;
                     skuForm.purchaserPrice = row.purchaserPrice;
                     skuForm.skuName = row.skuName;
                     skuForm.skuPrice = row.skuPrice;
-                    skuForm.skuUnit = row.skuUnit.toString();
+                    // skuForm.skuUnit = row.skuUnit.toString();
                   } else {
                     vm.$Message.info('已发布规格不可操作');
                   }
@@ -285,13 +285,13 @@ export default {
           let skuData = {
             skuName: skuForm.skuName,
             agentPrice: parseInt(skuForm.agentPrice),
-            limitAgentPrice: parseInt(skuForm.limitAgentPrice),
+            // limitAgentPrice: parseInt(skuForm.limitAgentPrice),
             purchaserPrice: parseInt(skuForm.purchaserPrice),
-            skuPrice: parseInt(skuForm.skuPrice),
-            skuUnit: parseInt(skuForm.skuUnit)
+            skuPrice: parseInt(skuForm.skuPrice)
+            // skuUnit: parseInt(skuForm.skuUnit)
           };
           let rowsData = Object.assign({}, skuData);
-          rowsData.skuUnit = common.skuUnit(rowsData.skuUnit);
+          // rowsData.skuUnit = common.skuUnit(rowsData.skuUnit);
           console.log(this.skuCtrl);
           if (this.skuCtrl === 'add') {
             this.rows.push(rowsData);
@@ -349,7 +349,7 @@ export default {
                     window.history.back();
                   }, 2000);
                 } else {
-                  this.$Message.info('操作失败');
+                  this.$Message.error('操作失败');
                 }
               })
               .catch(error => console.log(error));
@@ -364,7 +364,7 @@ export default {
                     window.history.back();
                   }, 2000);
                 } else {
-                  this.$Message.info('操作失败');
+                  this.$Message.error('操作失败');
                 }
               })
               .catch(error => console.log(error));

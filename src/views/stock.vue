@@ -111,7 +111,7 @@ export default {
       },
       rules: {
         skuId: [
-          { required: true, message: '请输入规格ID', trigger: 'blur' }
+          { required: true, message: '请输入规格ID', trigger: 'change', type: 'number' }
         ],
         // skuName: [
         //   { required: true, message: '请输入规格名称', trigger: 'blur' }

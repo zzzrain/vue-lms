@@ -181,7 +181,7 @@ export default {
             this.$Message.info('修改成功');
             cb();
           } else {
-            this.$Message.info('操作失败');
+            this.$Message.error('操作失败');
           }
         })
         .catch(error => console.log(error));

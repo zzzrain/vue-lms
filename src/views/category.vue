@@ -210,7 +210,7 @@ export default {
               this.rows[idx].categoryLevel = this.categoryForm.level;
             } else { this.categoryList(); }
           } else {
-            this.$Message.info('操作失败');
+            this.$Message.error('操作失败');
           }
         })
         .catch(error => console.log(error));

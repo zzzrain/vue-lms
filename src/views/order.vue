@@ -4,7 +4,7 @@
       <Form-item label="订单编号" porp="orderId" class="form-item">
         <Input placeholder="" v-model="orderId"></Input>
       </Form-item>
-      <Form-item label="创建时间" prop="startTime" class="fl">
+      <Form-item label="购买时间" prop="startTime" class="fl">
         <Date-picker type="datetime" v-model="startTime" placeholder="起始时间" style="width: 160px"></Date-picker>
       </Form-item>
       <Form-item label="——" prop="endTime" :label-width="35" class="fl">
@@ -67,7 +67,7 @@ export default {
       //   key: 'remark'
       // },
       {
-        title: '更新时间',
+        title: '购买时间',
         key: 'createTime'
       },
       {

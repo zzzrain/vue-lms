@@ -50,7 +50,7 @@
       <Table border :context="self" :columns="cols" :data="rows" class="mt30 mb30 ml40"></Table>
       <Form-item>
         <Button type="primary" @click="handleSubmit('formItem')">提交</Button>
-        <Button @click="handleReset('formItem')" style="margin-left: 8px">重置</Button>
+        <Button @click="handleReset('formItem')" style="margin-left: 8px">清空</Button>
       </Form-item>
     </Form>
     <Modal
@@ -413,7 +413,7 @@ export default {
                     window.history.back();
                   }, 2000);
                 } else {
-                  this.$Message.info('操作失败');
+                  this.$Message.error('操作失败');
                 }
               })
               .catch(error => console.log(error));
@@ -428,7 +428,7 @@ export default {
                     window.history.back();
                   }, 2000);
                 } else {
-                  this.$Message.info('操作失败');
+                  this.$Message.error('操作失败');
                 }
               })
               .catch(error => console.log(error));
