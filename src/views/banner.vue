@@ -3,10 +3,9 @@
     <div class="addBanner mb20" style="text-align: left;">
       <Button type="primary" @click="bannerPop">新增</Button>
       <Modal
-        style="position: relative;"
         v-model="addPop"
         title="广告图片上传"
-        @on-ok="bannerAdd">
+        style="position: relative;">
         <div class="upload-select" style="position: absolute;top: 66px;left: 140px;">
           <span>选择位置：</span>
           <Select v-model="bannerForm.bannerPosition" style="width: 100px;margin-right: 10px">
@@ -33,6 +32,10 @@
           <img :src="bannerForm.filePath" alt="图片详情" style="height: 150px;">
         </div>
         <div v-else class="img-wrap mt20 oh po"></div>
+        <div slot="footer">
+          <Button type="error" @click="cancelPop">取消</Button>
+          <Button type="primary" @click="bannerAdd">确定</Button>
+        </div>
       </Modal>
       <Modal
         v-model="picPop"
@@ -68,6 +71,7 @@ export default {
         status: '',
         sort: '',
         bannerPosition: '',
+        operatorUserId: '',
         filePath: ''
       }
     };
@@ -151,7 +155,6 @@ export default {
               on: {
                 click: function () {
                   let row = params.row;
-                  console.log(params);
                   vm.bannerIdx = params.index;
                   vm.bannerForm = {
                     id,
@@ -178,9 +181,7 @@ export default {
                   // console.log(params.row);
                   vm.bannerForm.id = id;
                   vm.bannerForm.status = status;
-                  vm.bannerAdd(function () {
-                    params.row.status = btn;
-                  });
+                  vm.bannerAdd(() => { params.row.status = btn; }, true);
                 }
               }
             }, btn)
@@ -190,6 +191,11 @@ export default {
     ];
     this.rows = [];
     this.bannerList();
+    let cookie = document.cookie.split(';');
+    cookie = cookie.filter(ele => {
+      return ele.indexOf('userId=') >= 0;
+    });
+    this.bannerForm.operatorUserId = cookie[0] && cookie[0].replace('userId=', '');
   },
   methods: {
     changePage (page) {
@@ -229,19 +235,24 @@ export default {
       this.bannerForm.sort = '1';
       this.bannerForm.bannerPosition = '1';
     },
-    bannerAdd (cb) {
+    bannerAdd (cb, isStatus) {
       let bannerForm = this.bannerForm;
       let message = '新增成功';
       let data = {};
-      if (cb) {
+      if (isStatus) {
         data.status = bannerForm.status === '启用' ? 0 : 1;
       } else {
+        if (!bannerForm.filePath) {
+          this.$Message.error('请上传图片');
+          return;
+        }
         data = {
           filePath: bannerForm.filePath,
-          operatorUserId: 3,
           sizeDesc: '',
+          status: 1,
           sort: parseInt(bannerForm.sort),
-          bannerPosition: parseInt(bannerForm.bannerPosition)
+          bannerPosition: parseInt(bannerForm.bannerPosition),
+          operatorUserId: bannerForm.operatorUserId
         };
       }
       // 修改需要id
@@ -249,13 +260,14 @@ export default {
         data.id = bannerForm.id;
         message = '修改成功';
       }
+      this.addPop = false;
       console.log(JSON.stringify(data));
       this.$axios
         .post('/api/lms/admin/banner/bannerUpdate', data)
         .then(res => {
           if (res.data.code === '20000') {
-            if (cb) cb();
-            else {
+            if (isStatus) cb();
+            else if (data.id) {
               data.bannerPosition = common.bp(data.bannerPosition);
               data.sort = common.sort(data.sort);
               data.status = common.state(data.status);
@@ -263,7 +275,7 @@ export default {
               data.updateTime = bannerForm.updateTime;
               this.rows.splice(this.bannerIdx, 1, data);
               this.$Message.info(message);
-            }
+            } else { this.bannerList(); }
           }
         })
         .catch(error => console.log(error));
@@ -279,6 +291,10 @@ export default {
         bannerPosition: '',
         filePath: ''
       };
+    },
+    cancelPop () {
+      this.addPop = false;
+      this.altPop = false;
     }
   }
 };

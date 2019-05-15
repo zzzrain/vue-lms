@@ -15,9 +15,7 @@
       <Button type="primary" @click="stockPop">新增</Button>
       <Modal
         v-model="addPop"
-        title="增加库存"
-        @on-ok="stockAdd"
-        @on-cancel="cancel">
+        title="增加库存">
         <Form abel-position="left" :label-width="70" :rules="rules">
           <Form-item label="商品名称">
             <Select v-model="goodsId" @on-change="selectGoods(goodsId)">
@@ -42,12 +40,14 @@
             </Radio-group>
           </Form-item>
         </Form >
+        <div slot="footer">
+          <Button type="error" @click="cancelPop">取消</Button>
+          <Button type="primary" @click="stockAdd">确定</Button>
+        </div>
       </Modal>
       <Modal
         v-model="altPop"
-        title="修改库存"
-        @on-ok="stockAlt"
-        @on-cancel="cancel">
+        title="修改库存">
         <Form abel-position="left" :label-width="70" ref="stockForm" :model="stockForm" :rules="rules">
           <!--<Form-item label="规格名称" prop="skuName">-->
             <!--<Input placeholder="请输入" v-model="stockForm.skuName"></Input>-->
@@ -62,6 +62,10 @@
             </Radio-group>
           </Form-item>
         </Form >
+        <div slot="footer">
+          <Button type="error" @click="cancelPop">取消</Button>
+          <Button type="primary" @click="stockAlt">确定</Button>
+        </div>
       </Modal>
     </div>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
@@ -304,7 +308,10 @@ export default {
       // 清空功能需要给每个加上prop属性
       this.$refs[name].resetFields();
     },
-    cancel () {}
+    cancelPop () {
+      this.addPop = false;
+      this.altPop = false;
+    }
   }
 };
 </script>

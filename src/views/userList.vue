@@ -35,8 +35,7 @@
       <Modal
         v-model="addPop"
         title="新增用户"
-        width="400"
-        @on-ok="addUser">
+        width="400">
         <Form abel-position="left" :label-width="80" ref="userForm" :model="userForm" :rules="rules">
           <Form-item label="昵称" prop="userName">
             <Input placeholder="请输入" v-model="userForm.userName"></Input>
@@ -76,6 +75,10 @@
             </Select>
           </Form-item>
         </Form >
+        <div slot="footer">
+          <Button type="error" @click="cancelPop">取消</Button>
+          <Button type="primary" @click="addUser">确定</Button>
+        </div>
       </Modal>
       <Modal
         v-model="altPop"
@@ -349,6 +352,30 @@ export default {
       this.rows = [];
       this.userList(page);
     },
+    userTypeList (userType) {
+      this.$axios
+        .post('/api/lms/admin/user/userTypeList', {
+          userType
+        })
+        .then(res => {
+          if (res.data.code === '20000') {
+            switch (userType) {
+              case 2 :
+                this.dlsList = res.data.data;
+                break;
+              case 3 :
+                this.ywyList = res.data.data;
+                break;
+              case 4 :
+                this.cwyList = res.data.data;
+                break;
+              default :
+                break;
+            }
+          }
+        })
+        .catch(error => console.log(error));
+    },
     userList (pageNum) {
       this.rows = [];
       // 时间组件会重新读取searchForm的时间，查询需要换算时间戳，由于格式问题会导致组件报错，
@@ -387,30 +414,6 @@ export default {
                 ele.updateTime = common.format(ele.updateTime);
                 return ele;
               });
-          }
-        })
-        .catch(error => console.log(error));
-    },
-    userTypeList (userType) {
-      this.$axios
-        .post('/api/lms/admin/user/userTypeList', {
-          userType
-        })
-        .then(res => {
-          if (res.data.code === '20000') {
-            switch (userType) {
-              case 2 :
-                this.dlsList = res.data.data;
-                break;
-              case 3 :
-                this.ywyList = res.data.data;
-                break;
-              case 4 :
-                this.cwyList = res.data.data;
-                break;
-              default :
-                break;
-            }
           }
         })
         .catch(error => console.log(error));
@@ -564,6 +567,9 @@ export default {
     cancel (name) {
       // 清空功能需要给每个加上prop属性
       this.$refs[name].resetFields();
+    },
+    cancelPop () {
+      this.resetPop = false;
     }
   }
 };

@@ -50,8 +50,7 @@
       <Modal
         v-model="addSku"
         title="规格信息"
-        width="400"
-        @on-ok="skuPop">
+        width="400">
         <Form abel-position="left" :label-width="110" ref="skuForm" :model="skuForm" :rules="rules" style="height: 340px;">
           <Form-item label="规格名称" prop="skuName" class="form-item">
             <Input v-model="skuForm.skuName" placeholder="请输入"></Input>
@@ -75,6 +74,10 @@
             </Radio-group>
           </Form-item>
         </Form >
+        <div slot="footer">
+          <Button type="error" @click="cancelPop">取消</Button>
+          <Button type="primary" @click="skuPop">确定</Button>
+        </div>
       </Modal>
       <Table border :context="self" :columns="cols" :data="rows" class="mt30 mb30 ml40"></Table>
       <Form-item>
@@ -396,6 +399,9 @@ export default {
         });
       }
       return check;
+    },
+    cancelPop () {
+      this.addSku = false;
     }
   }
 };

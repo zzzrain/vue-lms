@@ -2,8 +2,7 @@
   <div class="table-list-cont pr25">
     <div class="addCategory mb20" style="text-align: left;">
       <Button type="primary" @click="categoryPop">新增</Button>
-      <Modal
-        v-model="addPop">
+      <Modal v-model="addPop">
         <p slot="header">{{ handle }}</p>
         <Form abel-position="left" :label-width="50" ref="categoryForm" :model="categoryForm" :rules="rules">
           <Form-item label="名称" prop="name">
@@ -100,7 +99,7 @@ export default {
               },
               on: {
                 click: function () {
-                  console.log(params.index);
+                  console.log(params);
                   vm.addPop = true;
                   vm.handle = '修改类目';
                   vm.itemIdx = params.index;
@@ -123,7 +122,7 @@ export default {
                   vm.categoryForm.id = row.id;
                   vm.categoryForm.status = row.status;
                   vm.categoryForm.name = row.categoryName;
-                  vm.updateSubmit(() => { row.status = btn; });
+                  vm.updateSubmit(() => { row.status = btn; }, true);
                 }
               }
             }, btn)
@@ -164,22 +163,24 @@ export default {
     },
     categoryPop () {
       this.addPop = true;
+      this.handle = '新增类目';
       this.resetForm();
       this.categoryForm.level = '1';
       this.$refs.categoryForm.resetFields();
     },
-    updateSubmit (cb) {
-      if (this.addPop) {
+    updateSubmit (cb, isStatus) {
+      if (isStatus) {
+        this.updateAjax(cb, isStatus);
+      } else {
         this.$refs.categoryForm.validate((valid) => {
           if (valid) {
             this.updateAjax();
           }
         });
-      } else {
-        this.updateAjax(cb);
       }
     },
-    updateAjax (cb) {
+    updateAjax (cb, isStatus) {
+      this.addPop = false;
       let message = '新增成功';
       let data = {
         categoryName: this.categoryForm.name,
@@ -189,21 +190,25 @@ export default {
       if (this.categoryForm.id) {
         message = '修改成功';
         data.id = this.categoryForm.id;
-        data.status = this.categoryForm.status === '启用' ? 0 : 1;
+        data.status = this.categoryForm.status === '启用' ? 1 : 0;
+        if (isStatus) {
+          data.status = this.categoryForm.status === '启用' ? 0 : 1;
+        }
       }
       console.log(JSON.stringify(data));
       this.$axios
         .post('/api/lms/admin/category/updateCategory', data)
         .then(res => {
           if (res.data.code === '20000') {
-            this.addPop = false;
+            console.log(isStatus);
             this.$Message.info(message);
-            if (cb) cb();
-            else {
+            if (isStatus) cb();
+            else if (data.id) {
               let idx = this.itemIdx;
+              this.rows[idx].status = this.categoryForm.status;
               this.rows[idx].categoryName = this.categoryForm.name;
               this.rows[idx].categoryLevel = this.categoryForm.level;
-            }
+            } else { this.categoryList(); }
           } else {
             this.$Message.info('操作失败');
           }
