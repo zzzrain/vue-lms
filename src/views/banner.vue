@@ -129,10 +129,10 @@ export default {
         title: '创建时间',
         key: 'createTime'
       },
-      {
-        title: '更新时间',
-        key: 'updateTime'
-      },
+      // {
+      //   title: '更新时间',
+      //   key: 'updateTime'
+      // },
       {
         title: '操作',
         key: 'action',

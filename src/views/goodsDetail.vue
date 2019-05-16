@@ -412,8 +412,13 @@ export default {
                   setTimeout(() => {
                     window.history.back();
                   }, 2000);
+                } else if (res.data.code === '20003') {
+                  this.$Message.error('登录超时');
+                  setTimeout(() => {
+                    this.$router.push({ path: '/' });
+                  }, 2000)
                 } else {
-                  this.$Message.error('操作失败');
+                  this.$Message.error('操作失败，请稍后再试');
                 }
               })
               .catch(error => console.log(error));
@@ -427,8 +432,13 @@ export default {
                   setTimeout(() => {
                     window.history.back();
                   }, 2000);
+                } else if (res.data.code === '20003') {
+                  this.$Message.error('登录超时');
+                  setTimeout(() => {
+                    this.$router.push({ path: '/' });
+                  }, 2000)
                 } else {
-                  this.$Message.error('操作失败');
+                  this.$Message.error('操作失败，请稍后再试');
                 }
               })
               .catch(error => console.log(error));

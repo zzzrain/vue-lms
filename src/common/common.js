@@ -7,8 +7,8 @@ module.exports = {
     return '';
   },
   format (t, format) {
+    if (!t) return t;
     let d = new Date(t);
-    if (!d) return t;
     let year = d.getFullYear();
     let month = d.getMonth() + 1;
     let day = d.getDate();

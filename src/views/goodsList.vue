@@ -68,7 +68,7 @@ export default {
         key: 'status'
       },
       {
-        title: '更新时间',
+        title: '创建时间',
         key: 'createTime'
       },
       {
@@ -165,6 +165,13 @@ export default {
                 ele.createTime = common.format(ele.createTime);
                 return ele;
               });
+          } else if (res.data.code === '20003') {
+            this.$Message.error('登录超时');
+            setTimeout(() => {
+              this.$router.push({ path: '/' });
+            }, 2000)
+          } else {
+            this.$Message.error('操作失败，请稍后再试');
           }
         })
         .catch(error => console.log(error));
@@ -180,8 +187,13 @@ export default {
           if (res.data.code === '20000') {
             this.$Message.info('修改成功');
             cb();
+          } else if (res.data.code === '20003') {
+            this.$Message.error('登录超时');
+            setTimeout(() => {
+              this.$router.push({ path: '/' });
+            }, 2000)
           } else {
-            this.$Message.error('操作失败');
+            this.$Message.error('操作失败，请稍后再试');
           }
         })
         .catch(error => console.log(error));

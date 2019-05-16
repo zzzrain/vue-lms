@@ -223,8 +223,8 @@ export default {
         width: 100
       },
       {
-        title: '更新时间',
-        key: 'updateTime'
+        title: '创建时间',
+        key: 'createTime'
       },
       {
         title: '操作',
@@ -367,16 +367,28 @@ export default {
             let dataList = data.list || [];
             this.total = data.total;
             this.rows = dataList
+              // .map(ele => {
+              //   ele.createTime = ele.createTime || ele.updateTime;
+              //   return ele;
+              // })
               .sort((x, y) => {
-                return y.updateTime - x.updateTime;
+                return y.createTime - x.createTime;
               })
               .map(ele => {
                 ele.roleId = common.role(ele.roleId);
                 ele.userType = common.role(ele.userType);
                 ele.status = common.state(ele.status);
-                ele.updateTime = common.format(ele.updateTime);
+                ele.createTime = common.format(ele.createTime);
                 return ele;
               });
+            console.log(this.rows);
+          } else if (res.data.code === '20003') {
+            this.$Message.error('登录超时');
+            setTimeout(() => {
+              this.$router.push({ path: '/' });
+            }, 2000)
+          } else {
+            this.$Message.error('操作失败，请稍后再试');
           }
         })
         .catch(error => console.log(error));
@@ -477,9 +489,16 @@ export default {
             //   data.roleId = common.role(data.roleId);
             //   data.userType = common.role(data.userType);
             //   data.status = common.state(data.status);
-            //   data.updateTime = this.rows[this.userIdx].updateTime;
+            //   data.createTime = this.rows[this.userIdx].createTime;
             //   this.rows.splice(this.userIdx, 1, data);
             // }
+          } else if (res.data.code === '20003') {
+            this.$Message.error('登录超时');
+            setTimeout(() => {
+              this.$router.push({ path: '/' });
+            }, 2000)
+          } else {
+            this.$Message.error('操作失败，请稍后再试');
           }
         })
         .catch(error => console.log(error));
