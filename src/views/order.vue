@@ -1,8 +1,8 @@
 <template>
   <div class="table-list-cont pr25">
     <Form label-position="left" :label-width="80" ref="searchForm" :model="searchForm" inline class="clear-fix" style="position: relative">
-      <Form-item label="订单编号" porp="orderId" class="form-item">
-        <Input placeholder="" v-model="searchForm.orderId"></Input>
+      <Form-item label="订单编号" prop="orderId" class="form-item" >
+        <Input v-model="searchForm.orderId"></Input>
       </Form-item>
       <Form-item label="订单状态" prop="status" class="form-item">
         <Select v-model="searchForm.status">

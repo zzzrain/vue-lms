@@ -4,7 +4,7 @@
       <!--<Form-item label="商品ID" class="form-item">-->
         <!--<Input placeholder="" v-model="goodsId"></Input>-->
       <!--</Form-item>-->
-      <Form-item label="商品名称" prop="goodsName"  class="form-item">
+      <Form-item label="商品名称" prop="goodsName" class="form-item">
         <Input placeholder="" v-model="searchForm.goodsName"></Input>
       </Form-item>
       <Form-item label="商品类目" prop="categoryId" class="form-item">

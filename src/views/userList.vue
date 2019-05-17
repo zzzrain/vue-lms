@@ -1,7 +1,7 @@
 <template>
   <div class="table-list-cont pr25">
     <Form label-position="left" :label-width="60" ref="searchForm" :model="searchForm" inline class="clear-fix">
-      <Form-item label="昵称" prop="userName" class="form-item" >
+      <Form-item label="昵称" prop="nickName" class="form-item" >
         <Input v-model="searchForm.nickName"></Input>
       </Form-item>
       <Form-item label="联系电话" prop="mobile" class="form-item">
