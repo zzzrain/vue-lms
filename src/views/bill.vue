@@ -18,7 +18,7 @@
       <Form-item label="——" prop="endTime" :label-width="35" class="fl">
         <Date-picker type="datetime" v-model="endTime" placeholder="结束时间" style="width: 160px"></Date-picker>
       </Form-item>
-      <Form-item>
+      <Form-item class="fr">
         <Button type="success" @click="billList(userType)">查询</Button>
         <!--<Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>-->
       </Form-item>

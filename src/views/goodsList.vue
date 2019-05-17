@@ -1,21 +1,21 @@
 <template>
   <div class="table-list-cont pr25">
-    <Form label-position="left" :label-width="80" ref="searchForm" :rules="rules" inline class="clear-fix">
+    <Form label-position="left" :label-width="80" ref="searchForm" :model="searchForm" :rules="rules" inline class="clear-fix">
       <!--<Form-item label="商品ID" class="form-item">-->
         <!--<Input placeholder="" v-model="goodsId"></Input>-->
       <!--</Form-item>-->
-      <Form-item label="商品名称" class="form-item">
-        <Input placeholder="" v-model="goodsName"></Input>
+      <Form-item label="商品名称" prop="goodsName"  class="form-item">
+        <Input placeholder="" v-model="searchForm.goodsName"></Input>
       </Form-item>
-      <Form-item label="商品类目" class="form-item">
-        <Select v-model="categoryId">
+      <Form-item label="商品类目" prop="categoryId" class="form-item">
+        <Select v-model="searchForm.categoryId">
           <Option v-for="item in categoryItem" :key="item.id" :value="item.id">{{ item.categoryName }}</Option>
         </Select>
       </Form-item>
-      <Form-item class="form-item"></Form-item>
-      <Form-item>
+      <Form-item></Form-item>
+      <Form-item class="fr">
         <Button type="success" @click="goodsList(1)">查询</Button>
-        <!--<Button @click="clear('searchForm')" style="margin-left: 8px">清空</Button>-->
+        <Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>
       </Form-item>
     </Form >
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
@@ -34,10 +34,13 @@ export default {
       self: this,
       cols: [],
       rows: [],
-      goodsId: '',
-      goodsName: '',
-      categoryId: '',
       categoryItem: [],
+      categoryId: '', // 停用启用
+      searchForm: {
+        goodsId: '',
+        goodsName: '',
+        categoryId: ''
+      },
       rules: {
         goodsId: [],
         goodsName: []
@@ -144,13 +147,16 @@ export default {
     },
     goodsList (pageNum) {
       this.rows = [];
+      let data = {
+        pageNum: pageNum || 1,
+        pageSize: 10
+      };
+      let goodsName = this.searchForm.goodsName;
+      let categoryId = this.searchForm.categoryId;
+      if (goodsName) data.goodsName = goodsName;
+      if (categoryId) data.categoryId = categoryId;
       this.$axios
-        .post('/api/lms/admin/goods/goodsList', {
-          goodsId: parseInt(this.goodsId),
-          goodsName: this.goodsName,
-          pageNum: pageNum || 1,
-          pageSize: 10
-        })
+        .post('/api/lms/admin/goods/goodsList', data)
         .then(res => {
           let data = res.data && res.data.data;
           let dataList = data.list || [];
@@ -201,7 +207,7 @@ export default {
     goodsDetail (id) {
       this.$router.push(`/home/goodsDetail?id=${id}`);
     },
-    clear (name) {
+    cancel (name) {
       // 清空功能需要给每个加上prop属性
       this.$refs[name].resetFields();
     }

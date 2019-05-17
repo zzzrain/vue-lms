@@ -6,7 +6,7 @@
       </Form-item>
       <Form-item class="form-item"></Form-item>
       <Form-item class="form-item"></Form-item>
-      <Form-item>
+      <Form-item class="fr">
         <Button type="success" @click="stockList(1)">查询</Button>
         <!--<Button @click="clear('searchForm')" style="margin-left: 8px">清空</Button>-->
       </Form-item>

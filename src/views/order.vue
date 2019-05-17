@@ -1,22 +1,38 @@
 <template>
   <div class="table-list-cont pr25">
-    <Form label-position="left" :label-width="80" inline class="clear-fix">
+    <Form label-position="left" :label-width="80" ref="searchForm" :model="searchForm" inline class="clear-fix">
       <Form-item label="订单编号" porp="orderId" class="form-item">
-        <Input placeholder="" v-model="orderId"></Input>
+        <Input placeholder="" v-model="searchForm.orderId"></Input>
+      </Form-item>
+      <Form-item label="订单状态" prop="status" class="form-item">
+        <Select v-model="searchForm.status">
+          <Option value="1">采购商确认</Option>
+          <Option value="2">代理商确认</Option>
+          <Option value="3">待财务确认</Option>
+          <Option value="4">待仓管出库</Option>
+          <Option value="5">待发货员发货</Option>
+          <Option value="6">待用户收货</Option>
+          <Option value="7">已完成</Option>
+          <Option value="8">已取消</Option>
+        </Select>
+      </Form-item>
+      <Form-item label="金额范围" prop="minPrice" class="fl">
+        <Input placeholder="" v-model="searchForm.minPrice" style="width: 100px"></Input>
+      </Form-item>
+      <Form-item label="——" prop="maxPrice" :label-width="35" class="fl pr30">
+        <Input placeholder="" v-model="searchForm.maxPrice" style="width: 100px"></Input>
       </Form-item>
       <Form-item label="购买时间" prop="startTime" class="fl">
-        <Date-picker type="datetime" v-model="startTime" placeholder="起始时间" style="width: 160px"></Date-picker>
+        <Date-picker type="datetime" v-model="searchForm.startTime" placeholder="起始时间" style="width: 160px"></Date-picker>
       </Form-item>
-      <Form-item label="——" prop="endTime" :label-width="35" class="fl">
-        <Date-picker type="datetime" v-model="endTime" placeholder="结束时间" style="width: 160px"></Date-picker>
-      </Form-item>
-      <Form-item></Form-item>
-      <Form-item></Form-item>
-      <Form-item>
-        <Button type="success" @click="orderList(1)">查询</Button>
-        <!--<Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>-->
+      <Form-item label="——" prop="endTime" :label-width="35" class="fl pr30">
+        <Date-picker type="datetime" v-model="searchForm.endTime" placeholder="结束时间" style="width: 160px"></Date-picker>
       </Form-item>
     </Form >
+    <div class="mb20 textL">
+      <Button type="success" @click="orderList(1)">查询</Button>
+      <Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>
+    </div>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
     <div class="fr">
       <Page :total="total" show-elevator @on-change="changePage"></Page>
@@ -33,9 +49,14 @@ export default {
       self: this,
       cols: [],
       rows: [],
-      orderId: '',
-      startTime: '',
-      endTime: ''
+      searchForm: {
+        orderId: '',
+        status: '',
+        minPrice: '',
+        maxPrice: '',
+        startTime: '',
+        endTime: ''
+      }
     };
   },
   mounted () {
@@ -118,16 +139,17 @@ export default {
     },
     orderList (pageNum) {
       this.rows = [];
-      let orderId = this.orderId;
-      let startTime = this.startTime && Date.parse(this.startTime);
-      let endTime = this.endTime && Date.parse(this.endTime);
       let data = {
-        orderId,
-        startTime,
-        endTime,
         pageNum: pageNum || 1,
         pageSize: 10
       };
+      let searchForm = this.searchForm;
+      if (searchForm.orderId) data.orderId = searchForm.orderId;
+      if (searchForm.status) data.status = parseInt(searchForm.status);
+      if (searchForm.minPrice) data.minPrice = parseInt(searchForm.minPrice);
+      if (searchForm.maxPrice) data.maxPrice = parseInt(searchForm.maxPrice);
+      if (searchForm.startTime) data.startTime = Date.parse(searchForm.startTime);
+      if (searchForm.endTime) data.endTime = Date.parse(searchForm.endTime);
       console.log(JSON.stringify(data));
       this.$axios
         .post('/api/lms/admin/order/orderList', data)
@@ -175,7 +197,7 @@ export default {
 <style scoped lang="scss">
   .form-item {
     float: left;
-    width: 24%;
+    width: 20%;
     padding-right: 30px;
   }
 </style>

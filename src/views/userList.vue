@@ -28,7 +28,7 @@
         <!--<Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>-->
       <!--</Form-item>-->
     </Form>
-    <div class="addGoods mb20" style="text-align: left">
+    <div class="addGoods mb20 textL">
       <Button type="primary" @click="userPop">新增</Button>
       <Button type="success" @click="userList(1)" style="margin-left: 8px">查询</Button>
       <Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>
@@ -350,14 +350,20 @@ export default {
       // copy.endTime = copy.endTime && Date.parse(copy.endTime);
       // let data = Object.assign(copy, page);
       let data = {
-        mobile: this.searchForm.mobile,
-        userName: this.searchForm.userName,
-        userType: parseInt(this.searchForm.userType),
-        startTime: this.searchForm.startTime && Date.parse(this.searchForm.startTime),
-        endTime: this.searchForm.endTime && Date.parse(this.searchForm.endTime),
+        // mobile: this.searchForm.mobile,
+        // userName: this.searchForm.userName,
+        // userType: parseInt(this.searchForm.userType),
+        // startTime: this.searchForm.startTime && Date.parse(this.searchForm.startTime),
+        // endTime: this.searchForm.endTime && Date.parse(this.searchForm.endTime),
         pageNum: pageNum || 1,
         pageSize: 10
       };
+      let searchForm = this.searchForm;
+      if (searchForm.mobile) data.mobile = searchForm.mobile;
+      if (searchForm.userName) data.userName = searchForm.userName;
+      if (searchForm.userType) data.userType = parseInt(searchForm.userType);
+      if (searchForm.startTime) data.startTime = Date.parse(searchForm.endTime);
+      if (searchForm.endTime) data.endTime = Date.parse(searchForm.endTime);
       console.log(JSON.stringify(data));
       this.$axios
         .post('/api/lms/admin/user/userList', data)
