@@ -416,7 +416,7 @@ export default {
                   this.$Message.error('登录超时');
                   setTimeout(() => {
                     this.$router.push({ path: '/' });
-                  }, 2000)
+                  }, 2000);
                 } else {
                   this.$Message.error('操作失败，请稍后再试');
                 }
@@ -436,7 +436,7 @@ export default {
                   this.$Message.error('登录超时');
                   setTimeout(() => {
                     this.$router.push({ path: '/' });
-                  }, 2000)
+                  }, 2000);
                 } else {
                   this.$Message.error('操作失败，请稍后再试');
                 }
