@@ -31,9 +31,10 @@
     </Form >
     <div class="mb20 textL">
       <Button type="success" @click="orderList(1)">查询</Button>
+      <Button type="warning" @click="exportData" style="margin-left: 8px">导出</Button>
       <Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>
     </div>
-    <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
+    <Table border :context="self" :columns="cols" :data="rows" ref="table" class="mb20"></Table>
     <div class="fr">
       <Page :total="total" show-elevator @on-change="changePage"></Page>
     </div>
@@ -185,6 +186,13 @@ export default {
     },
     orderLog (id) {
       this.$router.push(`/home/orderLog?id=${id}`);
+    },
+    exportData () {
+      this.$refs.table.exportCsv({
+        filename: '订单数据',
+        columns: this.cols.filter((col, index) => index < 4),
+        data: this.rows.filter((col, index) => index < 4)
+      });
     },
     cancel (name) {
       // 清空功能需要给每个加上prop属性
