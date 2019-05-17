@@ -71,9 +71,9 @@ export default {
         status: '',
         sort: '',
         bannerPosition: '',
-        operatorUserId: '',
         filePath: ''
-      }
+      },
+      operatorUserId: ''
     };
   },
   mounted () {
@@ -195,7 +195,7 @@ export default {
     cookie = cookie.filter(ele => {
       return ele.indexOf('userId=') >= 0;
     });
-    this.bannerForm.operatorUserId = cookie[0] && cookie[0].replace('userId=', '');
+    this.operatorUserId = cookie[0] && cookie[0].replace(' userId=', '');
   },
   methods: {
     changePage (page) {
@@ -252,7 +252,7 @@ export default {
           status: 1,
           sort: parseInt(bannerForm.sort),
           bannerPosition: parseInt(bannerForm.bannerPosition),
-          operatorUserId: bannerForm.operatorUserId
+          operatorUserId: parseInt(this.operatorUserId)
         };
       }
       // 修改需要id
@@ -260,8 +260,8 @@ export default {
         data.id = bannerForm.id;
         message = '修改成功';
       }
-      this.addPop = false;
       console.log(JSON.stringify(data));
+      this.addPop = false;
       this.$axios
         .post('/api/lms/admin/banner/bannerUpdate', data)
         .then(res => {

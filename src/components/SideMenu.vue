@@ -46,7 +46,6 @@ export default {
     let name = this.$route.name;
     let acName = '1-2';
     let opName = ['1'];
-    console.log(name);
     switch (name) {
       case 'category':
         acName = '1-1';
