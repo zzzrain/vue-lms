@@ -80,8 +80,7 @@ export default {
     this.cols = [
       {
         title: '位置',
-        key: 'bannerPosition',
-        width: 120
+        key: 'bannerPosition'
       },
       {
         title: '图片',
@@ -117,22 +116,20 @@ export default {
       },
       {
         title: '状态',
-        key: 'status',
-        width: 120
+        key: 'status'
       },
       {
         title: '展示顺序',
-        key: 'sort',
-        width: 120
-      },
-      {
-        title: '创建时间',
-        key: 'createTime'
+        key: 'sort'
       },
       // {
-      //   title: '更新时间',
-      //   key: 'updateTime'
+      //   title: '创建时间',
+      //   key: 'createTime'
       // },
+      {
+        title: '更新时间',
+        key: 'updateTime'
+      },
       {
         title: '操作',
         key: 'action',

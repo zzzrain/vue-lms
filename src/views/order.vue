@@ -1,6 +1,6 @@
 <template>
   <div class="table-list-cont pr25">
-    <Form label-position="left" :label-width="80" ref="searchForm" :model="searchForm" inline class="clear-fix">
+    <Form label-position="left" :label-width="80" ref="searchForm" :model="searchForm" inline class="clear-fix" style="position: relative">
       <Form-item label="订单编号" porp="orderId" class="form-item">
         <Input placeholder="" v-model="searchForm.orderId"></Input>
       </Form-item>
@@ -16,24 +16,30 @@
           <Option value="8">已取消</Option>
         </Select>
       </Form-item>
-      <Form-item label="金额范围" prop="minPrice" class="fl">
-        <Input placeholder="" v-model="searchForm.minPrice" style="width: 100px"></Input>
+      <Form-item label="金额范围" class="form-item" style="width: 40%;">
+        <Row>
+          <Col span="6"><Input placeholder="" v-model="searchForm.totalPriceL"></Input></Col>
+          <Col span="4" style="text-align: center">——</Col>
+          <Col span="6"><Input placeholder="" v-model="searchForm.totalPriceR"></Input></Col>
+        </Row>
       </Form-item>
-      <Form-item label="——" prop="maxPrice" :label-width="35" class="fl pr30">
-        <Input placeholder="" v-model="searchForm.maxPrice" style="width: 100px"></Input>
+      <Form-item label="购买时间" class="form-item" style="width: 60%;">
+        <Row>
+          <Col span="7">
+            <Date-picker type="datetime" placeholder="选择日期" v-model="searchForm.beginTime"></Date-picker>
+          </Col>
+          <Col span="2" style="text-align: center">——</Col>
+          <Col span="7">
+            <Date-picker type="datetime" placeholder="选择时间" v-model="searchForm.endTime"></Date-picker>
+          </Col>
+        </Row>
       </Form-item>
-      <Form-item label="购买时间" prop="startTime" class="fl">
-        <Date-picker type="datetime" v-model="searchForm.startTime" placeholder="起始时间" style="width: 160px"></Date-picker>
-      </Form-item>
-      <Form-item label="——" prop="endTime" :label-width="35" class="fl pr30">
-        <Date-picker type="datetime" v-model="searchForm.endTime" placeholder="结束时间" style="width: 160px"></Date-picker>
-      </Form-item>
+      <div class="search-handle">
+        <Button type="success" @click="orderList(1)">查询</Button>
+        <Button type="warning" @click="exportData" style="margin-left: 8px">导出</Button>
+        <Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>
+      </div>
     </Form >
-    <div class="mb20 textL">
-      <Button type="success" @click="orderList(1)">查询</Button>
-      <Button type="warning" @click="exportData" style="margin-left: 8px">导出</Button>
-      <Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>
-    </div>
     <Table border :context="self" :columns="cols" :data="rows" ref="table" class="mb20"></Table>
     <div class="fr">
       <Page :total="total" show-elevator @on-change="changePage"></Page>
@@ -53,9 +59,9 @@ export default {
       searchForm: {
         orderId: '',
         status: '',
-        minPrice: '',
-        maxPrice: '',
-        startTime: '',
+        totalPriceL: '',
+        totalPriceR: '',
+        beginTime: '',
         endTime: ''
       }
     };
@@ -147,9 +153,9 @@ export default {
       let searchForm = this.searchForm;
       if (searchForm.orderId) data.orderId = searchForm.orderId;
       if (searchForm.status) data.status = parseInt(searchForm.status);
-      if (searchForm.minPrice) data.minPrice = parseInt(searchForm.minPrice);
-      if (searchForm.maxPrice) data.maxPrice = parseInt(searchForm.maxPrice);
-      if (searchForm.startTime) data.startTime = Date.parse(searchForm.startTime);
+      if (searchForm.totalPriceL) data.totalPriceL = parseInt(searchForm.totalPriceL);
+      if (searchForm.totalPriceR) data.totalPriceR = parseInt(searchForm.totalPriceR);
+      if (searchForm.beginTime) data.beginTime = Date.parse(searchForm.beginTime);
       if (searchForm.endTime) data.endTime = Date.parse(searchForm.endTime);
       console.log(JSON.stringify(data));
       this.$axios
@@ -207,5 +213,11 @@ export default {
     float: left;
     width: 20%;
     padding-right: 30px;
+  }
+  .search-handle {
+    width: 200px;
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 </style>

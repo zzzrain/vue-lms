@@ -2,7 +2,7 @@
   <div class="table-list-cont pr25">
     <Form label-position="left" :label-width="60" ref="searchForm" :model="searchForm" inline class="clear-fix">
       <Form-item label="昵称" prop="userName" class="form-item" >
-        <Input v-model="searchForm.userName"></Input>
+        <Input v-model="searchForm.nickName"></Input>
       </Form-item>
       <Form-item label="联系电话" prop="mobile" class="form-item">
         <Input v-model="searchForm.mobile"></Input>
@@ -17,8 +17,8 @@
           <Option value="6">发货员</Option>
         </Select>
       </Form-item>
-      <Form-item label="创建时间" prop="startTime" class="fl">
-        <Date-picker type="datetime" v-model="searchForm.startTime" placeholder="起始时间" style="width: 160px"></Date-picker>
+      <Form-item label="创建时间" prop="beginTime" class="fl">
+        <Date-picker type="datetime" v-model="searchForm.beginTime" placeholder="起始时间" style="width: 160px"></Date-picker>
       </Form-item>
       <Form-item label="——" prop="endTime" class="fl" :label-width="35">
         <Date-picker type="datetime" v-model="searchForm.endTime" placeholder="结束时间" style="width: 160px"></Date-picker>
@@ -28,91 +28,91 @@
         <!--<Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>-->
       <!--</Form-item>-->
     </Form>
-    <div class="addGoods mb20 textL">
+    <div class="mb20 textL">
       <Button type="primary" @click="userPop">新增</Button>
       <Button type="success" @click="userList(1)" style="margin-left: 8px">查询</Button>
       <Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>
-      <Modal
-        v-model="addPop"
-        title="新增用户"
-        width="400">
-        <Form abel-position="left" :label-width="90" ref="userForm" :model="userForm" :rules="rules">
-          <Form-item label="昵称" prop="userName">
-            <Input placeholder="请输入" v-model="userForm.userName"></Input>
-          </Form-item>
-          <Form-item label="账号" prop="userAccount">
-            <Input placeholder="请输入" v-model="userForm.userAccount"></Input>
-          </Form-item>
-          <Form-item label="密码" prop="userPassword">
-            <Input type="password" placeholder="请输入" v-model="userForm.userPassword"></Input>
-          </Form-item>
-          <Form-item label="手机号" prop="mobile">
-            <Input placeholder="请输入" v-model="userForm.mobile"></Input>
-          </Form-item>
-          <Form-item label="角色" prop="userType">
-            <Select placeholder="请选择" v-model="userForm.userType" @on-change="resetRelate">
-              <Option value="1">采购员</Option>
-              <Option value="2">代理商</Option>
-              <Option value="3">业务员</Option>
-              <Option value="4">财务员</Option>
-              <Option value="5">仓管员</Option>
-              <Option value="6">发货员</Option>
-            </Select>
-          </Form-item>
-          <Form-item v-if="userForm.userType === '1'" label="关联代理商" prop="agetUserId">
-            <Select v-model="userForm.agetUserId">
-              <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
-            </Select>
-          </Form-item>
-          <Form-item v-if="userForm.userType === '1' || userForm.userType === '2'" label="关联业务员" prop="sellerUserId">
-            <Select v-model="userForm.sellerUserId">
-              <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
-            </Select>
-          </Form-item>
-          <Form-item v-if="userForm.userType !== '4'" label="对应财务员" prop="financeUserId">
-            <Select v-model="userForm.financeUserId">
-              <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
-            </Select>
-          </Form-item>
-        </Form >
-        <div slot="footer">
-          <Button @click="cancelPop">取消</Button>
-          <Button type="primary" @click="addUser">确定</Button>
-        </div>
-      </Modal>
-      <Modal
-        v-model="detailPop"
-        title="详细信息"
-        width="400">
-        <Form abel-position="left" :label-width="60">
-          <Form-item label="昵称" prop="userName">{{ userForm.userName }}</Form-item>
-          <Form-item label="账号" prop="userName">{{ userForm.userAccount }}</Form-item>
-          <Form-item label="手机号" prop="mobile">{{ userForm.mobile }}</Form-item>
-          <Form-item label="角色" prop="userType">{{ userForm.userType }}</Form-item>
-          <Form-item label="证件" prop="certificateNo">{{ userForm.certificateNo }}</Form-item>
-          <Form-item>
-            <div v-if="userForm.certificateUrl" class="img-wrap oh">
-              <img :src="userForm.certificateUrl" alt="图片详情" style="height: 150px;">
-            </div>
-            <div v-else class="img-wrap oh"></div>
-          </Form-item>
-        </Form >
-      </Modal>
-      <Modal
-        v-model="resetPop"
-        title="重置密码"
-        width="400"
-        @on-ok="resetPsw">
-        <Form label-position="left" :label-width="60" ref="pswForm" :model="pswForm" class="clear-fix">
-          <Form-item label="旧密码" prop="oldPwd">
-            <Input type="password" v-model="pswForm.oldPwd"></Input>
-          </Form-item>
-          <Form-item label="新密码" prop="newPwd">
-            <Input type="password" v-model="pswForm.newPwd"></Input>
-          </Form-item>
-        </Form>
-      </Modal>
     </div>
+    <Modal
+      v-model="addPop"
+      title="新增用户"
+      width="400">
+      <Form abel-position="left" :label-width="90" ref="userForm" :model="userForm" :rules="rules">
+        <Form-item label="昵称" prop="userName">
+          <Input placeholder="请输入" v-model="userForm.userName"></Input>
+        </Form-item>
+        <Form-item label="账号" prop="userAccount">
+          <Input placeholder="请输入" v-model="userForm.userAccount"></Input>
+        </Form-item>
+        <Form-item label="密码" prop="userPassword">
+          <Input type="password" placeholder="请输入" v-model="userForm.userPassword"></Input>
+        </Form-item>
+        <Form-item label="手机号" prop="mobile">
+          <Input placeholder="请输入" v-model="userForm.mobile"></Input>
+        </Form-item>
+        <Form-item label="角色" prop="userType">
+          <Select placeholder="请选择" v-model="userForm.userType" @on-change="resetRelate">
+            <Option value="1">采购员</Option>
+            <Option value="2">代理商</Option>
+            <Option value="3">业务员</Option>
+            <Option value="4">财务员</Option>
+            <Option value="5">仓管员</Option>
+            <Option value="6">发货员</Option>
+          </Select>
+        </Form-item>
+        <Form-item v-if="userForm.userType === '1'" label="关联代理商" prop="agetUserId">
+          <Select v-model="userForm.agetUserId">
+            <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
+          </Select>
+        </Form-item>
+        <Form-item v-if="userForm.userType === '1' || userForm.userType === '2'" label="关联业务员" prop="sellerUserId">
+          <Select v-model="userForm.sellerUserId">
+            <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
+          </Select>
+        </Form-item>
+        <Form-item v-if="userForm.userType !== '4'" label="对应财务员" prop="financeUserId">
+          <Select v-model="userForm.financeUserId">
+            <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
+          </Select>
+        </Form-item>
+      </Form >
+      <div slot="footer">
+        <Button @click="cancelPop">取消</Button>
+        <Button type="primary" @click="addUser">确定</Button>
+      </div>
+    </Modal>
+    <Modal
+      v-model="detailPop"
+      title="详细信息"
+      width="400">
+      <Form abel-position="left" :label-width="60">
+        <Form-item label="昵称" prop="userName">{{ userForm.userName }}</Form-item>
+        <Form-item label="账号" prop="userName">{{ userForm.userAccount }}</Form-item>
+        <Form-item label="手机号" prop="mobile">{{ userForm.mobile }}</Form-item>
+        <Form-item label="角色" prop="userType">{{ userForm.userType }}</Form-item>
+        <Form-item label="证件" prop="certificateNo">{{ userForm.certificateNo }}</Form-item>
+        <Form-item>
+          <div v-if="userForm.certificateUrl" class="img-wrap oh">
+            <img :src="userForm.certificateUrl" alt="图片详情" style="height: 150px;">
+          </div>
+          <div v-else class="img-wrap oh"></div>
+        </Form-item>
+      </Form >
+    </Modal>
+    <Modal
+      v-model="resetPop"
+      title="重置密码"
+      width="400"
+      @on-ok="resetPsw">
+      <Form label-position="left" :label-width="60" ref="pswForm" :model="pswForm" class="clear-fix">
+        <Form-item label="旧密码" prop="oldPwd">
+          <Input type="password" v-model="pswForm.oldPwd"></Input>
+        </Form-item>
+        <Form-item label="新密码" prop="newPwd">
+          <Input type="password" v-model="pswForm.newPwd"></Input>
+        </Form-item>
+      </Form>
+    </Modal>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
     <div class="fr">
       <Page :total="total" show-elevator @on-change="changePage"></Page>
@@ -152,10 +152,10 @@ export default {
         financeUserId: ''
       },
       searchForm: {
-        userName: '',
+        nickName: '',
         roleId: '',
         mobile: '',
-        startTime: '',
+        beginTime: '',
         endTime: ''
       },
       pswForm: {
@@ -346,23 +346,23 @@ export default {
       // let page = { pageNum: pageNum || 1, pageSize: 10 };
       // let copy = Object.assign({}, this.searchForm);
       // copy.userType = parseInt(this.searchForm.userType);
-      // copy.startTime = copy.startTime && Date.parse(copy.startTime);
+      // copy.beginTime = copy.beginTime && Date.parse(copy.beginTime);
       // copy.endTime = copy.endTime && Date.parse(copy.endTime);
       // let data = Object.assign(copy, page);
       let data = {
         // mobile: this.searchForm.mobile,
         // userName: this.searchForm.userName,
         // userType: parseInt(this.searchForm.userType),
-        // startTime: this.searchForm.startTime && Date.parse(this.searchForm.startTime),
+        // beginTime: this.searchForm.beginTime && Date.parse(this.searchForm.beginTime),
         // endTime: this.searchForm.endTime && Date.parse(this.searchForm.endTime),
         pageNum: pageNum || 1,
         pageSize: 10
       };
       let searchForm = this.searchForm;
       if (searchForm.mobile) data.mobile = searchForm.mobile;
-      if (searchForm.userName) data.userName = searchForm.userName;
+      if (searchForm.nickName) data.nickName = searchForm.nickName;
       if (searchForm.userType) data.userType = parseInt(searchForm.userType);
-      if (searchForm.startTime) data.startTime = Date.parse(searchForm.endTime);
+      if (searchForm.beginTime) data.beginTime = Date.parse(searchForm.beginTime);
       if (searchForm.endTime) data.endTime = Date.parse(searchForm.endTime);
       console.log(JSON.stringify(data));
       this.$axios

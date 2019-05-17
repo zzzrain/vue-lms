@@ -12,12 +12,17 @@
           <Option v-for="item in categoryItem" :key="item.id" :value="item.id">{{ item.categoryName }}</Option>
         </Select>
       </Form-item>
-      <Form-item></Form-item>
-      <Form-item class="fr">
-        <Button type="success" @click="goodsList(1)">查询</Button>
-        <Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>
+      <Form-item label="创建时间" prop="beginTime" class="fl">
+        <Date-picker type="datetime" v-model="searchForm.beginTime" placeholder="起始时间" style="width: 160px"></Date-picker>
+      </Form-item>
+      <Form-item label="——" prop="endTime" class="fl" :label-width="35">
+        <Date-picker type="datetime" v-model="searchForm.endTime" placeholder="结束时间" style="width: 160px"></Date-picker>
       </Form-item>
     </Form >
+    <div class="mb20 textL">
+      <Button type="success" @click="goodsList(1)">查询</Button>
+      <Button @click="cancel('searchForm')" style="margin-left: 8px">清空</Button>
+    </div>
     <Table border :context="self" :columns="cols" :data="rows" class="mb20"></Table>
     <div class="fr">
       <Page :total="total" show-elevator @on-change="changePage"></Page>
@@ -39,7 +44,9 @@ export default {
       searchForm: {
         goodsId: '',
         goodsName: '',
-        categoryId: ''
+        categoryId: '',
+        beginTime: '',
+        endTime: ''
       },
       rules: {
         goodsId: [],
@@ -151,10 +158,11 @@ export default {
         pageNum: pageNum || 1,
         pageSize: 10
       };
-      let goodsName = this.searchForm.goodsName;
-      let categoryId = this.searchForm.categoryId;
-      if (goodsName) data.goodsName = goodsName;
-      if (categoryId) data.categoryId = categoryId;
+      let searchForm = this.searchForm;
+      if (searchForm.goodsName) data.goodsName = searchForm.goodsName;
+      if (searchForm.categoryId) data.categoryId = searchForm.categoryId;
+      if (searchForm.beginTime) data.beginTime = Date.parse(searchForm.beginTime);
+      if (searchForm.endTime) data.endTime = Date.parse(searchForm.endTime);
       this.$axios
         .post('/api/lms/admin/goods/goodsList', data)
         .then(res => {
