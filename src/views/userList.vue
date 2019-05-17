@@ -361,7 +361,7 @@ export default {
       let searchForm = this.searchForm;
       if (searchForm.mobile) data.mobile = searchForm.mobile;
       if (searchForm.nickName) data.nickName = searchForm.nickName;
-      if (searchForm.userType) data.userType = parseInt(searchForm.userType);
+      if (searchForm.userType) data.roleId = parseInt(searchForm.userType);
       if (searchForm.beginTime) data.beginTime = Date.parse(searchForm.beginTime);
       if (searchForm.endTime) data.endTime = Date.parse(searchForm.endTime);
       console.log(JSON.stringify(data));
