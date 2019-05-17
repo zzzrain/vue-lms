@@ -2,12 +2,12 @@
   <div class="detail-cont">
     <Form ref="formItem" :model="formItem" :rules="rules" :label-width="100" style="width: 800px;">
       <Form-item label="商品类目" prop="categoryId">
-        <Select v-model="formItem.categoryId">
+        <Select v-model="formItem.categoryId" :disabled="type">
           <Option v-for="item in categoryItem" :key="item.id" :value="item.id">{{ item.categoryName }}</Option>
         </Select>
       </Form-item>
       <Form-item label="商品名称" prop="goodsName">
-        <Input v-model="formItem.goodsName" placeholder="请输入商品名称"></Input>
+        <Input v-model="formItem.goodsName" placeholder="请输入商品名称" :disabled="type"></Input>
       </Form-item>
       <Form-item label="商品图片">
         <!--<div class="demo-upload-list po fl clear-fix" v-for="item in uploadList" :key="item.name">-->
@@ -42,13 +42,13 @@
         </div>
       </Form-item>
       <Form-item label="商品描述" prop="goodsDesc">
-        <Input v-model="formItem.goodsDesc" type="textarea" :autosize="{minRows: 5,maxRows: 5}" placeholder="请输入..."></Input>
+        <Input v-model="formItem.goodsDesc" :disabled="type" type="textarea" :autosize="{minRows: 5,maxRows: 5}" placeholder="请输入..."></Input>
       </Form-item>
       <!--<div class="addGoods mb10 m40" style="text-align: left;">-->
         <!--<Button type="primary" @click="addPop">添加规格</Button>-->
       <!--</div>-->
       <Table border :context="self" :columns="cols" :data="rows" class="mt30 mb30 ml40"></Table>
-      <Form-item>
+      <Form-item v-if="!type">
         <Button type="primary" @click="handleSubmit('formItem')">提交</Button>
         <Button @click="handleReset('formItem')" style="margin-left: 8px">清空</Button>
       </Form-item>
@@ -173,11 +173,14 @@ export default {
           { type: 'string', min: 5, message: '介绍不能少于5个字', trigger: 'blur' },
           { type: 'string', max: 200, message: '介绍不能多于200字', trigger: 'blur' }
         ]
-      }
+      },
+      type: false
     };
   },
   mounted () {
     let goodsId = parseInt(common.getParams('id'));
+    let type = common.getParams('type');
+    if (type.toString() === 'see') this.type = true;
     this.formItem.goodsId = goodsId;
     this.goodsDetail(goodsId);
     this.categoryList();

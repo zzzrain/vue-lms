@@ -129,9 +129,9 @@ export default {
   mounted () {
     let userId = parseInt(common.getParams('id'));
     let type = common.getParams('type');
-    this.userForm.id = userId;
     if (type.toString() === 'see') this.type = true;
-    if (userId) this.userDetail(userId);
+    this.userForm.id = userId;
+    this.userDetail(userId);
     this.userTypeList(3);
     this.userTypeList(2);
     this.userTypeList(4);

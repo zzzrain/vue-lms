@@ -103,10 +103,24 @@ export default {
               },
               on: {
                 click: function () {
-                  vm.goodsDetail(id, row.status);
+                  vm.goodsDetail(id, 'alt');
                 }
               }
             }, '修改'),
+            h('Button', {
+              props: {
+                type: 'warning',
+                size: 'small'
+              },
+              style: {
+                marginRight: '8px'
+              },
+              on: {
+                click: function () {
+                  vm.goodsDetail(id, 'see');
+                }
+              }
+            }, '详情'),
             h('Button', {
               props: {
                 type,
@@ -212,8 +226,8 @@ export default {
         })
         .catch(error => console.log(error));
     },
-    goodsDetail (id) {
-      this.$router.push(`/home/goodsDetail?id=${id}`);
+    goodsDetail (id, type) {
+      this.$router.push(`/home/goodsDetail?type=${type}&id=${id}`);
     },
     cancel (name) {
       // 清空功能需要给每个加上prop属性
