@@ -81,7 +81,7 @@
         <!--</Form-item>-->
       </Form >
       <div slot="footer">
-        <Button type="error" @click="cancelPop">取消</Button>
+        <Button @click="cancelPop">取消</Button>
         <Button type="primary" @click="skuPop('skuForm')">确定</Button>
       </div>
     </Modal>

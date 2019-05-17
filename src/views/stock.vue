@@ -24,12 +24,9 @@
           </Form-item>
           <Form-item label="规格名称" prop="skuId">
             <Select v-model="stockAddForm.skuId">
-              <Option v-for="item in skuItem" :key="item.id" :value="item.skuId">{{ item.skuName }}</Option>
+              <Option v-for="item in skuItem" :key="item.id" :value="item.id">{{ item.skuName }}</Option>
             </Select>
           </Form-item>
-          <!--<Form-item label="规格名称" prop="skuId">-->
-            <!--<Input placeholder="请输入" v-model="stockAddForm.skuName"></Input>-->
-          <!--</Form-item>-->
           <Form-item label="数量" prop="skuNum">
             <Input placeholder="请输入" v-model="stockAddForm.skuNum"></Input>
           </Form-item>
@@ -41,7 +38,7 @@
           </Form-item>
         </Form >
         <div slot="footer">
-          <Button type="error" @click="cancelPop">取消</Button>
+          <Button @click="cancelPop">取消</Button>
           <Button type="primary" @click="stockAdd">确定</Button>
         </div>
       </Modal>
@@ -63,7 +60,7 @@
           </Form-item>
         </Form >
         <div slot="footer">
-          <Button type="error" @click="cancelPop">取消</Button>
+          <Button @click="cancelPop">取消</Button>
           <Button type="primary" @click="stockAlt">确定</Button>
         </div>
       </Modal>
@@ -132,11 +129,12 @@ export default {
       },
       {
         title: '商品名称',
-        key: ''
+        key: 'goodsName'
       },
       {
         title: '所属类目',
-        key: ''
+        key: 'categoryName',
+        width: 120
       },
       {
         title: '规格名称',
@@ -144,7 +142,8 @@ export default {
       },
       {
         title: '数量',
-        key: 'skuNum'
+        key: 'skuNum',
+        width: 120
       },
       {
         title: '单位',
@@ -211,21 +210,25 @@ export default {
               .sort((x, y) => {
                 return y.createTime - x.createTime;
               });
-            dataList.map(x => {
-              x.skuDtos.map(y => {
-                y.goodsId = x.goodsId;
-                this.skuItemTemp.push(y);
-              });
-            });
+            // dataList.map(x => {
+            //   x.skuDtos.map(y => {
+            //     y.goodsId = x.goodsId;
+            //     this.skuItemTemp.push(y);
+            //   });
+            // });
           }
         })
         .catch(error => console.log(error));
     },
     selectGoods (goodsId) {
-      this.skuItem = this.skuItemTemp.filter(ele => {
-        return ele.goodsId === goodsId;
-      });
-      console.log(this.skuItem);
+      this.$axios
+        .post('/api/lms/admin/goods/skuListBygoodsId', { goodsId })
+        .then(res => {
+          if (res.data.code === '20000') {
+            this.skuItem = res.data && res.data.data;
+          }
+        })
+        .catch(error => console.log(error));
     },
     stockList (pageNum, add, id) {
       let searchForm = this.searchForm;
@@ -245,16 +248,11 @@ export default {
           if (res.data.code === '20000') {
             this.total = data.total;
             this.rows = [];
-            dataList.forEach(ele => {
-              this.rows.push({
-                id: ele.id,
-                skuId: parseInt(ele.skuId),
-                skuName: ele.skuName,
-                skuNum: ele.skuNum,
-                skuUnitCode: ele.skuUnit && ele.skuUnit.toString(),
-                skuUnit: common.skuUnit(ele.skuUnit),
-                createTime: common.format(ele.createTime)
-              });
+            this.rows = dataList.map(ele => {
+              ele.skuUnitCode = ele.skuUnit && ele.skuUnit.toString();
+              ele.skuUnit = common.skuUnit(ele.skuUnit);
+              ele.createTime = common.format(ele.createTime);
+              return ele;
             });
           } else if (res.data.code === '20003') {
             this.$Message.error('登录超时');

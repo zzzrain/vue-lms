@@ -33,7 +33,7 @@
         </div>
         <div v-else class="img-wrap mt20 oh po"></div>
         <div slot="footer">
-          <Button type="error" @click="cancelPop">取消</Button>
+          <Button @click="cancelPop">取消</Button>
           <Button type="primary" @click="bannerAdd">确定</Button>
         </div>
       </Modal>
