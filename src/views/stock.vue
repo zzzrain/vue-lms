@@ -189,6 +189,7 @@ export default {
     this.rows = [];
     this.stockAddForm.skuUnit = '1';
     this.goodsList();
+    this.stockList();
   },
   methods: {
     changePage (page) {
@@ -236,7 +237,7 @@ export default {
       if (add) skuId = id;
       let data = {
         skuId,
-        pageNum,
+        pageNum: pageNum || 1,
         pageSize: 10
       };
       console.log(JSON.stringify(data));

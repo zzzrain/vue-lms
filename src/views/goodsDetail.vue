@@ -208,11 +208,11 @@ export default {
       {
         title: '采购商价格',
         key: 'purchaserPrice'
-      },
-      {
-        title: '商品规格',
-        key: 'skuUnit'
       }
+      // {
+      //   title: '商品规格',
+      //   key: 'skuUnit'
+      // },
       // {
       //   title: '库存数量',
       //   key: 'repertoryNum'

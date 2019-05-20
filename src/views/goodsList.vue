@@ -61,8 +61,7 @@ export default {
     this.cols = [
       {
         title: '商品编号',
-        key: 'goodsId',
-        width: 150
+        key: 'goodsId'
       },
       {
         title: '商品名称',
@@ -79,12 +78,14 @@ export default {
       },
       {
         title: '创建时间',
-        key: 'createTime'
+        key: 'createTime',
+        width: 180
       },
       {
         title: '操作',
         key: 'action',
         align: 'center',
+        width: 200,
         render: (h, params) => {
           let row = params.row;
           let id = row.goodsId;

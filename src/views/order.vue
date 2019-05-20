@@ -95,6 +95,10 @@ export default {
       //   key: 'remark'
       // },
       {
+        title: '购买者',
+        key: 'buyerName'
+      },
+      {
         title: '购买时间',
         key: 'createTime'
       },
@@ -165,16 +169,10 @@ export default {
           const dataList = data.list || [];
           if (res.data.code === '20000') {
             this.total = data.total;
-            dataList.forEach(ele => {
-              this.rows.push({
-                orderId: ele.orderId,
-                detailAddress: ele.detailAddress,
-                dispatchType: ele.dispatchType,
-                totalPrice: ele.totalPrice,
-                remark: ele.remark,
-                status: common.orderType(ele.status),
-                createTime: common.format(ele.createTime)
-              });
+            this.rows = dataList.map(ele => {
+              ele.status = common.orderType(ele.status);
+              ele.createTime = common.format(ele.createTime);
+              return ele;
             });
           } else if (res.data.code === '20003') {
             this.$Message.error('登录超时');
