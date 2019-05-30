@@ -207,19 +207,16 @@ export default {
         })
         .then(res => {
           if (res.data.code === '20000') {
-            const data = res.data && res.data.data;
-            const dataList = data.list || [];
+            let data = res.data && res.data.data;
+            let dataList = data.list || [];
             this.total = data.total;
-            dataList.forEach(ele => {
-              this.rows.push({
-                id: ele.id,
-                bannerPosition: common.bp(ele.bannerPosition),
-                filePath: ele.filePath,
-                sort: common.sort(ele.sort),
-                status: common.state(ele.status),
-                createTime: common.format(ele.createTime),
-                updateTime: common.format(ele.updateTime)
-              });
+            this.rows = dataList.map(ele => {
+              ele.bannerPosition = common.bp(ele.bannerPosition);
+              ele.sort = common.sort(ele.sort);
+              ele.status = common.state(ele.status);
+              ele.createTime = common.format(ele.createTime);
+              ele.updateTime = common.format(ele.updateTime);
+              return ele;
             });
           }
         })

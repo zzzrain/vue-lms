@@ -22,39 +22,29 @@
         </Select>
       </Form-item>
       <Form-item v-if="userForm.userType === '1'" label="关联代理商" class="form-item" prop="agetUserId">
-        <Select v-if="type" v-model="userForm.agetUserId" disabled>
-          <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
-        </Select>
-        <Select v-else v-model="userForm.agetUserId">
+        <Select v-model="userForm.agetUserId" :disabled="type">
           <Option v-for="item in dlsList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
         </Select>
       </Form-item>
       <Form-item v-if="userForm.userType === '1' || userForm.userType === '2'" label="关联业务员" class="form-item" prop="sellerUserId">
-        <Select v-if="type" v-model="userForm.sellerUserId" disabled>
-          <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
-        </Select>
-        <Select v-else v-model="userForm.sellerUserId">
+        <Select v-model="userForm.sellerUserId" :disabled="type">
           <Option v-for="item in ywyList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
         </Select>
       </Form-item>
       <Form-item v-if="userForm.userType !== '4'" label="对应财务员" class="form-item" prop="financeUserId">
-        <Select v-if="type" v-model="userForm.financeUserId" disabled>
-          <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
-        </Select>
-        <Select v-else v-model="userForm.financeUserId">
+        <Select v-model="userForm.financeUserId" :disabled="type">
           <Option v-for="item in cwyList" :key="item.id" :value="item.id" selected>{{ item.userName }}</Option>
         </Select>
       </Form-item>
       <Form-item label="证件" prop="certificateNo" class="form-item">
         <Input placeholder="请输入证件号码" :disabled="type" v-model="userForm.certificateNo"></Input>
       </Form-item>
-      <Form-item v-if="type" label="证件附件" class="form-item">
-        <div class="img-wrap oh po">
+      <Form-item label="证件附件" class="form-item">
+        <div v-if="type" class="img-wrap oh po">
           <img :src="userForm.certificateUrl" alt="图片详情" style="height: 150px;">
         </div>
-      </Form-item>
-      <Form-item v-else label="证件附件" class="form-item">
         <Upload
+          v-else
           ref="upload"
           :show-upload-list="false"
           :format="['jpg','jpeg','png']"
@@ -132,8 +122,8 @@ export default {
     if (type.toString() === 'see') this.type = true;
     this.userForm.id = userId;
     this.userDetail(userId);
-    this.userTypeList(3);
     this.userTypeList(2);
+    this.userTypeList(3);
     this.userTypeList(4);
   },
   methods: {
