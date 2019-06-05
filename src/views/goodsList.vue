@@ -187,7 +187,11 @@ export default {
             this.total = data.total;
             this.rows = dataList
               .sort((x, y) => {
-                return y.createTime - x.createTime;
+                if (x.status === y.status) {
+                  return y.createTime - x.createTime;
+                } else {
+                  return y.status - x.status;
+                }
               })
               .map(ele => {
                 ele.status = common.state(ele.status);
