@@ -1,14 +1,23 @@
 <template>
   <div class="table-list-cont pr25">
     <Form label-position="left" :label-width="80" ref="searchForm" :model="searchForm" inline class="clear-fix">
-      <Form-item label="规格ID" class="form-item">
-        <Input placeholder="" v-model="searchForm.skuId"></Input>
+      <!--<Form-item label="规格ID" class="form-item">-->
+        <!--<Input placeholder="" v-model="searchForm.skuId"></Input>-->
+      <!--</Form-item>-->
+      <Form-item label="商品名称" prop="goodsName" class="form-item">
+        <Input placeholder="" v-model="searchForm.goodsName"></Input>
       </Form-item>
-      <Form-item class="form-item"></Form-item>
-      <Form-item class="form-item"></Form-item>
+      <Form-item label="商品类目" prop="categoryId" class="form-item">
+        <Select v-model="searchForm.categoryId">
+          <Option value="">请选择</Option>
+          <Option v-for="item in categoryItem" :key="item.id" :value="item.id">{{ item.categoryName }}</Option>
+        </Select>
+      </Form-item>
+      <!--<Form-item class="form-item"></Form-item>-->
+      <!--<Form-item class="form-item"></Form-item>-->
       <Form-item class="fr">
-        <Button type="success" @click="stockList(1)">查询</Button>
-        <!--<Button @click="clear('searchForm')" style="margin-left: 8px">清空</Button>-->
+        <Button type="success" @click="stockList()">查询</Button>
+        <Button @click="clear('searchForm')" style="margin-left: 8px">清空</Button>
       </Form-item>
     </Form >
     <div class="addCategory mb20" style="text-align: left;">
@@ -89,6 +98,7 @@ export default {
       goodsItem: [],
       skuItemTemp: [],
       skuItem: [],
+      categoryItem: [],
       stockAddForm: {
         repertoryId: '',
         skuId: '',
@@ -104,7 +114,8 @@ export default {
         skuUnit: ''
       },
       searchForm: {
-        skuId: ''
+        goodsName: '',
+        categoryId: ''
       },
       rules: {
         skuId: [
@@ -188,6 +199,7 @@ export default {
     ];
     this.rows = [];
     this.stockAddForm.skuUnit = '1';
+    this.categoryList();
     this.goodsList();
     this.stockList();
   },
@@ -195,6 +207,23 @@ export default {
     changePage (page) {
       this.rows = [];
       this.stockList(page);
+    },
+    categoryList () {
+      this.$axios
+        .post('/api/lms/admin/category/categoryList', {
+          pageNum: 1,
+          pageSize: 999
+        })
+        .then(res => {
+          const data = res.data && res.data.data;
+          const dataList = data.list || [];
+          if (res.data.code === '20000') {
+            this.categoryItem = dataList.filter(ele => {
+              return ele.status === 1;
+            });
+          }
+        })
+        .catch(error => console.log(error));
     },
     goodsList () {
       this.rows = [];
@@ -231,14 +260,13 @@ export default {
         })
         .catch(error => console.log(error));
     },
-    stockList (pageNum, add, id) {
+    stockList (pageNum) {
       let searchForm = this.searchForm;
-      let skuId = parseInt(searchForm.skuId);
-      if (add) skuId = id;
       let data = {
-        skuId,
         pageNum: pageNum || 1,
-        pageSize: 10
+        pageSize: 10,
+        goodsName: searchForm.goodsName,
+        categoryId: searchForm.categoryId
       };
       console.log(JSON.stringify(data));
       this.$axios
@@ -295,7 +323,7 @@ export default {
             .then(res => {
               if (res.data.code === '20000') {
                 this.$Message.info('新增成功');
-                this.stockList(1, true, data.skuId);
+                this.stockList();
               } else if (res.data.code === '20003') {
                 this.$Message.error('登录超时');
                 setTimeout(() => {

@@ -9,6 +9,7 @@
       </Form-item>
       <Form-item label="角色类型" prop="userType" class="form-item">
         <Select v-model="searchForm.userType">
+          <Option value="">请选择</Option>
           <Option value="1">采购员</Option>
           <Option value="2">代理商</Option>
           <Option value="3">业务员</Option>

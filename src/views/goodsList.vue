@@ -9,6 +9,7 @@
       </Form-item>
       <Form-item label="商品类目" prop="categoryId" class="form-item">
         <Select v-model="searchForm.categoryId">
+          <Option value="">请选择</Option>
           <Option v-for="item in categoryItem" :key="item.id" :value="item.id">{{ item.categoryName }}</Option>
         </Select>
       </Form-item>
