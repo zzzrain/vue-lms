@@ -28,7 +28,7 @@ export default {
     let left = document.querySelector('.left-cont');
     setTimeout(() => {
       // left.style.height = document.body.scrollHeight + 'px';
-      left.style.height = window.innerHeight + 'px';
+      left.style.height = window.outerHeight + 100 + 'px';
     }, 500);
   }
 };

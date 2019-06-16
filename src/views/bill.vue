@@ -3,15 +3,16 @@
     <Form label-position="left" :label-width="80" inline class="clear-fix">
       <Form-item label="统计类型" prop="userType" class="form-item">
         <Select v-model="userType">
+          <Option value="">请选择</Option>
           <Option value="1" selected="selected">代理商</Option>
           <Option value="2">采购商</Option>
-          <Option value="2">业绩统计</Option>
-          <Option value="2">已售订单</Option>
+          <Option value="3">业绩统计</Option>
+          <Option value="4">已售订单</Option>
         </Select>
       </Form-item>
-      <Form-item label="手机号码" porp="mobile" class="form-item">
-        <Input placeholder="" v-model="mobile"></Input>
-      </Form-item>
+      <!--<Form-item label="手机号码" porp="mobile" class="form-item">-->
+        <!--<Input placeholder="" v-model="mobile"></Input>-->
+      <!--</Form-item>-->
       <Form-item label="创建时间" prop="beginTime" class="fl">
         <Date-picker type="datetime" v-model="beginTime" placeholder="起始时间" style="width: 160px"></Date-picker>
       </Form-item>
@@ -31,6 +32,7 @@
 </template>
 
 <script>
+import common from '@/common/common.js';
 export default {
   data () {
     return {
@@ -59,8 +61,13 @@ export default {
         key: 'status'
       },
       {
+        title: '购买者 ',
+        key: 'buyerName'
+      },
+      {
         title: '收货地址',
-        key: 'detailAddress'
+        key: 'address',
+        width: 300
       },
       {
         title: '购买时间',
@@ -90,16 +97,16 @@ export default {
       console.log(type, JSON.stringify(data));
       switch (type) {
         case '1' :
-          url = '/api/lms/admin/statistics/agentbillList';
+          url = '/api/lms/admin/statistics/agentOrderList';
           break;
         case '2' :
-          url = '/api/lms/admin/statistics/purchasebillList';
+          url = '/api/lms/admin/statistics/purchaseOrderList';
           break;
         case '3' :
-          url = '/api/lms/admin/statistics/sellAchivebillList';
+          url = '/api/lms/admin/statistics/sellAchiveOrderList';
           break;
         case '4' :
-          url = '/api/lms/admin/statistics/sellbillList';
+          url = '/api/lms/admin/statistics/sellOrderList';
           break;
         default:
           break;
@@ -111,9 +118,11 @@ export default {
           const dataList = data.list || [];
           if (res.data.code === '20000') {
             this.total = data.total;
-            dataList.forEach(() => {
-              this.rows.push({
-              });
+            this.rows = dataList.map(item => {
+              item.status = common.orderType(item.status);
+              item.createTime = common.format(item.createTime);
+              item.address = item.provinceName + item.cityName + item.regionName + item.detailAddress;
+              return item;
             });
           } else if (res.data.code === '20003') {
             this.$Message.error('登录超时');

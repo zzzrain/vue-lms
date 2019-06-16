@@ -169,10 +169,10 @@ export default {
           const dataList = data.list || [];
           if (res.data.code === '20000') {
             this.total = data.total;
-            this.rows = dataList.map(ele => {
-              ele.status = common.orderType(ele.status);
-              ele.createTime = common.format(ele.createTime);
-              return ele;
+            this.rows = dataList.map(item => {
+              item.status = common.orderType(item.status);
+              item.createTime = common.format(item.createTime);
+              return item;
             });
           } else if (res.data.code === '20003') {
             this.$Message.error('登录超时');
