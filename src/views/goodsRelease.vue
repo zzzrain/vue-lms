@@ -284,10 +284,10 @@ export default {
           let skuData = {
             skuName: skuForm.skuName,
             agentPrice: parseInt(skuForm.agentPrice),
-            // limitAgentPrice: parseInt(skuForm.limitAgentPrice),
+            // limitAgentPrice: parseInt(skuForm.skuPrice),
             purchaserPrice: parseInt(skuForm.purchaserPrice),
-            skuPrice: parseInt(skuForm.skuPrice)
-            // skuUnit: parseInt(skuForm.skuUnit)
+            skuPrice: parseInt(skuForm.skuPrice),
+            skuUnit: 1
           };
           let rowsData = Object.assign({}, skuData);
           // rowsData.skuUnit = common.skuUnit(rowsData.skuUnit);

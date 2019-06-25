@@ -26,22 +26,28 @@ export default {
   },
   mounted () {
     let left = document.querySelector('.left-cont');
+    // console.log(document.body.clientHeight);
     setTimeout(() => {
-      // left.style.height = document.body.scrollHeight + 'px';
-      left.style.height = window.outerHeight + 100 + 'px';
-    }, 500);
+      left.style.height = document.body.clientHeight + 'px';
+      // console.log(document.body.clientHeight);
+    }, 1000);
   }
 };
 </script>
 
 <style scoped lang="scss">
-  .left-cont {
-    width: 15%;
-    min-height: 800px;
-    background: #515a6e
-  }
-  .right-cont {
-    width: 85%;
-    padding: 20px 50px;
+  .home-con {
+    height: 100%;
+    .left-cont {
+      width: 15%;
+      height: 100%;
+      min-height: 800px;
+      background: #515a6e
+    }
+    .right-cont {
+      width: 85%;
+      height: 100%;
+      padding: 20px 50px;
+    }
   }
 </style>
