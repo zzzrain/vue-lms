@@ -99,7 +99,7 @@ export default {
               },
               on: {
                 click: function () {
-                  console.log(params);
+                  // console.log(params);
                   vm.addPop = true;
                   vm.handle = '修改类目';
                   vm.itemIdx = params.index;
@@ -202,12 +202,12 @@ export default {
           data.status = this.categoryForm.status === '启用' ? 0 : 1;
         }
       }
-      console.log(JSON.stringify(data));
+      // console.log(JSON.stringify(data));
       this.$axios
         .post('/api/lms/admin/category/updateCategory', data)
         .then(res => {
           if (res.data.code === '20000') {
-            console.log(isStatus);
+            // console.log(isStatus);
             this.$Message.info(message);
             if (isStatus) cb();
             else if (data.id) {

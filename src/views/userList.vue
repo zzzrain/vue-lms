@@ -343,7 +343,7 @@ export default {
     userList (pageNum) {
       this.rows = [];
       // 时间组件会重新读取searchForm的时间，查询需要换算时间戳，由于格式问题会导致组件报错，
-      // 所以不用searchForm直接查询 —— 双向数据绑定遇到UI库的坑
+      // 所以不用 searchForm 直接查询 —— 双向数据绑定遇到UI库的坑
       // let page = { pageNum: pageNum || 1, pageSize: 10 };
       // let copy = Object.assign({}, this.searchForm);
       // copy.userType = parseInt(this.searchForm.userType);
@@ -365,7 +365,7 @@ export default {
       if (searchForm.userType) data.roleId = parseInt(searchForm.userType);
       if (searchForm.beginTime) data.beginTime = Date.parse(searchForm.beginTime);
       if (searchForm.endTime) data.endTime = Date.parse(searchForm.endTime);
-      console.log(JSON.stringify(data));
+      // console.log(JSON.stringify(data));
       this.$axios
         .post('/api/lms/admin/user/userList', data)
         .then(res => {
@@ -388,7 +388,7 @@ export default {
                 ele.createTime = common.format(ele.createTime);
                 return ele;
               });
-            console.log(this.rows);
+            // console.log(this.rows);
           } else if (res.data.code === '20003') {
             this.$Message.error('登录超时');
             setTimeout(() => {
@@ -442,16 +442,16 @@ export default {
             default:
               break;
           }
-          console.log(JSON.stringify(data));
-          // this.$axios
-          //   .post('/api/lms/admin/user/addUser', data)
-          //   .then(res => {
-          //     if (res.data.code === '20000') {
-          //       this.$Message.info('新增成功');
-          //       this.userList(1);
-          //     }
-          //   })
-          //   .catch(error => console.log(error));
+          // console.log(JSON.stringify(data));
+          this.$axios
+            .post('/api/lms/admin/user/addUser', data)
+            .then(res => {
+              if (res.data.code === '20000') {
+                this.$Message.info('新增成功');
+                this.userList(1);
+              }
+            })
+            .catch(error => console.log(error));
         }
       });
     },
@@ -477,7 +477,7 @@ export default {
               status: 1,
               wxPerm: 1
             };
-            console.log(JSON.stringify(data));
+            // console.log(JSON.stringify(data));
             this.altAjax(data, cb);
           }
         });
