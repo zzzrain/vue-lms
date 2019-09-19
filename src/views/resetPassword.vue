@@ -3,9 +3,9 @@
     <Form-item label="用户id" prop="userId" class="form-item" >
       <Input v-model="searchForm.userId"></Input>
     </Form-item>
-    <Form-item label="旧密码" prop="oldPwd" class="form-item">
-      <Input type="password" v-model="searchForm.oldPwd"></Input>
-    </Form-item>
+    <!--<Form-item label="旧密码" prop="oldPwd" class="form-item">-->
+      <!--<Input type="password" v-model="searchForm.oldPwd"></Input>-->
+    <!--</Form-item>-->
     <Form-item label="新密码" prop="newPwd" class="form-item">
       <Input type="password" v-model="searchForm.newPwd"></Input>
     </Form-item>
@@ -21,7 +21,7 @@ export default {
     return {
       searchForm: {
         userId: '',
-        oldPwd: '',
+        // oldPwd: '',
         newPwd: ''
       }
     };

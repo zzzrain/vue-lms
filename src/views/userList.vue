@@ -106,9 +106,9 @@
       width="400"
       @on-ok="resetPsw">
       <Form label-position="left" :label-width="60" ref="pswForm" :model="pswForm" class="clear-fix">
-        <Form-item label="旧密码" prop="oldPwd">
-          <Input type="password" v-model="pswForm.oldPwd"></Input>
-        </Form-item>
+        <!--<Form-item label="旧密码" prop="oldPwd">-->
+          <!--<Input type="password" v-model="pswForm.oldPwd"></Input>-->
+        <!--</Form-item>-->
         <Form-item label="新密码" prop="newPwd">
           <Input type="password" v-model="pswForm.newPwd"></Input>
         </Form-item>
@@ -161,7 +161,7 @@ export default {
       },
       pswForm: {
         userId: '',
-        oldPwd: '',
+        // oldPwd: '',
         newPwd: ''
       },
       rules: {
@@ -233,12 +233,14 @@ export default {
         align: 'center',
         width: 240,
         render: (h, params) => {
+          console.log(params);
           let row = params.row;
           let id = row.id;
           let status = row.status;
           // let userIdx = params.index;
           let type = status === '启用' ? 'error' : 'success';
           let btn = status === '启用' ? '停用' : '启用';
+          let pswDisplay = row.psw ? 'inline-block' : 'none';
           return h('div', [
             h('Button', {
               props: {
@@ -280,7 +282,8 @@ export default {
                 size: 'small'
               },
               style: {
-                marginRight: '8px'
+                marginRight: '8px',
+                display: pswDisplay
               },
               on: {
                 click: function () {
@@ -370,6 +373,12 @@ export default {
         .post('/api/lms/admin/user/userList', data)
         .then(res => {
           if (res.data.code === '20000') {
+            // 管理员账号重置权限
+            let cookie = document.cookie.split(';');
+            cookie = cookie.filter(ele => {
+              return ele.indexOf('userId=') >= 0;
+            });
+            let userId = cookie[0] && cookie[0].replace('userId=', '');
             let data = res.data && res.data.data;
             let dataList = data.list || [];
             this.total = data.total;
@@ -386,6 +395,7 @@ export default {
                 ele.userType = common.role(ele.userType);
                 ele.status = common.state(ele.status);
                 ele.createTime = common.format(ele.createTime);
+                ele.psw = parseInt(userId) === 3;
                 return ele;
               });
             // console.log(this.rows);
