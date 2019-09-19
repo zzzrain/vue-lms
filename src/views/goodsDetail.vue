@@ -404,9 +404,15 @@ export default {
             skuInfos: formItem.skuInfos,
             status: formItem.status
           };
+          data.skuInfos = data.skuInfos.map(ele => {
+            ele.skuUnit = ele.skuUnit && ele.skuUnit === '瓶' ? 1 : 2;
+            // ele.repertoryUnit = ele.repertoryUnit && common.skuUnit(ele.repertoryUnit);
+            return ele;
+          });
+
           if (goodsId) {
             data.goodsId = goodsId;
-            // console.log(JSON.stringify(data));
+            console.log(JSON.stringify(data));
             this.$axios
               .post('/api/lms/admin/goods/updateGoods', data)
               .then(res => {
