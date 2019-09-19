@@ -376,9 +376,9 @@ export default {
             // 管理员账号重置权限
             let cookie = document.cookie.split(';');
             cookie = cookie.filter(ele => {
-              return ele.indexOf('userId=') >= 0;
+              return ele.indexOf('username=') >= 0;
             });
-            let userId = cookie[0] && cookie[0].replace('userId=', '');
+            let username = cookie[0] && cookie[0].replace('username=', '');
             let data = res.data && res.data.data;
             let dataList = data.list || [];
             this.total = data.total;
@@ -395,7 +395,7 @@ export default {
                 ele.userType = common.role(ele.userType);
                 ele.status = common.state(ele.status);
                 ele.createTime = common.format(ele.createTime);
-                ele.psw = parseInt(userId) === 3;
+                ele.psw = username === 'super_admin';
                 return ele;
               });
             // console.log(this.rows);
