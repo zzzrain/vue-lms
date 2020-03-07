@@ -274,7 +274,7 @@ export default {
       this.addSku = true;
       this.skuCtrl = 'add';
       this.$refs.skuForm.resetFields();
-      this.skuForm.skuUnit = '1';
+      // this.skuForm.skuUnit = '1';
     },
     skuPop (name) {
       this.$refs[name].validate((valid) => {
@@ -286,8 +286,7 @@ export default {
             agentPrice: parseInt(skuForm.agentPrice),
             // limitAgentPrice: parseInt(skuForm.skuPrice),
             purchaserPrice: parseInt(skuForm.purchaserPrice),
-            skuPrice: parseInt(skuForm.skuPrice),
-            skuUnit: 1
+            skuPrice: parseInt(skuForm.skuPrice)
           };
           let rowsData = Object.assign({}, skuData);
           // rowsData.skuUnit = common.skuUnit(rowsData.skuUnit);
