@@ -94,7 +94,7 @@ export default {
         pageNum: pageNum || 1,
         pageSize: 10
       };
-      console.log(type, JSON.stringify(data));
+      // console.log(type, JSON.stringify(data));
       switch (type) {
         case '1' :
           url = '/api/lms/admin/statistics/agentOrderList';

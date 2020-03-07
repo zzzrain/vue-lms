@@ -107,7 +107,7 @@ export default {
         key: 'action',
         align: 'center',
         render: (h, params) => {
-          console.log(params);
+          // console.log(params);
           return h('div', [
             h('Button', {
               props: {
@@ -161,7 +161,7 @@ export default {
       if (searchForm.totalPriceR) data.totalPriceR = parseInt(searchForm.totalPriceR);
       if (searchForm.beginTime) data.beginTime = Date.parse(searchForm.beginTime);
       if (searchForm.endTime) data.endTime = Date.parse(searchForm.endTime);
-      console.log(JSON.stringify(data));
+      // console.log(JSON.stringify(data));
       this.$axios
         .post('/api/lms/admin/order/orderList', data)
         .then(res => {

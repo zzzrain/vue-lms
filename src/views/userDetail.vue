@@ -209,7 +209,7 @@ export default {
             default:
               break;
           }
-          console.log(JSON.stringify(data));
+          // console.log(JSON.stringify(data));
           this.$axios
             .post('/api/lms/admin/user/updateUser', data)
             .then(res => {

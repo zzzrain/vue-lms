@@ -254,7 +254,7 @@ export default {
         data.id = bannerForm.id;
         message = '修改成功';
       }
-      console.log(JSON.stringify(data));
+      // console.log(JSON.stringify(data));
       this.addPop = false;
       this.$axios
         .post('/api/lms/admin/banner/bannerUpdate', data)

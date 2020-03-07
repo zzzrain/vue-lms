@@ -184,7 +184,7 @@ export default {
               },
               on: {
                 click: function () {
-                  console.log(params);
+                  // console.log(params);
                   vm.altPop = true;
                   vm.itemIdx = params.index;
                   // stockAltForm.skuName = row.skuName;
@@ -268,7 +268,7 @@ export default {
         goodsName: searchForm.goodsName,
         categoryId: searchForm.categoryId
       };
-      console.log(JSON.stringify(data));
+      // console.log(JSON.stringify(data));
       this.$axios
         .post('/api/lms/admin/repertory/repertoryList', data)
         .then(res => {
@@ -317,7 +317,7 @@ export default {
             skuNum: parseInt(stockAddForm.skuNum),
             skuUnit: parseInt(stockAddForm.skuUnit)
           };
-          console.log(JSON.stringify(data));
+          // console.log(JSON.stringify(data));
           this.$axios
             .post('/api/lms/admin/repertory/addRepertory', data)
             .then(res => {
@@ -351,7 +351,7 @@ export default {
             skuNum: parseInt(stockAltForm.skuNum),
             skuUnit: parseInt(stockAltForm.skuUnit)
           };
-          console.log(JSON.stringify(data));
+          // console.log(JSON.stringify(data));
           this.$axios
             .post('/api/lms/admin/repertory/updateRepertory', data)
             .then(res => {

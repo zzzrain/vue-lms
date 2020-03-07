@@ -106,9 +106,9 @@
       width="400"
       @on-ok="resetPsw">
       <Form label-position="left" :label-width="60" ref="pswForm" :model="pswForm" class="clear-fix">
-        <Form-item label="旧密码" prop="oldPwd">
-          <Input type="password" v-model="pswForm.oldPwd"></Input>
-        </Form-item>
+        <!--<Form-item label="旧密码" prop="oldPwd">-->
+          <!--<Input type="password" v-model="pswForm.oldPwd"></Input>-->
+        <!--</Form-item>-->
         <Form-item label="新密码" prop="newPwd">
           <Input type="password" v-model="pswForm.newPwd"></Input>
         </Form-item>
@@ -161,7 +161,7 @@ export default {
       },
       pswForm: {
         userId: '',
-        oldPwd: '',
+        // oldPwd: '',
         newPwd: ''
       },
       rules: {
@@ -233,12 +233,14 @@ export default {
         align: 'center',
         width: 240,
         render: (h, params) => {
+          console.log(params);
           let row = params.row;
           let id = row.id;
           let status = row.status;
           // let userIdx = params.index;
           let type = status === '启用' ? 'error' : 'success';
           let btn = status === '启用' ? '停用' : '启用';
+          let pswDisplay = row.psw ? 'inline-block' : 'none';
           return h('div', [
             h('Button', {
               props: {
@@ -280,7 +282,8 @@ export default {
                 size: 'small'
               },
               style: {
-                marginRight: '8px'
+                marginRight: '8px',
+                display: pswDisplay
               },
               on: {
                 click: function () {
@@ -343,7 +346,7 @@ export default {
     userList (pageNum) {
       this.rows = [];
       // 时间组件会重新读取searchForm的时间，查询需要换算时间戳，由于格式问题会导致组件报错，
-      // 所以不用searchForm直接查询 —— 双向数据绑定遇到UI库的坑
+      // 所以不用 searchForm 直接查询 —— 双向数据绑定遇到UI库的坑
       // let page = { pageNum: pageNum || 1, pageSize: 10 };
       // let copy = Object.assign({}, this.searchForm);
       // copy.userType = parseInt(this.searchForm.userType);
@@ -365,11 +368,17 @@ export default {
       if (searchForm.userType) data.roleId = parseInt(searchForm.userType);
       if (searchForm.beginTime) data.beginTime = Date.parse(searchForm.beginTime);
       if (searchForm.endTime) data.endTime = Date.parse(searchForm.endTime);
-      console.log(JSON.stringify(data));
+      // console.log(JSON.stringify(data));
       this.$axios
         .post('/api/lms/admin/user/userList', data)
         .then(res => {
           if (res.data.code === '20000') {
+            // 管理员账号重置权限
+            let cookie = document.cookie.split(';');
+            cookie = cookie.filter(ele => {
+              return ele.indexOf('username=') >= 0;
+            });
+            let username = cookie[0] && cookie[0].replace('username=', '');
             let data = res.data && res.data.data;
             let dataList = data.list || [];
             this.total = data.total;
@@ -386,9 +395,10 @@ export default {
                 ele.userType = common.role(ele.userType);
                 ele.status = common.state(ele.status);
                 ele.createTime = common.format(ele.createTime);
+                ele.psw = username === 'super_admin';
                 return ele;
               });
-            console.log(this.rows);
+            // console.log(this.rows);
           } else if (res.data.code === '20003') {
             this.$Message.error('登录超时');
             setTimeout(() => {
@@ -442,16 +452,16 @@ export default {
             default:
               break;
           }
-          console.log(JSON.stringify(data));
-          // this.$axios
-          //   .post('/api/lms/admin/user/addUser', data)
-          //   .then(res => {
-          //     if (res.data.code === '20000') {
-          //       this.$Message.info('新增成功');
-          //       this.userList(1);
-          //     }
-          //   })
-          //   .catch(error => console.log(error));
+          // console.log(JSON.stringify(data));
+          this.$axios
+            .post('/api/lms/admin/user/addUser', data)
+            .then(res => {
+              if (res.data.code === '20000') {
+                this.$Message.info('新增成功');
+                this.userList(1);
+              }
+            })
+            .catch(error => console.log(error));
         }
       });
     },
@@ -477,7 +487,7 @@ export default {
               status: 1,
               wxPerm: 1
             };
-            console.log(JSON.stringify(data));
+            // console.log(JSON.stringify(data));
             this.altAjax(data, cb);
           }
         });

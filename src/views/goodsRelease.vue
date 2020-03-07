@@ -203,7 +203,7 @@ export default {
               },
               on: {
                 click: function () {
-                  console.log(params);
+                  // console.log(params);
                   let skuForm = vm.skuForm;
                   vm.skuCtrl = 'alt';
                   vm.skuIdx = params.index;
@@ -290,7 +290,7 @@ export default {
           };
           let rowsData = Object.assign({}, skuData);
           // rowsData.skuUnit = common.skuUnit(rowsData.skuUnit);
-          console.log(this.skuCtrl);
+          // console.log(this.skuCtrl);
           if (this.skuCtrl === 'add') {
             this.rows.push(rowsData);
           } else if (this.skuCtrl === 'alt') {
@@ -310,7 +310,7 @@ export default {
     handleCheck () {
       let isDel = true;
       let skuTag = this.skuTag;
-      console.log(this.rows);
+      // console.log(this.rows);
       this.rows.forEach(ele => {
         if (skuTag && skuTag === ele.skuId) {
           isDel = false;
@@ -337,7 +337,7 @@ export default {
           };
           if (goodsId) {
             data.goodsId = goodsId;
-            console.log(JSON.stringify(data));
+            // console.log(JSON.stringify(data));
             this.$axios
               .post('/api/lms/admin/goods/updateGoods', data)
               .then(res => {
@@ -357,7 +357,7 @@ export default {
               })
               .catch(error => console.log(error));
           } else {
-            console.log(JSON.stringify(data));
+            // console.log(JSON.stringify(data));
             this.$axios
               .post('/api/lms/admin/goods/publishGoods', data)
               .then(res => {
