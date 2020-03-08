@@ -106,6 +106,7 @@ let routes = [
     ]
   }
 ];
+
 // 加入权限检测
 routes = routes.map(x => {
   if (x.meta && x.meta.permissions) {

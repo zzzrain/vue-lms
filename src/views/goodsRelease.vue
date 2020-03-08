@@ -57,7 +57,7 @@
       v-model="addSku"
       title="规格信息"
       width="360">
-      <Form abel-position="left" :label-width="110" ref="skuForm" :model="skuForm" :rules="rules" style="height: 250px;">
+      <Form abel-position="left" :label-width="110" ref="skuForm" :model="skuForm" :rules="rules" style="height: 270px;">
         <Form-item label="规格名称" prop="skuName" class="form-item">
           <Input v-model="skuForm.skuName" placeholder="请输入"></Input>
         </Form-item>
@@ -73,12 +73,12 @@
         <Form-item label="采购商价格" prop="purchaserPrice" class="form-item">
           <Input v-model="skuForm.purchaserPrice" placeholder="请输入"></Input>
         </Form-item>
-        <!--<Form-item label="商品规格" prop="skuUnit" class="form-item">-->
-          <!--<Radio-group v-model="skuForm.skuUnit">-->
-            <!--<Radio label="1">瓶</Radio>-->
-            <!--<Radio label="2">箱</Radio>-->
-          <!--</Radio-group>-->
-        <!--</Form-item>-->
+        <Form-item label="商品规格" prop="skuUnit" class="form-item">
+          <Radio-group v-model="skuForm.skuUnit">
+            <Radio label="1">瓶</Radio>
+            <Radio label="2">箱</Radio>
+          </Radio-group>
+        </Form-item>
       </Form >
       <div slot="footer">
         <Button @click="cancelPop">取消</Button>
@@ -90,6 +90,7 @@
 
 <script>
 import FileUpload from '@/components/FileUpload';
+import common from '@/common/common.js';
 export default {
   components: {
     FileUpload
@@ -181,10 +182,10 @@ export default {
         title: '采购商价格',
         key: 'purchaserPrice'
       },
-      // {
-      //   title: '商品规格',
-      //   key: 'skuUnit'
-      // },
+      {
+        title: '商品规格',
+        key: 'skuUnit'
+      },
       {
         title: '操作',
         key: 'action',
@@ -216,7 +217,7 @@ export default {
                     skuForm.purchaserPrice = row.purchaserPrice;
                     skuForm.skuName = row.skuName;
                     skuForm.skuPrice = row.skuPrice;
-                    // skuForm.skuUnit = row.skuUnit.toString();
+                    skuForm.skuUnit = row.skuUnit.toString();
                   } else {
                     vm.$Message.info('已发布规格不可操作');
                   }
@@ -274,7 +275,7 @@ export default {
       this.addSku = true;
       this.skuCtrl = 'add';
       this.$refs.skuForm.resetFields();
-      // this.skuForm.skuUnit = '1';
+      this.skuForm.skuUnit = '1';
     },
     skuPop (name) {
       this.$refs[name].validate((valid) => {
@@ -286,10 +287,11 @@ export default {
             agentPrice: parseInt(skuForm.agentPrice),
             // limitAgentPrice: parseInt(skuForm.skuPrice),
             purchaserPrice: parseInt(skuForm.purchaserPrice),
-            skuPrice: parseInt(skuForm.skuPrice)
+            skuPrice: parseInt(skuForm.skuPrice),
+            skuUnit: parseInt(skuForm.skuUnit)
           };
           let rowsData = Object.assign({}, skuData);
-          // rowsData.skuUnit = common.skuUnit(rowsData.skuUnit);
+          rowsData.skuUnit = common.skuUnit(rowsData.skuUnit);
           // console.log(this.skuCtrl);
           if (this.skuCtrl === 'add') {
             this.rows.push(rowsData);

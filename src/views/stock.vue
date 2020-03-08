@@ -39,12 +39,12 @@
           <Form-item label="数量" prop="skuNum">
             <Input placeholder="请输入" v-model="stockAddForm.skuNum"></Input>
           </Form-item>
-          <Form-item label="规格单位" prop="skuUnit" style="width: 200px;">
-            <Radio-group v-model="stockAddForm.skuUnit">
-              <Radio label="1">瓶</Radio>
-              <Radio label="2">箱</Radio>
-            </Radio-group>
-          </Form-item>
+          <!--<Form-item label="规格单位" prop="skuUnit" style="width: 200px;">-->
+            <!--<Radio-group v-model="stockAddForm.skuUnit">-->
+              <!--<Radio label="1">瓶</Radio>-->
+              <!--<Radio label="2">箱</Radio>-->
+            <!--</Radio-group>-->
+          <!--</Form-item>-->
         </Form >
         <div slot="footer">
           <Button @click="cancelPop">取消</Button>
@@ -61,12 +61,12 @@
           <Form-item label="数量" prop="skuNum">
             <Input placeholder="请输入" v-model="stockAltForm.skuNum"></Input>
           </Form-item>
-          <Form-item label="规格单位" prop="skuUnit" style="width: 200px;">
-            <Radio-group v-model="stockAltForm.skuUnit">
-              <Radio label="1">瓶</Radio>
-              <Radio label="2">箱</Radio>
-            </Radio-group>
-          </Form-item>
+          <!--<Form-item label="规格单位" prop="skuUnit" style="width: 200px;">-->
+            <!--<Radio-group v-model="stockAltForm.skuUnit">-->
+              <!--<Radio label="1">瓶</Radio>-->
+              <!--<Radio label="2">箱</Radio>-->
+            <!--</Radio-group>-->
+          <!--</Form-item>-->
         </Form >
         <div slot="footer">
           <Button @click="cancelPop">取消</Button>
@@ -103,15 +103,15 @@ export default {
         repertoryId: '',
         skuId: '',
         // skuName: '',
-        skuNum: '',
-        skuUnit: ''
+        skuNum: ''
+        // skuUnit: ''
       },
       stockAltForm: {
         repertoryId: '',
         skuId: '',
         // skuName: '',
-        skuNum: '',
-        skuUnit: ''
+        skuNum: ''
+        // skuUnit: ''
       },
       searchForm: {
         goodsName: '',
@@ -189,7 +189,7 @@ export default {
                   vm.itemIdx = params.index;
                   // stockAltForm.skuName = row.skuName;
                   stockAltForm.skuNum = row.skuNum;
-                  stockAltForm.skuUnit = row.skuUnitCode;
+                  // stockAltForm.skuUnit = row.skuUnitCode;
                 }
               }
             }, '修改')
@@ -299,10 +299,10 @@ export default {
       this.$refs.stockAltForm.resetFields();
       this.stockAltForm = {
         repertoryId: '',
-        skuId: '',
         // skuName: '',
-        skuNum: '',
-        skuUnit: '1'
+        skuId: '',
+        skuNum: ''
+        // skuUnit: '1'
       };
     },
     stockAdd () {
@@ -314,8 +314,8 @@ export default {
             optType: 1,
             // skuName: stockAddForm.skuName,
             skuId: parseInt(stockAddForm.skuId),
-            skuNum: parseInt(stockAddForm.skuNum),
-            skuUnit: parseInt(stockAddForm.skuUnit)
+            skuNum: parseInt(stockAddForm.skuNum)
+            // skuUnit: parseInt(stockAddForm.skuUnit)
           };
           // console.log(JSON.stringify(data));
           this.$axios
@@ -348,8 +348,8 @@ export default {
             repertoryId: this.rows[idx].id,
             // skuName: stockAltForm.skuName,
             skuId: this.rows[idx].skuId,
-            skuNum: parseInt(stockAltForm.skuNum),
-            skuUnit: parseInt(stockAltForm.skuUnit)
+            skuNum: parseInt(stockAltForm.skuNum)
+            // skuUnit: parseInt(stockAltForm.skuUnit)
           };
           // console.log(JSON.stringify(data));
           this.$axios
@@ -359,7 +359,7 @@ export default {
                 this.$Message.info('修改成功');
                 // this.rows[idx].skuName = data.skuName;
                 this.rows[idx].skuNum = data.skuNum;
-                this.rows[idx].skuUnit = common.skuUnit(data.skuUnit);
+                // this.rows[idx].skuUnit = common.skuUnit(data.skuUnit);
               } else if (res.data.code === '20003') {
                 this.$Message.error('登录超时');
                 setTimeout(() => {
