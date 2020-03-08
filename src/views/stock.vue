@@ -25,7 +25,7 @@
       <Modal
         v-model="addPop"
         title="增加库存">
-        <Form abel-position="left" :label-width="70" ref="stockAddForm" :model="stockAddForm" :rules="rules">
+        <Form abel-position="left" :label-width="80" ref="stockAddForm" :model="stockAddForm" :rules="rules">
           <Form-item label="商品名称">
             <Select v-model="goodsId" @on-change="selectGoods(goodsId)">
               <Option v-for="item in goodsItem" :key="item.id" :value="item.goodsId">{{ item.goodsName }}</Option>
