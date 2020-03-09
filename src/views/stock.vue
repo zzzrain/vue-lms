@@ -156,11 +156,11 @@ export default {
         key: 'skuNum',
         width: 120
       },
-      {
-        title: '单位',
-        key: 'skuUnit',
-        width: 100
-      },
+      // {
+      //   title: '单位',
+      //   key: 'skuUnit',
+      //   width: 100
+      // },
       {
         title: '创建时间',
         key: 'createTime',
@@ -198,7 +198,7 @@ export default {
       }
     ];
     this.rows = [];
-    this.stockAddForm.skuUnit = '1';
+    // this.stockAddForm.skuUnit = '1';
     this.categoryList();
     this.goodsList();
     this.stockList();
@@ -279,8 +279,8 @@ export default {
             this.rows = [];
             this.rows = dataList.map(ele => {
               ele.skuUnitCode = ele.skuUnit && ele.skuUnit.toString();
-              ele.skuUnit = common.skuUnit(ele.skuUnit);
               ele.createTime = common.format(ele.createTime);
+              // ele.skuUnit = common.skuUnit(ele.skuUnit);
               return ele;
             });
           } else if (res.data.code === '20003') {
